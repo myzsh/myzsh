@@ -1,0 +1,8 @@
+BASE="$HOME/.zsh"
+LPRIMARY=(userhost)
+LSECONDARY=(pwd exitcode)
+RPRIMARY=()
+RSECONDARY=()
+THEME="default"
+################################################################################
+source "$BASE/zshrc"
