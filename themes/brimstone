@@ -1,0 +1,81 @@
+# inspired from http://aperiodic.net/phil/prompt/
+
+function theme_all {
+	[ -n "$1" ] && echo "$PR_SECONDARY($PR_PRIMARY$1$PR_SECONDARY)$PR_NO_COLOR"
+}
+
+function theme_lprimary {
+	theme_all "$1"
+}
+
+function theme_rprimary {
+	theme_all "$1"
+}
+
+function theme_lsecondary {
+	theme_all "$1"
+}
+
+function theme_rsecondary {
+	theme_all "$1"
+}
+
+function theme_prompt {
+
+	# enable regular expression replacement, needed for determining prompt width
+	autoload -U regexp-replace
+
+	# start off prompt with a new line
+	PROMPT="$PR_SET_CHARSET
+"
+	# set the top left line
+	PROMPT+="$PR_SECONDARY$PR_SHIFT_IN$PR_ULCORNER$PR_HBAR$PR_SHIFT_OUT$LPOUTPUT$PR_SECONDARY$PR_SHIFT_IN"
+	# set the top right line
+	PROMPT2="$PR_SHIFT_OUT$RPOUTPUT$PR_SECONDARY$PR_SHIFT_IN$PR_HBAR$PR_URCORNER$PR_SHIFT_OUT"
+
+	# set the bar in the middle
+	WIDTH="$LPOUTPUT$RPOUTPUT"
+	# This might cause a problem if any modules return a %
+	regexp-replace WIDTH '%\{[^%]*?%\}' ''
+
+	# The 5 is the up/down corners on each side, plus a single hyphen on each side plus a newline
+	PROMPT+=${(l.((${COLUMNS} - ${#WIDTH} - 5))..q.)}
+	# combine the right with the left
+	PROMPT+="$PROMPT2
+"
+	# set secondary line
+	PROMPT+="$PR_SECONDARY$PR_SHIFT_IN$PR_LLCORNER$PR_HBAR$PR_SHIFT_OUT$LSOUTPUT$PR_SECONDARY$PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT$PR_NO_COLOR "
+	RPROMPT="$PR_SECONDARY$PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT$RSOUTPUT$PR_SECONDARY$PR_SHIFT_IN$PR_HBAR$PR_LRCORNER$PR_SHIFT_OUT$PR_NO_COLOR"
+}
+
+# make sure colors and terminal settings autoload
+autoload colors zsh/terminfo
+# if we can do colors, init colors
+[[ "$terminfo[colors]" -ge 8 ]] && colors
+
+# setup our color names, PR_GREEN, PR_LIGHT_BLUE, etc
+for color in RED GREEN YELLOW BLUE MAGENTA CYAN WHITE BLACK GREY; do
+	eval PR_$color='%{$terminfo[bold]$fg[${(L)color}]%}'
+	eval PR_LIGHT_$color='%{$fg[${(L)color}]%}'
+	(( count = $count + 1 ))
+done
+PR_NO_COLOR="%{$terminfo[sgr0]%}"
+
+# Setup our fancy characters, if we can support them
+typeset -A altchar
+set -A altchar ${(s..)terminfo[acsc]}
+PR_SET_CHARSET="%{$terminfo[enacs]%}"
+PR_SHIFT_IN="%{$terminfo[smacs]%}"
+PR_SHIFT_OUT="%{$terminfo[rmacs]%}"
+PR_HBAR=${altchar[q]:--}
+PR_ULCORNER=${altchar[l]:--}
+PR_LLCORNER=${altchar[m]:--}
+PR_LRCORNER=${altchar[j]:--}
+PR_URCORNER=${altchar[k]:--}
+
+# Set our default colors and evaluate our primary colors
+[ -z "$PR_PRIMARY" ] && PR_PRIMARY='$PR_RED'
+[ -z "$PR_SECONDARY" ] && PR_SECONDARY='$PR_BLACK'
+PR_PRIMARY=${(e)PR_PRIMARY}
+PR_SECONDARY=${(e)PR_SECONDARY}
+
