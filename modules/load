@@ -1,0 +1,4 @@
+function load {
+	echo "$1 $2 $3"
+}
+OUTPUT="$(load $(< /proc/loadavg))"

@@ -1,0 +1,6 @@
+# load the modules
+autoload -U compinit
+# autocompletion
+compinit
+# add an arrow-key drivin interface to autocompletion
+zstyle ':completion:*' menu select
