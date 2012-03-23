@@ -13,10 +13,6 @@ function theme_rsecondary {
 }
 
 function theme_prompt {
-	PROMPT="$LPOUTPUT:$LSOUTPUT"
-	if [ "$UID" = "0" ]; then
-		PROMPT="$PROMPT# "
-	else
-		PROMPT="$PROMPT$ "
-	fi
+	# %# is either # for root or % for not root
+	PROMPT="$LPOUTPUT:$LSOUTPUT%# "
 }
