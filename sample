@@ -1,8 +1,25 @@
+# This is the base of the new zsh directory
 BASE="$HOME/.zsh"
-LPRIMARY=(userhost)
-LSECONDARY=(pwd exitcode)
-RPRIMARY=()
-RSECONDARY=()
+
+# This is the theme.
 THEME="default"
+
+# This is the list of modules that generate Left Primary output.
+LPRIMARY=(userhost)
+
+# This is the list of modules that generate Left Secondary output.
+LSECONDARY=(pwd exitcode)
+
+# This is the list of modules that generate Right Primary output.
+RPRIMARY=()
+
+# This is the list of modules that generate Right Secondary output.
+RSECONDARY=()
+
+# This is the list of modules that get processed once at shell start.
+# They shouldn't generate output.
+EXTRA=(autoload)
+
 ################################################################################
+# This kicks off our processing now that we have variables
 source "$BASE/zshrc"
