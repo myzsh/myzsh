@@ -1,12 +1,12 @@
 # first load the theme
 # check for theme, select our default if nothing's set
-[ ! -e "$BASE/themes/$THEME" ] && THEME="default"
-source "$BASE/themes/$THEME"
+[ ! -e "$BASE/themes/$THEME/$THEME" ] && THEME="default"
+source "$BASE/themes/$THEME/$THEME"
 
 # Load any one time modules
 for m in $EXTRA; do
-	[ ! -e "$BASE/modules/$m" ] && echo "Cannot find module $m" && continue
-	source "$BASE/modules/$m"
+	[ ! -e "$BASE/modules/$m/$m" ] && echo "Cannot find module $m" && continue
+	source "$BASE/modules/$m/$m"
 done
 
 # reprocess and redraw each new command
@@ -17,32 +17,32 @@ function precmd {
 	LPOUTPUT=""
 	for m in $LPRIMARY; do
 		OUTPUT=""
-		[ ! -e "$BASE/modules/$m" ] && echo "Cannot find module $m" && continue
-		source "$BASE/modules/$m"
+		[ ! -e "$BASE/modules/$m/$m" ] && echo "Cannot find module $m" && continue
+		source "$BASE/modules/$m/$m"
 		LPOUTPUT="$LPOUTPUT$(theme_lprimary "$OUTPUT")"
 	done
 	# Figure out our left secondary output
 	LSOUTPUT=""
 	for m ($LSECONDARY); do
 		OUTPUT=""
-		[ ! -e "$BASE/modules/$m" ] && echo "Cannot find module $m" && continue
-		source "$BASE/modules/$m"
+		[ ! -e "$BASE/modules/$m/$m" ] && echo "Cannot find module $m" && continue
+		source "$BASE/modules/$m/$m"
 		LSOUTPUT="$LSOUTPUT$(theme_lsecondary "$OUTPUT")"
 	done
 	# Figure out our right primary output
 	RPOUTPUT=""
 	for m in $RPRIMARY; do
 		OUTPUT=""
-		[ ! -e "$BASE/modules/$m" ] && echo "Cannot find module $m" && continue
-		source "$BASE/modules/$m"
+		[ ! -e "$BASE/modules/$m/$m" ] && echo "Cannot find module $m" && continue
+		source "$BASE/modules/$m/$m"
 		RPOUTPUT="$RPOUTPUT$(theme_rprimary "$OUTPUT")"
 	done
 	# Figure out our right secondary output
 	RSOUTPUT=""
 	for m in $RSECONDARY; do
 		OUTPUT=""
-		[ ! -e "$BASE/modules/$m" ] && echo "Cannot find module $m" && continue
-		source "$BASE/modules/$m"
+		[ ! -e "$BASE/modules/$m/$m" ] && echo "Cannot find module $m" && continue
+		source "$BASE/modules/$m/$m"
 		RSOUTPUT="$RSOUTPUT$(theme_rsecondary "$OUTPUT")"
 	done
 	# Now that we have all of our variables set, let our theme compute it's prompt
