@@ -1,1 +1,1 @@
-[ "$exitcode" != "0" ] && OUTPUT="($exitcode)"
+[ "$exitcode" != "0" ] && OUTPUT="$exitcode"

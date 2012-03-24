@@ -1,0 +1,5 @@
+# assume just ifconfig
+IFCONFIG="ifconfig"
+# if we don't see it in our path, assume also in /sbin, which is typical of linux systems
+[ -n "$(which ifconfig)" ] && IFCONFIG="/sbin/ifconfig"
+OUTPUT="${$($IFCONFIG | awk '/^[a-z]/ {inf=$1} /inet addr/{gsub(/addr:/, "", $2); if($2!="127.0.0.1"){printf inf ":" $2 " "}}')%% }"
