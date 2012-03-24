@@ -25,8 +25,28 @@ function theme_prompt {
 	# enable regular expression replacement, needed for determining prompt width
 	autoload -U regexp-replace
 
+	case $TERM in
+		xterm*)
+			PR_TITLEBAR=$'%{\e]0;%(!.-=*[ROOT]*=- | .)%n@%m:%~\a%}'
+		;;
+		rxvt*)
+			PR_TITLEBAR=$'%{\e]0;%(!.-=*[ROOT]*=- | .)%n@%m:%~\a%}'
+		;;
+		screen*)
+			PR_TITLEBAR=$'%{\e_screen \005 | %(!.-=[ROOT]=- | .)%n@%m:%~\e\\%}'
+		;;
+		*)
+			PR_TITLEBAR=''
+		;;
+	esac
+	###
+	# Decide whether to set a screen title
+	if [ -n "$STY" ]; then
+		echo -n "\x1bkzsh:${PWD/$HOME/~}\x1b\\"
+	fi
+
 	# start off prompt with a new line
-	PROMPT="$PR_SET_CHARSET
+	PROMPT="$PR_SET_CHARSET$PR_STITLE$PR_TITLEBAR
 "
 	# set the top left line
 	PROMPT+="$PR_SECONDARY$PR_SHIFT_IN$PR_ULCORNER$PR_HBAR$PR_SHIFT_OUT$LPOUTPUT$PR_SECONDARY$PR_SHIFT_IN"
