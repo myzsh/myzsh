@@ -1,0 +1,18 @@
+function ll {
+	# if we're not under svn, bail
+	[ ! -d ".svn" ] && ls -l && return
+	
+	typeset -A svnstatus
+	svn status | while read aline; do
+		svnstatus[${aline:8}]="${aline:0:1}"
+	done
+	# TODO can't remove the asterisk off executable files?
+	/bin/ls -l | while read aline; do
+		astat=$(sed -E 's/^((.*[0-9] ){4}).*/\1/' <<< "$aline")
+		afile=${aline##$astat}
+		[ -z "$afile" ] && echo "$aline" && continue
+		echo "${astat}${svnstatus[$afile]:- } $afile"
+		# if it's a directory, color it blue
+		# if it's executable at all, color it green
+	done
+}
