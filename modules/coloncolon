@@ -1,0 +1,35 @@
+# This function is awesome, but if anyone sees any problems with using colon, please let me know
+function :: ()
+{
+	SCREEN_EXE=`which screen`
+	if [ -x ~/bin/screen ]; then
+		export SCREEN_EXE="~/bin/screen"
+	fi
+	local HOSTA=`echo $1 | cut -d "@" -f 2`
+	if [ "$1" = "" ]; then
+		ls
+	elif [ -d "$1" ]; then
+		cd $1
+	elif [ "`ssh-keygen -H -F $HOSTA | wc -l`" != 0 ]; then
+		ssh $*
+	elif [ "$1" = "-r" ]; then
+		eval $SCREEN_EXE $*
+	elif [ "$1" = "-S" ]; then
+		eval $SCREEN_EXE $*
+	elif [ "$1" = "-x" ]; then
+		eval $SCREEN_EXE $*
+	elif [ "$1" = "-dr" ]; then
+		eval $SCREEN_EXE $*
+	elif [ $(echo "$1" | sed -n '/^http/p') ] || [ $(echo "$1" | sed -n '/^ftp/p') ]; then
+		download_file $*
+	elif [ -n "`which $1`" ]; then
+		echo "I'm gonna run this command until it exits cleanly"
+		while ! $*; do
+			sleep 1
+		done
+	else
+		#this line will go in here, maybe, eventually. I make too many mistakes for it to be efficient still
+	#grep -ri "$*" * | grep -v .svn | less
+		echo "I don't know what to do with this."
+	fi
+}

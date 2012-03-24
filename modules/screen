@@ -1,0 +1,8 @@
+# Sets the title in screen for the current running command right before it runs
+# TODO add an alias or something so other things can hook preexec as well
+if [ -n "$STY" ]; then
+	preexec () {
+		local CMD=${1[(wr)^(*=*|sudo|-*)]}
+		echo -ne "\ek$CMD\e\\"
+	}
+fi

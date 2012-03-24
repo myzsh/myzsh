@@ -1,2 +1,8 @@
 # don't save history
 unset HISTFILE
+
+setopt AUTO_CD
+setopt NO_BEEP
+setopt CORRECT # srsly, you want this spell correction
+
+setopt extended_glob
