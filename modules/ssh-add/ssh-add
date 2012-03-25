@@ -1,0 +1,10 @@
+SSH_HOME=$HOME/.ssh
+
+if [[ `ssh-add -l` == "The agent has no identities." ]]; then
+  for x in `find $SSH_HOME`;
+  do
+    if [[ `file $x` =~ "PEM RSA private key" ]]; then
+      ssh-add $x
+    fi
+  done
+fi

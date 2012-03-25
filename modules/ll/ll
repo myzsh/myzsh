@@ -3,7 +3,7 @@ function ll {
 	[ ! -d ".svn" ] && ls -l && return
 	
 	typeset -A svnstatus
-	svn status | while read aline; do
+	svn status --depth=immediates | while read aline; do
 		svnstatus[${aline:8}]="${aline:0:1}"
 	done
 	# TODO can't remove the asterisk off executable files?
