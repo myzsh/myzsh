@@ -1,16 +1,5 @@
-# first load the theme
-# check for theme, select our default if nothing's set
-[ ! -e "$BASE/themes/$THEME/$THEME" ] && THEME="default"
-source "$BASE/themes/$THEME/$THEME"
-
-# Load any one time modules
-for m in $EXTRA; do
-	[ ! -e "$BASE/modules/$m/$m" ] && echo "Cannot find module $m" && continue
-	source "$BASE/modules/$m/$m"
-done
-
-# reprocess and redraw each new command
-function precmd {
+# our precmd runs first, as it build up the PROMPT variable
+precmd_main () {
 	# Capture our exit code
 	exitcode=$?
 	# Figure out our left primary output
@@ -23,7 +12,7 @@ function precmd {
 	done
 	# Figure out our left secondary output
 	LSOUTPUT=""
-	for m ($LSECONDARY); do
+	for m in $LSECONDARY; do
 		OUTPUT=""
 		[ ! -e "$BASE/modules/$m/$m" ] && echo "Cannot find module $m" && continue
 		source "$BASE/modules/$m/$m"
@@ -48,3 +37,33 @@ function precmd {
 	# Now that we have all of our variables set, let our theme compute it's prompt
 	theme_prompt
 }
+
+precmd () {
+	# run all of our precmd functions setup for us
+	for ((i=0; i <= ${#precmd_funcs}; i+=1)); do
+		$precmd_funcs[$i]
+	done
+}
+
+preexec () {
+	# run all of our preexec functions
+	# this is off by 1 because preexec_funcs is initalized with nothing
+	for ((i=1; i <= ${#preexec_funcs}; i+=1)); do
+		$preexec_funcs[$i] "$1"
+	done
+}
+
+# first Set any variables
+preexec_funcs=()
+precmd_funcs=(precmd_main)
+# then load the theme
+# check for theme, select our default if nothing's set
+[ ! -e "$BASE/themes/$THEME/$THEME" ] && THEME="default"
+source "$BASE/themes/$THEME/$THEME"
+
+# Load any one time modules
+for m in $EXTRA; do
+	[ ! -e "$BASE/modules/$m/$m" ] && echo "Cannot find module $m" && continue
+	source "$BASE/modules/$m/$m"
+done
+

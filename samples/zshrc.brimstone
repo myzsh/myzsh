@@ -18,7 +18,7 @@ RSECONDARY=(getdate)
 
 # This is the list of modules that get processed once at shell start.
 # They shouldn't generate output.
-EXTRA=(alwaysscreen localbin autoload brimstone cdtmp screen lesscolors lscolors ll)
+EXTRA=(alwaysscreen localbin autoload brimstone cdtmp screen lesscolors lscolors ll ssh-add)
 
 PR_PRIMARY='$PR_GREEN'
 
