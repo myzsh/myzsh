@@ -5,7 +5,7 @@ BASE="$HOME/.zsh"
 THEME="brimstone"
 
 # This is the list of modules that generate Left Primary output.
-LPRIMARY=(userhost pwd svn)
+LPRIMARY=(userhost pwd svn git jobs)
 
 # This is the list of modules that generate Left Secondary output.
 LSECONDARY=(gettime exitcode)
