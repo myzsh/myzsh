@@ -58,9 +58,9 @@ function theme_prompt {
 	PR_WIDTH="${LPOUTPUT}${RPOUTPUT}"
 	regexp-replace PR_WIDTH '%\{[^%]*?%\}' ''
 	PR_WIDTH="${(%)PR_WIDTH}"
+	# The 5 is the up/down corners on each side, plus a single hyphen on each side plus a newline
 	((PR_WIDTH=${COLUMNS} - ${#PR_WIDTH} - 5))
 
-	# The 5 is the up/down corners on each side, plus a single hyphen on each side plus a newline
 	PROMPT+=${(l.${PR_WIDTH}..q.)}
 	# combine the right with the left
 	PROMPT+="$PROMPT2
