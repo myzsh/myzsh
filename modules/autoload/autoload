@@ -2,5 +2,5 @@
 autoload -U compinit
 # autocompletion
 compinit
-# add an arrow-key drivin interface to autocompletion
-zstyle ':completion:*' menu select
+# add an arrow-key driven interface to autocompletion
+zstyle ':completion:*' menu select=1 _complete _ignored _approximate
