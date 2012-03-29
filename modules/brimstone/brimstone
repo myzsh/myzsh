@@ -6,3 +6,4 @@ setopt NO_BEEP
 setopt CORRECT # srsly, you want this spell correction
 
 setopt extended_glob
+alias grep='grep --color=auto'
