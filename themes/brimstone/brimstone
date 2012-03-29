@@ -54,12 +54,14 @@ function theme_prompt {
 	PROMPT2="$PR_SHIFT_OUT$RPOUTPUT$PR_SECONDARY$PR_SHIFT_IN$PR_HBAR$PR_URCORNER$PR_SHIFT_OUT"
 
 	# set the bar in the middle
-	WIDTH="$LPOUTPUT$RPOUTPUT"
 	# This might cause a problem if any modules return a %
-	regexp-replace WIDTH '%\{[^%]*?%\}' ''
+	PR_WIDTH="${LPOUTPUT}${RPOUTPUT}"
+	regexp-replace PR_WIDTH '%\{[^%]*?%\}' ''
+	PR_WIDTH="${(%)PR_WIDTH}"
+	((PR_WIDTH=${COLUMNS} - ${#PR_WIDTH} - 5))
 
 	# The 5 is the up/down corners on each side, plus a single hyphen on each side plus a newline
-	PROMPT+=${(l.((${COLUMNS} - ${#WIDTH} - 5))..q.)}
+	PROMPT+=${(l.${PR_WIDTH}..q.)}
 	# combine the right with the left
 	PROMPT+="$PROMPT2
 "

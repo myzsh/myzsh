@@ -1,1 +1,2 @@
-OUTPUT="${PWD/$HOME/~}"
+#OUTPUT="${PWD/$HOME/~}"
+OUTPUT='%~'
