@@ -1,1 +1,4 @@
-OUTPUT="$(date +%D)"
+date_func () {
+	date +%D
+}
+OUTPUT=date_func

@@ -1,1 +1,5 @@
-OUTPUT="$USER@$HOST"
+userhost () {
+	echo "$USER@$HOST"
+}
+
+OUTPUT=userhost

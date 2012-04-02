@@ -1,1 +1,5 @@
-OUTPUT="$(date +%T)"
+time_func () {
+	date +%T
+}
+
+OUTPUT=time_func

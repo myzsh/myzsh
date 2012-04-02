@@ -1,51 +1,20 @@
 # our precmd runs first, as it build up the PROMPT variable
 precmd_main () {
 	# Capture our exit code
-	exitcode=$?
+	local exitcode=$?
 	# Figure out our left primary output
-	LPOUTPUT=""
-	for m in $LPRIMARY; do
-		OUTPUT=""
-		[ ! -e "$BASE/modules/$m/$m" ] && echo "Cannot find module $m" && continue
-		source "$BASE/modules/$m/$m"
-		LPOUTPUT="$LPOUTPUT$(theme_lprimary "$OUTPUT")"
-	done
-	# Figure out our left secondary output
-	LSOUTPUT=""
-	for m in $LSECONDARY; do
-		OUTPUT=""
-		[ ! -e "$BASE/modules/$m/$m" ] && echo "Cannot find module $m" && continue
-		source "$BASE/modules/$m/$m"
-		LSOUTPUT="$LSOUTPUT$(theme_lsecondary "$OUTPUT")"
-	done
-	# Figure out our right primary output
-	RPOUTPUT=""
-	for m in $RPRIMARY; do
-		OUTPUT=""
-		[ ! -e "$BASE/modules/$m/$m" ] && echo "Cannot find module $m" && continue
-		source "$BASE/modules/$m/$m"
-		RPOUTPUT="$RPOUTPUT$(theme_rprimary "$OUTPUT")"
-	done
-	# Figure out our right secondary output
-	RSOUTPUT=""
-	for m in $RSECONDARY; do
-		OUTPUT=""
-		[ ! -e "$BASE/modules/$m/$m" ] && echo "Cannot find module $m" && continue
-		source "$BASE/modules/$m/$m"
-		RSOUTPUT="$RSOUTPUT$(theme_rsecondary "$OUTPUT")"
-	done
 	# Now that we have all of our variables set, let our theme compute it's prompt
 	theme_prompt
 }
 
-precmd () {
+function precmd {
 	# run all of our precmd functions setup for us
 	for ((i=0; i <= ${#precmd_funcs}; i+=1)); do
 		$precmd_funcs[$i]
 	done
 }
 
-preexec () {
+function preexec {
 	# run all of our preexec functions
 	# this is off by 1 because preexec_funcs is initalized with nothing
 	for ((i=1; i <= ${#preexec_funcs}; i+=1)); do
@@ -67,3 +36,34 @@ for m in $EXTRA; do
 	source "$BASE/modules/$m/$m"
 done
 
+
+lp_funcs=()
+for m in $LPRIMARY; do
+	[ ! -e "$BASE/modules/$m/$m" ] && echo "Cannot find module $m" && continue
+	source "$BASE/modules/$m/$m"
+	lp_funcs+=($OUTPUT)
+done
+# Figure out our left secondary output
+ls_funcs=()
+for m in $LSECONDARY; do
+	OUTPUT=""
+	[ ! -e "$BASE/modules/$m/$m" ] && echo "Cannot find module $m" && continue
+	source "$BASE/modules/$m/$m"
+	ls_funcs+=($OUTPUT)
+done
+# Figure out our right primary output
+rp_funcs=()
+for m in $RPRIMARY; do
+	OUTPUT=""
+	[ ! -e "$BASE/modules/$m/$m" ] && echo "Cannot find module $m" && continue
+	source "$BASE/modules/$m/$m"
+	rp_funcs+=($OUTPUT)
+done
+# Figure out our right secondary output
+rs_funcs=()
+for m in $RSECONDARY; do
+	OUTPUT=""
+	[ ! -e "$BASE/modules/$m/$m" ] && echo "Cannot find module $m" && continue
+	source "$BASE/modules/$m/$m"
+	rs_funcs+=($OUTPUT)
+done

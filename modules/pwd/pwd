@@ -1,2 +1,5 @@
-#OUTPUT="${PWD/$HOME/~}"
-OUTPUT='%~'
+pwd_func () {
+	echo "%~"
+}
+
+OUTPUT=pwd_func

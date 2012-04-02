@@ -1,1 +1,4 @@
-[ -d ".git" ] && OUTPUT=${$(git status --porcelain | awk '{print $1}' | sort | uniq -c | awk '{printf $2":"$1","}')%%,}
+git_func () {
+	[ -d ".git" ] && echo ${$(git status --porcelain | awk '{print $1}' | sort | uniq -c | awk '{printf $2":"$1","}')%%,}
+}
+OUTPUT=git_func

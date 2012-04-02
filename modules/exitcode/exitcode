@@ -1,1 +1,5 @@
-[ "$exitcode" != "0" ] && OUTPUT="$exitcode"
+exitcode_func () {
+	[ "$exitcode" != "0" ] && echo $exitcode
+}
+
+OUTPUT=exitcode_func

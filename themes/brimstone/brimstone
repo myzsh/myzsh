@@ -4,26 +4,7 @@ function theme_all {
 	[ -n "$1" ] && echo "$PR_SECONDARY($PR_PRIMARY$1$PR_SECONDARY)$PR_NO_COLOR"
 }
 
-function theme_lprimary {
-	theme_all "$1"
-}
-
-function theme_rprimary {
-	theme_all "$1"
-}
-
-function theme_lsecondary {
-	theme_all "$1"
-}
-
-function theme_rsecondary {
-	theme_all "$1"
-}
-
 function theme_prompt {
-
-	# enable regular expression replacement, needed for determining prompt width
-	autoload -U regexp-replace
 
 	case $TERM in
 		xterm*)
@@ -45,6 +26,27 @@ function theme_prompt {
 		echo -n "\x1bkzsh:${PWD/$HOME/~}\x1b\\"
 	fi
 
+	LPOUTPUT=""
+	for ((i=1; i <= ${#lp_funcs}; i+=1)); do
+		$lp_funcs[$i] | read OUTPUT
+		LPOUTPUT+=$(theme_all "$OUTPUT")
+	done
+	LSOUTPUT=""
+	for ((i=1; i <= ${#ls_funcs}; i+=1)); do
+		$ls_funcs[$i] | read OUTPUT
+		LSOUTPUT+=$(theme_all "$OUTPUT")
+	done
+	RPOUTPUT=""
+	for ((i=1; i <= ${#rp_funcs}; i+=1)); do
+		$rp_funcs[$i] | read OUTPUT
+		RPOUTPUT+=$(theme_all "$OUTPUT")
+	done
+	RSOUTPUT=""
+	for ((i=1; i <= ${#rs_funcs}; i+=1)); do
+		$rs_funcs[$i] | read OUTPUT
+		RSOUTPUT+=$(theme_all "$OUTPUT")
+	done
+
 	# start off prompt with a new line
 	PROMPT="$PR_SET_CHARSET$PR_STITLE$PR_TITLEBAR
 "
@@ -55,8 +57,8 @@ function theme_prompt {
 
 	# set the bar in the middle
 	# This might cause a problem if any modules return a %
-	PR_WIDTH="${LPOUTPUT}${RPOUTPUT}"
-	regexp-replace PR_WIDTH '%\{[^%]*?%\}' ''
+	PR_WIDTH=$(sed -e 's/%{[^%]*%}//g' <<< "${LPOUTPUT}${RPOUTPUT}")
+	#regexp-replace PR_WIDTH '%\{[^%]*?%\}' ''
 	PR_WIDTH="${(%)PR_WIDTH}"
 	# The 5 is the up/down corners on each side, plus a single hyphen on each side plus a newline
 	((PR_WIDTH=${COLUMNS} - ${#PR_WIDTH} - 5))

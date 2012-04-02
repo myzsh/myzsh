@@ -1,1 +1,5 @@
-[ -d ".svn" ] && OUTPUT=${$(svn status --depth files | awk '{print $1}' | sort | uniq -c | awk '{printf $2":"$1","}')%%,}
+svn_func () {
+	[ -d ".svn" ] && echo ${$(svn status --depth files | awk '{print $1}' | sort | uniq -c | awk '{printf $2":"$1","}')%%,}
+}
+
+OUTPUT=svn_func

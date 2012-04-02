@@ -1,1 +1,5 @@
-OUTPUT=${$(jobs | awk '/^\[/ {gsub("[\[\]]", "", $1); printf $1 ":" $4 ","}')%%,}
+jobs_func () {
+	echo ${$(jobs | awk '/^\[/ {gsub("[\[\]]", "", $1); printf $1 ":" $4 ","}')%%,}
+}
+
+OUTPUT=jobs_func
