@@ -1,5 +1,5 @@
 time_func () {
-	date +%T
+	echo "%D{%T}"
 }
 
 OUTPUT=time_func

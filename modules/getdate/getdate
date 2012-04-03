@@ -1,4 +1,4 @@
 date_func () {
-	date +%D
+	echo "%D{%D}"
 }
 OUTPUT=date_func
