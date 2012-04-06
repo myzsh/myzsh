@@ -1,22 +1,21 @@
 longcmd_before () {
 	LONGCMD_START=${(%):-%D{%s}}
-	LONGCMD_CMD=$1
+	LONGCMD_CMD="$1"
 }
 
 longcmd_after () {
 	# If we don't have a start time, bail
 	[ -z "$LONGCMD_START" ] && return
-	# If we have a known long running command, bail
-	[ "$LONGCMD_CMD" = "ssh" ] && return
-	[ "$LONGCMD_CMD" = "vi" ] && return
-	[ "$LONGCMD_CMD" = "vim" ] && return
 
 	# Figure out how long It took to run
-	LONGCMD_END=${(%):-%D{%s}}
+	local LONGCMD_END=${(%):-%D{%s}}
+	LONGCMD_SECS=$[ $LONGCMD_END - $LONGCMD_START ]
 	# If our delta is not very long, bail
-	[ $LONGCMD_START -gt $[ $LONGCMD_END - 30 ] ] && return
+	[ $LONGCMD_SECS -lt 30 ] && return
 	# Let the user know how long it took
-	echo "$LONGCMD_CMD: $[ $LONGCMD_END - $LONGCMD_START ] seconds"
+	echo "$LONGCMD_CMD: $LONGCMD_SECS seconds"
+	# unset our flag variable
+	unset LONGCMD_START
 }
 
 precmd_funcs+=(longcmd_after)
