@@ -9,4 +9,4 @@ setopt extended_glob
 
 alias grep='grep --color=auto'
 alias ssh="TERM=screen ssh"
-alias vi="echo No."
+alias vi="exit; echo "
