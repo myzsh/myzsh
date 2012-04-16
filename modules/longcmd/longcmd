@@ -10,12 +10,12 @@ longcmd_after () {
 	# Figure out how long It took to run
 	local LONGCMD_END=${(%):-%D{%s}}
 	LONGCMD_SECS=$[ $LONGCMD_END - $LONGCMD_START ]
+	# unset our flag variable
+	unset LONGCMD_START
 	# If our delta is not very long, bail
 	[ $LONGCMD_SECS -lt 30 ] && return
 	# Let the user know how long it took
 	echo "$LONGCMD_CMD: $LONGCMD_SECS seconds"
-	# unset our flag variable
-	unset LONGCMD_START
 }
 
 precmd_funcs+=(longcmd_after)
