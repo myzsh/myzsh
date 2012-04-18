@@ -1,10 +1,10 @@
 # inspired from http://aperiodic.net/phil/prompt/
 
-function theme_all {
+theme_all () {
 	[ -n "$1" ] && echo "$PR_SECONDARY($PR_PRIMARY$1$PR_SECONDARY)$PR_NO_COLOR"
 }
 
-function theme_prompt {
+theme_prompt () {
 	# local variables
 	local i;
 
