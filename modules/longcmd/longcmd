@@ -1,6 +1,30 @@
+################################################################################
+# Title    : longcmd
+#
+# Desc     : Run commands after a program finishs, if that program takes
+#            a long time
+#
+# Options  : LONGCMD_IGNORE   - array of programs to ignore (sleep vim ssh)
+#            LONGCMD_TIME     - time before a program is considered long (30)
+#
+# Defaults : LONGCMD_IGNORE=(sleep vim ssh)
+#            LONGCMD_TIME=30
+#
+################################################################################
 longcmd_before () {
-	LONGCMD_START=${(%):-%D{%s}}
+	# get our cmd
 	LONGCMD_CMD="$1"
+	# figure out just our actual command
+	LONGCMD_SHORT=$(sed -e 's/ .*$//' <<< $LONGCMD_CMD)
+	# if we don't have a list of cmds to ignore, set one
+	[ -z "$LONGCMD_IGNORE" ] && LONGCMD_IGNORE=(sleep vim ssh)
+	# loop loop loop
+	for f in $LONGCMD_IGNORE; do
+		# if we have a match, bail
+		[ "$LONGCMD_SHORT" = "$f" ] && return
+	done
+	# we don't match, set our start time
+	LONGCMD_START=${(%):-%D{%s}}
 }
 
 longcmd_after () {
@@ -12,8 +36,10 @@ longcmd_after () {
 	LONGCMD_SECS=$[ $LONGCMD_END - $LONGCMD_START ]
 	# unset our flag variable
 	unset LONGCMD_START
+
 	# If our delta is not very long, bail
-	[ $LONGCMD_SECS -lt 30 ] && return
+	[ $LONGCMD_SECS -lt ${LONGCMD_TIME:-30} ] && return
+
 	# Let the user know how long it took
 	echo "$LONGCMD_CMD: $LONGCMD_SECS seconds"
 }
