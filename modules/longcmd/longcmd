@@ -38,7 +38,7 @@ longcmd_after () {
 	unset LONGCMD_START
 
 	# If our delta is not very long, bail
-	[ $LONGCMD_SECS -lt ${LONGCMD_TIME:-30} ] && return
+	[ $LONGCMD_SECS -lt ${LONGCMD_TIME:-30} ] && unset LONGCMD_SECS && return
 
 	# Let the user know how long it took
 	echo "$LONGCMD_CMD: $LONGCMD_SECS seconds"
