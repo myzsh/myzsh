@@ -6,7 +6,7 @@ theme_all () {
 
 theme_prompt () {
 	# local variables
-	local i;
+	local i
 
 	case $TERM in
 		xterm*)
