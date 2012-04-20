@@ -1,0 +1,3 @@
+#tricks I've learned from @climagic on twitter
+sus(){ sort | uniq -c | sort $@; }  # Make a function to shorten this commonly used command line pattern & allow for options for final sort.
+
