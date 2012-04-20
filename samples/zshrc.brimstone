@@ -2,23 +2,37 @@
 BASE="$HOME/.zsh"
 
 # This is the theme.
-THEME="brimstone"
+THEME="redhat"
 
+# default module settings, something safe
 # This is the list of modules that generate Left Primary output.
-LPRIMARY=(userhost pwd svn git jobs)
+LPRIMARY=(pwd svn git jobs)
 
 # This is the list of modules that generate Left Secondary output.
 LSECONDARY=(gettime exitcode)
 
 # This is the list of modules that generate Right Primary output.
-RPRIMARY=(ifconfig)
+RPRIMARY=(ifconfig userhost)
 
 # This is the list of modules that generate Right Secondary output.
-RSECONDARY=(getdate)
+RSECONDARY=()
+if [ $THEME = "brimstone" ]; then
+	# This is the list of modules that generate Left Primary output.
+	LPRIMARY=(pwd svn git jobs)
+	
+	# This is the list of modules that generate Left Secondary output.
+	LSECONDARY=(gettime exitcode)
+
+	# This is the list of modules that generate Right Primary output.
+	RPRIMARY=(ifconfig userhost)
+
+	# This is the list of modules that generate Right Secondary output.
+	RSECONDARY=(getdate)
+fi
 
 # This is the list of modules that get processed once at shell start.
 # They shouldn't generate output.
-EXTRA=(alwaysscreen ssh-add localbin autoload brimstone cdtmp screen lesscolors lscolors ll debian coloncolon longcmd)
+EXTRA=(alwaysscreen ssh-add localbin autoload brimstone cdtmp screen lesscolors lscolors ll debian coloncolon longcmd climagic)
 
 PR_PRIMARY='$PR_GREEN'
 
