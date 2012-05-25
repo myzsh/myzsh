@@ -2,14 +2,14 @@
 BASE="$HOME/.zsh"
 
 # This is the theme.
-THEME="redhat"
+THEME="brimstone"
 
 # default module settings, something safe
 # This is the list of modules that generate Left Primary output.
-LPRIMARY=(pwd svn git jobs)
+LPRIMARY=(gettime)
 
 # This is the list of modules that generate Left Secondary output.
-LSECONDARY=(gettime exitcode)
+LSECONDARY=(pwd svn git jobs exitcode)
 
 # This is the list of modules that generate Right Primary output.
 RPRIMARY=(ifconfig userhost)
@@ -18,16 +18,19 @@ RPRIMARY=(ifconfig userhost)
 RSECONDARY=()
 if [ $THEME = "brimstone" ]; then
 	# This is the list of modules that generate Left Primary output.
-	LPRIMARY=(pwd svn git jobs)
+	LPRIMARY=(schroot pwd svn git jobs)
 	
 	# This is the list of modules that generate Left Secondary output.
 	LSECONDARY=(gettime exitcode)
 
 	# This is the list of modules that generate Right Primary output.
-	RPRIMARY=(ifconfig userhost)
+	RPRIMARY=(ifconfig)
 
 	# This is the list of modules that generate Right Secondary output.
 	RSECONDARY=(getdate)
+
+	# This is the title of the terminal
+	TITLE=(schroot pwd)
 fi
 
 # This is the list of modules that get processed once at shell start.
