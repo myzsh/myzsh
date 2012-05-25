@@ -22,32 +22,38 @@ theme_prompt () {
 			PR_TITLEBAR=''
 		;;
 	esac
-	###
-	# Decide whether to set a screen title
-	if [ -n "$STY" ]; then
-		echo -n "\x1bkzsh:${PWD/$HOME/~}\x1b\\"
-	fi
 
+	# figure out our parts
 	LPOUTPUT=""
 	for ((i=1; i <= ${#lp_funcs}; i+=1)); do
-		$lp_funcs[$i] | read OUTPUT
+		$lp_funcs[$i] | read -r OUTPUT
 		LPOUTPUT+=$(theme_all "$OUTPUT")
 	done
 	LSOUTPUT=""
 	for ((i=1; i <= ${#ls_funcs}; i+=1)); do
-		$ls_funcs[$i] | read OUTPUT
+		$ls_funcs[$i] | read -r OUTPUT
 		LSOUTPUT+=$(theme_all "$OUTPUT")
 	done
 	RPOUTPUT=""
 	for ((i=1; i <= ${#rp_funcs}; i+=1)); do
-		$rp_funcs[$i] | read OUTPUT
+		$rp_funcs[$i] | read -r OUTPUT
 		RPOUTPUT+=$(theme_all "$OUTPUT")
 	done
 	RSOUTPUT=""
 	for ((i=1; i <= ${#rs_funcs}; i+=1)); do
-		$rs_funcs[$i] | read OUTPUT
+		$rs_funcs[$i] | read -r OUTPUT
 		RSOUTPUT+=$(theme_all "$OUTPUT")
 	done
+	TITLEOUTPUT=""
+	for ((i=1; i <= ${#title_funcs}; i+=1)); do
+		$title_funcs[$i] | read -r OUTPUT
+		[ -n "$OUTPUT" ] && TITLEOUTPUT+="${OUTPUT}:"
+	done
+	###
+	# Decide whether to set a screen title
+	if [ -n "$STY" ]; then
+		echo -n "\x1bk${TITLEOUTPUT%:}\x1b\\"
+	fi
 
 	# start off prompt with a new line
 	PROMPT="$PR_SET_CHARSET$PR_STITLE$PR_TITLEBAR
