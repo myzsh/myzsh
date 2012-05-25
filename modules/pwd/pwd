@@ -1,5 +1,5 @@
 pwd_func () {
-	echo "%~"
+	echo "${PWD/$HOME/~}"
 }
 
 OUTPUT=pwd_func
