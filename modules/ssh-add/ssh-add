@@ -1,6 +1,6 @@
 SSH_HOME=$HOME/.ssh
 
-if [ -n "$SSH_AGENT_PID" ] && [[ `ssh-add -l` == "The agent has no identities." ]]; then
+if [ -n "$SSH_AGENT_PID" ] && [[ `ssh-add -l 2>/dev/null` == "The agent has no identities." ]]; then
   for x in `find $SSH_HOME`;
   do
     if [[ `file $x` =~ "PEM RSA private key" ]]; then
