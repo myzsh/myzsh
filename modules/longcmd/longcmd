@@ -24,7 +24,7 @@ longcmd_before () {
 		[ "$LONGCMD_SHORT" = "$f" ] && return
 	done
 	# we don't match, set our start time
-	LONGCMD_START=${(%):-%D{%s}}
+	LONGCMD_START=${(%):-%D\{%s\}}
 }
 
 longcmd_after () {
@@ -32,7 +32,7 @@ longcmd_after () {
 	[ -z "$LONGCMD_START" ] && return
 
 	# Figure out how long It took to run
-	local LONGCMD_END=${(%):-%D{%s}}
+	local LONGCMD_END=${(%):-%D\{%s\}}
 	LONGCMD_SECS=$[ $LONGCMD_END - $LONGCMD_START ]
 	# unset our flag variable
 	unset LONGCMD_START

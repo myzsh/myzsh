@@ -1,9 +1,12 @@
-# don't save history
+# don't save history to a file
 unset HISTFILE
+# save a lot in our terminal
+export HISTSIZE=1000
 
 setopt AUTO_CD
 setopt NO_BEEP
 setopt CORRECT # srsly, you want this spell correction
+setopt BRACE_CCL
 
 setopt extended_glob
 
