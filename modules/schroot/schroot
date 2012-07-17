@@ -1,0 +1,11 @@
+schroot_func () {
+	echo "$SCHROOT_CHROOT_NAME"
+}
+
+OUTPUT=schroot_func
+
+# dynamically build functions for our chroots
+for s in $(schroot -l 2>/dev/null); do
+	eval "@${s#*:}() { schroot -pc ${s#*:} -- \$@}"
+	eval "root@${s#*:}() { schroot -pc ${s#*:} -u root -- \$@}"
+done
