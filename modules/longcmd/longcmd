@@ -12,6 +12,7 @@
 #
 ################################################################################
 longcmd_before () {
+	local f
 	# get our cmd
 	LONGCMD_CMD="$1"
 	# figure out just our actual command
