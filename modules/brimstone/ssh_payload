@@ -85,18 +85,18 @@ if [ $(( ${#TITLE1} + ${#TITLE2} + 1 )) -gt 20 ]; then
 		autoload -U is-at-least
 		if is-at-least 4.3.11; then
 			# newer zsh
-			TITLE2="${TITLE2:$OFFSET:$length}"
+			TITLE2=" ${TITLE2:$OFFSET:$length}"
 		else
 			# old zsh
-			TITLE2=${TITLE2[$OFFSET,$length]}
+			TITLE2=" ${TITLE2[$OFFSET,$length]}"
 		fi
 	else
 		# any version bash
-		TITLE2="${TITLE2:$OFFSET:$length}"
+		TITLE2=" ${TITLE2:$OFFSET:$length}"
 	fi
 fi
 
-echo -ne "\x1bk$TITLE1 $TITLE2\x1b\\"
+echo -ne "\x1bk$TITLE1$TITLE2\x1b\\"
 
 sleep 2
 
