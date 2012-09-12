@@ -1,0 +1,103 @@
+#DOC getload: sets LOAD to the current load
+getload () {
+	if [ -e /proc/loadavg ]; then
+		LOADAVG=$(< /proc/loadavg)
+		echo LOAD="\"${LOADAVG%% *}\""
+	fi
+}
+
+#DOC getmem: sets MEMU, MEMF, MEMT, MEMUP to what you would think
+getmem () { # echo 
+	# Display memory
+	MEMU="$(free -m | awk '/buffers\/cache/ {print $3}')"
+	echo MEMU="\"$MEMU\""
+	MEMF="$(free -m | awk '/buffers\/cache/ {print $4}')"
+	echo MEMF="\"$MEMF\""
+	MEMT=$(( $MEMU + $MEMF ))
+	echo MEMT="\"$MEMT\""
+	echo MEMUP="\"$( bc -l <<< "$MEMU / $MEMT * 100" | awk -F. '{print $1}' )\""
+}
+
+#DOC getdisks: return information about mounted partitions
+getdisks () {
+	#Filesystem             Type  Size  Used Avail Use% Mounted on
+	#/dev/mapper/liani-root ext4  110G   56G   54G  52% /
+	#/dev/sda1              ext4  120M   29M   85M  26% /boot
+
+	df -TP -x devtmpfs -x tmpfs -x rootfs | sort | awk 'BEGIN { d = 0 }
+	/^[^F]/ {
+		d=d+1
+		print "DEV" d "=\"" $1 "\""
+		print "TYPE" d "=\"" $2 "\""
+		printf("SIZE" d "=\"%d\"\n", $3 / 1024)
+		printf("USED" d "=\"%d\"\n", $4 / 1024)
+		printf("USEDP" d "=\"%d\"\n", $6)
+		printf("FREE" d "=\"%d\"\n", $5 / 1024)
+		printf("FREEP" d "=\"%d\"\n", (100-$6))
+		print "MNT" d "=\"" $7 "\""
+	}
+	END {
+		print "DISKS=\"" d "\""
+	}'
+}
+
+HOST=$(hostname -s)
+cat /etc/motd 2>/dev/null
+NUMPROCS=$(grep -c "^processor" /proc/cpuinfo)
+OFFSET=-1
+while true; do
+
+# setup our title
+TITLE1="$HOST"
+TITLE2=""
+
+# get our load and show it if it's high
+eval $(getload)
+if [ ${LOAD%%.*} -gt "$NUMPROCS" ]; then
+	TITLE2="$TITLE2 $LOAD"
+fi
+
+# get our disks and show information about them if that's high
+eval $(getdisks)
+for ((d=1;d<$DISKS;d++)); do
+	eval "mnt=\"\$MNT$d\""
+	eval "usedp=\"\$USEDP$d\""
+
+	if [ $usedp -gt 50 ]; then
+		TITLE2="$TITLE2 $mnt:$usedp%"
+	fi
+done
+
+# compute length and scroll
+length=$(( ${#TITLE2} + 1 ))
+[ $length -gt 20 ] && length=20
+
+if [ $(( ${#TITLE1} + ${#TITLE2} + 1 )) -gt 20 ]; then
+	# figure out our offset
+	OFFSET=$(( $OFFSET + 1 ))
+	if [ $OFFSET -gt ${#TITLE2} ]; then
+		OFFSET=0
+	fi
+
+	TITLE2="$TITLE2$TITLE2"
+	# work around odd zsh version
+	if [ -n "$ZSH_VERSION" ]; then
+		autoload -U is-at-least
+		if is-at-least 4.3.11; then
+			# newer zsh
+			TITLE2="${TITLE2:$OFFSET:$length}"
+		else
+			# old zsh
+			TITLE2=${TITLE2[$OFFSET,$length]}
+		fi
+	else
+		# any version bash
+		TITLE2="${TITLE2:$OFFSET:$length}"
+	fi
+fi
+
+echo -ne "\x1bk$TITLE1 $TITLE2\x1b\\"
+
+sleep 2
+
+done &

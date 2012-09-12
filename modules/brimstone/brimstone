@@ -13,3 +13,14 @@ setopt extended_glob
 alias grep='grep --color=auto'
 alias ssh="TERM=screen ssh"
 alias vi="exit; echo "
+
+
+SSH_PAYLOAD="$(dirname "$0")/ssh_payload"
+function ssh(){
+	if [ "$#" != 1 ]; then
+		command ssh "$@"
+	else
+		command ssh -t "$1" "$(< $SSH_PAYLOAD)
+		exec \$SHELL"
+	fi
+}
