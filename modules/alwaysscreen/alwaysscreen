@@ -2,6 +2,7 @@ if [ -z "$STY" ]; then
 	key="^zz"
 	[ -n "$SSH_CLIENT" ] && key="^aa"
 	[ -n "$SSH_AUTH_SOCK" ] && screen -x main -X setenv SSH_AUTH_SOCK "$SSH_AUTH_SOCK"
+	[ -n "$DISPLAY" ] && screen -x main -X setenv DISPLAY "$DISPLAY"
 	screen -x main -e $key && exit || screen -wipe
 	screen -S main -e $key
 	exit
