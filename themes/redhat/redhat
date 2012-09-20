@@ -1,8 +1,4 @@
-theme_left () {
-	echo "$1"
-}
-
-theme_right () {
+theme_all () {
 	echo "$1"
 }
 
@@ -12,19 +8,19 @@ theme_prompt () {
 	LPOUTPUT=""
 	for ((i=1; i <= ${#lp_funcs}; i+=1)); do
 		$lp_funcs[$i] | read OUTPUT
-		LPOUTPUT+=$(theme_left "$OUTPUT")
+		[ -n "$OUTPUT" ] && LPOUTPUT+=$(theme_all "$OUTPUT")
 	done
 	LSOUTPUT=""
 	for ((i=1; i <= ${#ls_funcs}; i+=1)); do
 		$ls_funcs[$i] | read OUTPUT
-		LSOUTPUT+=$(theme_left "$OUTPUT")
+		[ -n "$OUTPUT" ] && LSOUTPUT+="$(theme_all "$OUTPUT"):"
 	done
 	RPOUTPUT=""
 	for ((i=1; i <= ${#rp_funcs}; i+=1)); do
 		$rp_funcs[$i] | read OUTPUT
-		RPOUTPUT+="$(theme_right "$OUTPUT") "
+		[ -n "$OUTPUT" ] && RPOUTPUT+="$(theme_all "$OUTPUT") "
 	done
 
-	PROMPT="[$LPOUTPUT $LSOUTPUT]%# "
+	PROMPT="[$LPOUTPUT ${LSOUTPUT%%:}]%# "
 	RPROMPT="[${RPOUTPUT%% }]"
 }
