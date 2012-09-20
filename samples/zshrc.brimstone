@@ -35,11 +35,10 @@ fi
 
 # This is the list of modules that get processed once at shell start.
 # They shouldn't generate output.
-EXTRA=(alwaysscreen ssh-add localbin autoload brimstone cdtmp screen lesscolors lscolors ll debian coloncolon longcmd climagic)
+EXTRA=(alwaysscreen ssh-add localbin autoload brimstone cdtmp screen lesscolors lscolors ll debian coloncolon longcmd climagic zsh-syntax-highlighting )
 
 PR_PRIMARY='$PR_GREEN'
 
 ################################################################################
 # This kicks off our processing now that we have variables
 source "$BASE/init"
-
