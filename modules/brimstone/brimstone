@@ -10,10 +10,16 @@ setopt BRACE_CCL
 
 setopt extended_glob
 
+# I liek colors
 alias grep='grep --color=auto'
+
+# not everything understands screen-256color
 alias ssh="TERM=screen ssh"
+
+# that'll teach me
 alias vi="exit"
 
+# neat 1, 2, .. 9 thing to cut the columns out of stdin
 param(){
 	ifs=
 	[ -n "$2" ] && ifs="-F\"$2"\"
@@ -24,3 +30,6 @@ local i
 for ((i=1;i<10;i++)); do
 	alias $i="param $i"
 done
+
+# let's learn to use xargs more
+alias xargs="xargs -I{}"
