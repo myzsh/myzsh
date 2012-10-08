@@ -1,41 +1,27 @@
 # This is the base of the new zsh directory
-BASE="$HOME/.zsh"
+BASE="$HOME/etc/zsh"
 
 # This is the theme.
 THEME="brimstone"
 
-# default module settings, something safe
 # This is the list of modules that generate Left Primary output.
-LPRIMARY=(gettime)
+LPRIMARY=(schroot pwd svn git jobs vimode)
 
 # This is the list of modules that generate Left Secondary output.
-LSECONDARY=(pwd svn git jobs exitcode)
+LSECONDARY=(gettime exitcode)
 
 # This is the list of modules that generate Right Primary output.
-RPRIMARY=(ifconfig userhost)
+RPRIMARY=(ifconfig)
 
 # This is the list of modules that generate Right Secondary output.
-RSECONDARY=()
-if [ $THEME = "brimstone" ]; then
-	# This is the list of modules that generate Left Primary output.
-	LPRIMARY=(schroot pwd svn git jobs vimode)
-	
-	# This is the list of modules that generate Left Secondary output.
-	LSECONDARY=(gettime exitcode)
+RSECONDARY=(getdate)
 
-	# This is the list of modules that generate Right Primary output.
-	RPRIMARY=(ifconfig)
-
-	# This is the list of modules that generate Right Secondary output.
-	RSECONDARY=(getdate)
-
-	# This is the title of the terminal
-	TITLE=(schroot pwd)
-fi
+# This is the title of the terminal
+TITLE=(schroot pwd)
 
 # This is the list of modules that get processed once at shell start.
 # They shouldn't generate output.
-EXTRA=(alwaysscreen ssh-add localbin autoload brimstone cdtmp screen lesscolors lscolors ll debian coloncolon longcmd climagic zsh-syntax-highlighting )
+EXTRA=(alwaysscreen ssh-add localbin autoload brimstone cdtmp screen lesscolors lscolors ll debian coloncolon longcmd climagic zsh-syntax-highlighting sshpayload)
 
 PR_PRIMARY='$PR_GREEN'
 
