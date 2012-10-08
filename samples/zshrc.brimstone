@@ -18,7 +18,7 @@ RPRIMARY=(ifconfig userhost)
 RSECONDARY=()
 if [ $THEME = "brimstone" ]; then
 	# This is the list of modules that generate Left Primary output.
-	LPRIMARY=(schroot pwd svn git jobs)
+	LPRIMARY=(schroot pwd svn git jobs vimode)
 	
 	# This is the list of modules that generate Left Secondary output.
 	LSECONDARY=(gettime exitcode)
