@@ -5,7 +5,7 @@ BASE="$HOME/etc/zsh"
 THEME="brimstone"
 
 # This is the list of modules that generate Left Primary output.
-LPRIMARY=(schroot pwd svn git jobs vimode)
+LPRIMARY=(schroot pwd svn git jobs)
 
 # This is the list of modules that generate Left Secondary output.
 LSECONDARY=(gettime exitcode)
