@@ -1,5 +1,5 @@
-userhost () {
+userhost_func () {
 	echo "$USER@$HOST"
 }
 
-OUTPUT=userhost
+OUTPUT=userhost_func
