@@ -1,0 +1,5 @@
+ip_func () {
+	echo "${$(ip addr show | awk '/^[0-9]/ {inf=$2;if(inf!="lo:"){printf inf}} /inet / {if (inf!= "lo:"){ printf $2 " "}}')%% }"
+}
+
+OUTPUT=ip_func
