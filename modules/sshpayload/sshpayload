@@ -3,7 +3,7 @@ function ssh(){
 	if [ "$#" != 1 ]; then
 		command ssh "$@"
 	else
-		command ssh -t "$1" "$(< $PAYLOAD)
+		command ssh -t "$1" "$(sed -E '/^$/d;s/[^{]#.*$//g;/^#/d' $PAYLOAD)
 		exec \$SHELL"
 	fi
 }
