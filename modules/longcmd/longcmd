@@ -15,6 +15,7 @@ longcmd_before () {
 	local f
 	# get our cmd
 	LONGCMD_CMD="$1"
+	[ -n "${LONGCMD_CMD#*\#}" ] && LONGCMD_CMD="${LONGCMD_CMD#*\#}"
 	# figure out just our actual command
 	LONGCMD_SHORT=$(sed -e 's/ .*$//' <<< $LONGCMD_CMD)
 	# if we don't have a list of cmds to ignore, set one
@@ -45,5 +46,7 @@ longcmd_after () {
 	echo "$LONGCMD_CMD: $LONGCMD_SECS seconds"
 }
 
+# Let the user put comments in interactive commands
+setopt interactivecomments
 precmd_funcs+=(longcmd_after)
 preexec_funcs+=(longcmd_before)
