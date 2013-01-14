@@ -1,0 +1,5 @@
+vim_func () {
+	[ "$(readlink -f $(which vim))" = "$(readlink -f /proc/$PPID/exe)" ] && echo "vim:$PPID"
+}
+
+OUTPUT=vim_func
