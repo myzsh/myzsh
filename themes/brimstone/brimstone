@@ -51,9 +51,7 @@ theme_prompt () {
 	done
 	###
 	# Decide whether to set a screen title
-	if [ -n "$STY" ]; then
-		echo -n "\x1bk${TITLEOUTPUT%:}\x1b\\"
-	fi
+	[ -n "$STY" -o -n "$TMUX" ] && printf "\x1bk${TITLEOUTPUT%:}\x1b\\"
 
 	# start off prompt with a new line
 	PROMPT="$PR_SET_CHARSET$PR_STITLE$PR_TITLEBAR
