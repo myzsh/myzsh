@@ -1,0 +1,9 @@
+# Sets the title in tmux for the current running command right before it runs
+# TODO add an alias or something so other things can hook preexec as well
+if [ -n "$TMUX" ]; then
+	preexec_screen () {
+		local CMD=${1[(wr)^(*=*|sudo|-*)]}
+		echo -ne "\ek$CMD\e\\"
+	}
+	preexec_funcs+=(preexec_screen)
+fi

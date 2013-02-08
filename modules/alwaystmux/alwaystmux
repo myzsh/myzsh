@@ -1,0 +1,11 @@
+if [ -z "$TMUX" ]; then
+	key="C-z"
+	[ -n "$SSH_CLIENT" ] && key="C-a"
+        tmux list-sessions
+        if [[ $? != 0 ]]; then
+          tmux new-session -d -s main
+        fi
+        tmux set-option -g prefix $key 
+        tmux bind-key C-z last-window 
+        tmux attach-session -t main && exit
+fi
