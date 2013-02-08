@@ -1,1 +1,2 @@
-[ "$PWD" = "$HOME" ] && cd /tmp
+#FU TMUX
+cd /tmp
