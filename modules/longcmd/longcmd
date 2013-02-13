@@ -42,8 +42,10 @@ longcmd_after () {
 	# If our delta is not very long, bail
 	[ $LONGCMD_SECS -lt ${LONGCMD_TIME:-30} ] && unset LONGCMD_SECS && return
 
+	LONGCMD_SECS=$(TZ=GMT date -d@$LONGCMD_SECS +%H:%M:%S)
+	LONGCMD_SECS=${LONGCMD_SECS##00:}
 	# Let the user know how long it took
-	echo "$LONGCMD_CMD: $LONGCMD_SECS seconds"
+	echo "$LONGCMD_CMD: $LONGCMD_SECS"
 }
 
 # Let the user put comments in interactive commands
