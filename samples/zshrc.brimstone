@@ -5,13 +5,13 @@ BASE="$HOME/etc/zsh"
 THEME="brimstone"
 
 # This is the list of modules that generate Left Primary output.
-LPRIMARY=(schroot pwd svn git jobs)
+LPRIMARY=(schroot pwd svn git jobs vim)
 
 # This is the list of modules that generate Left Secondary output.
 LSECONDARY=(gettime exitcode)
 
 # This is the list of modules that generate Right Primary output.
-RPRIMARY=(ifconfig)
+RPRIMARY=(ipaddr)
 
 # This is the list of modules that generate Right Secondary output.
 RSECONDARY=(getdate)
@@ -21,7 +21,7 @@ TITLE=(schroot pwd)
 
 # This is the list of modules that get processed once at shell start.
 # They shouldn't generate output.
-EXTRA=(alwaysscreen ssh-add localbin autoload brimstone cdtmp screen lesscolors lscolors ll debian coloncolon longcmd climagic zsh-syntax-highlighting sshpayload)
+EXTRA=(alwaystmux ssh-add localbin autoload brimstone cdtmp tmux lesscolors lscolors ll debian coloncolon longcmd climagic sshpayload)
 
 PR_PRIMARY='$PR_GREEN'
 
