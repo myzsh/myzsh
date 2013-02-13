@@ -14,7 +14,7 @@ setopt extended_glob
 alias grep='grep --color=auto'
 
 # not everything understands screen-256color
-alias ssh="TERM=screen ssh"
+#alias ssh="TERM=screen ssh"
 
 # that'll teach me
 alias vi="exit"
