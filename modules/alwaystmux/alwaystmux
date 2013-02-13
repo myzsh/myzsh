@@ -7,5 +7,6 @@ if [ -z "$TMUX" ]; then
         fi
         tmux set-option -g prefix $key 
         tmux bind-key C-z last-window 
+	[ $key = "C-a" ] && tmux bind-key a send-prefix
         tmux attach-session -t main && exit
 fi
