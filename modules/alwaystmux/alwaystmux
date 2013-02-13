@@ -1,12 +1,12 @@
 if [ -z "$TMUX" ]; then
-	key="C-z"
-	[ -n "$SSH_CLIENT" ] && key="C-a"
+	key="z"
+	[ -n "$SSH_CLIENT" ] && key="a"
         tmux list-sessions
         if [[ $? != 0 ]]; then
           tmux new-session -d -s main
         fi
-        tmux set-option -g prefix $key 
-        tmux bind-key C-z last-window 
-	[ $key = "C-a" ] && tmux bind-key a send-prefix
+        tmux set-option -g prefix C-$key 
+        tmux bind-key C-$key last-window 
+	tmux bind-key $key send-prefix
         tmux new-session -t main && exit
 fi
