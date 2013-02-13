@@ -84,3 +84,4 @@ done
 
 # our completion should be loaded by now so we can call this:
 compdef "_files -W \"$BASE/modules/\" -/" myzshedit
+compdef "_files -W \"$BASE/modules/\" -/" myzshreload
