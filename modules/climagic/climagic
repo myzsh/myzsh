@@ -5,3 +5,4 @@ h(){ nc -lp8080 -c'r=HTTP/1.0;f=`head -n1|cut -d\  -f2`;[ -f .$f ]&&echo "$r 200
 daysuntil(){ TZ=GMT date +"%j %H:%M:%S" -d "Jan 1 00:00:00 1970 GMT +$(( $(date -d "$2" +%s) - $(date -d "$1" +%s) ))sec"; }
 hostup(){ until ping -c 1 "$1" 2>&1 >/dev/null; do sleep 1; done; }
 hostdown(){ while ping -c 1 "$1" 2>&1 >/dev/null; do sleep 1; done; }
+waitfor(){ until $*; do printf "." 1>&2; sleep 2; done; }
