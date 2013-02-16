@@ -33,6 +33,15 @@ function myzshedit() {
 	$EDITOR "$BASE/modules/$1/$1"
 }
 
+# basic system detection
+islinux() {
+	[ $(uname) = "Linux" ]
+}
+
+isosx() {
+	[ $(uname) = "Darwin" ]
+}
+
 # first Set any variables
 preexec_funcs=()
 precmd_funcs=(precmd_main)
