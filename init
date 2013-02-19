@@ -49,6 +49,8 @@ precmd_funcs=(precmd_main)
 # check for theme, select our default if nothing's set
 [ ! -e "$BASE/themes/$THEME/$THEME" ] && THEME="default"
 source "$BASE/themes/$THEME/$THEME"
+# set other globals
+[ -z "$EDITOR" ] && export EDITOR=vim
 
 # Load any one time modules
 for m in $EXTRA; do
