@@ -23,13 +23,12 @@ function preexec {
 }
 
 function myzshreload() {
-	[ ! -e "$BASE/modules/$1/$1" ] && echo "Cannot find module $1" && continue
+	[ ! -e "$BASE/modules/$1/$1" ] && echo "Cannot find module $1" && return 1
 	source "$BASE/modules/$1/$1"
-	return $OUTPUT
 }
 
 function myzshedit() {
-	[ ! -e "$BASE/modules/$1/$1" ] && echo "Cannot find module $1" && continue
+	[ ! -e "$BASE/modules/$1/$1" ] && echo "Cannot find module $1" && return 1
 	$EDITOR "$BASE/modules/$1/$1"
 }
 
@@ -54,43 +53,40 @@ source "$BASE/themes/$THEME/$THEME"
 
 # Load any one time modules
 for m in $EXTRA; do
+	OUTPUT=""
 	myzshreload "$m"
 done
 
 
 lp_funcs=()
 for m in $LPRIMARY; do
-	myzshreload "$m"
-	lp_funcs+=($OUTPUT)
+	OUTPUT=""
+	myzshreload "$m" && lp_funcs+=($OUTPUT)
 done
 # Figure out our left secondary output
 ls_funcs=()
 for m in $LSECONDARY; do
 	OUTPUT=""
-	myzshreload "$m"
-	ls_funcs+=($OUTPUT)
+	myzshreload "$m" && ls_funcs+=($OUTPUT)
 done
 # Figure out our right primary output
 rp_funcs=()
 for m in $RPRIMARY; do
 	OUTPUT=""
-	myzshreload "$m"
-	rp_funcs+=($OUTPUT)
+	myzshreload "$m" && rp_funcs+=($OUTPUT)
 done
 # Figure out our right secondary output
 rs_funcs=()
 for m in $RSECONDARY; do
 	OUTPUT=""
-	myzshreload "$m"
-	rs_funcs+=($OUTPUT)
+	myzshreload "$m" && rs_funcs+=($OUTPUT)
 done
 
-# Figure out our right secondary output
+# Figure out our title output
 title_funcs=()
 for m in $TITLE; do
 	OUTPUT=""
-	myzshreload "$m"
-	title_funcs+=($OUTPUT)
+	myzshreload "$m" && title_funcs+=($OUTPUT)
 done
 
 # our completion should be loaded by now so we can call this:
