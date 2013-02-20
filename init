@@ -49,7 +49,7 @@ precmd_funcs=(precmd_main)
 [ ! -e "$BASE/themes/$THEME/$THEME" ] && THEME="default"
 source "$BASE/themes/$THEME/$THEME"
 # set other globals
-[ -z "$EDITOR" ] && export EDITOR=vim
+[ -z "$EDITOR" ] && export EDITOR=vim && bindkey -e
 
 # Load any one time modules
 for m in $EXTRA; do
