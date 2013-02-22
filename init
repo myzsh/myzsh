@@ -1,6 +1,15 @@
 # our precmd runs first, as it build up the PROMPT variable
 precmd_main () {
-	# Figure out our left primary output
+	###
+	# Decide whether to set a screen title
+	if [ -n "$STY" -o -n "$TMUX" ]; then
+		TITLEOUTPUT=""
+		for ((i=1; i <= ${#title_funcs}; i+=1)); do
+			$title_funcs[$i] | read -r OUTPUT
+			[ -n "$OUTPUT" ] && TITLEOUTPUT+="${OUTPUT}:"
+		done
+		printf "\x1bk${TITLEOUTPUT%:}\x1b\\"
+	fi
 	# Now that we have all of our variables set, let our theme compute it's prompt
 	theme_prompt
 }

@@ -1,0 +1,4 @@
+theme_prompt () {
+	PROMPT=""
+	RPROMPT=""
+}
