@@ -8,6 +8,7 @@ mytter_after () {
 # if we didn't load longcmd, load it now
 [ -z "$(whence longcmd_after)" ] && source "$BASE/modules/longcmd/longcmd"
 # see if longcmd_before is called
+local f
 for ((f=1;f<=${#precmd_funcs};f++)); do [ ${precmd_funcs[f]} = "longcmd_after" ] && precmd_funcs[$f]=(); done
 # put us on the end
 precmd_funcs+=(mytter_after)

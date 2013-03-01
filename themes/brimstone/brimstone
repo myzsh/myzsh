@@ -61,6 +61,10 @@ theme_prompt () {
 	# The 5 is the up/down corners on each side, plus a single hyphen on each side plus a newline
 	((PR_WIDTH=${COLUMNS} - ${#PR_WIDTH} - 5))
 
+	if [ $PR_WIDTH -lt 0 ]; then
+		PR_WIDTH=0
+	fi
+
 	PROMPT+=${(l.${PR_WIDTH}..q.)}
 	# combine the right with the left
 	PROMPT+="$PROMPT2

@@ -18,6 +18,7 @@ function precmd {
 	# Capture our exit code
 	local exitcode=$?
 	# run all of our precmd functions setup for us
+	local i
 	for ((i=1; i <= ${#precmd_funcs}; i+=1)); do
 		$precmd_funcs[$i]
 	done
@@ -26,6 +27,7 @@ function precmd {
 function preexec {
 	# run all of our preexec functions
 	# this is off by 1 because preexec_funcs is initalized with nothing
+	local i
 	for ((i=1; i <= ${#preexec_funcs}; i+=1)); do
 		$preexec_funcs[$i] "$1"
 	done
