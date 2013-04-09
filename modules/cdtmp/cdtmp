@@ -1,2 +1,14 @@
 #FU TMUX
-cd /tmp
+[ "$PWD" = "$HOME" ] && cd /tmp
+function cd () {
+	# if the user wants to go somewhere special, go there
+	if [ -n "$1" ]; then
+		builtin cd $*
+	# if we're currently in /tmp, go to $HOME
+	elif [ "$PWD" = "/tmp" ]; then
+		builtin cd "$HOME"
+	# else, go to /tmp
+	else
+		builtin cd /tmp
+	fi
+}
