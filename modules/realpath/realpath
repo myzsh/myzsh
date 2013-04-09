@@ -1,0 +1,42 @@
+# Copyright (C) 2013 Nathan Warner <nathan@frcv.net>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+# Description:
+#   Will echo full path of file.  Uses realpath if that is installed
+# 
+# History: 
+# 2013-03-20, nathan@frcv.net:
+#       v0.1: Can be called with command line arguments.
+#
+# Requires:
+#
+# Optional:
+#      realpath
+#
+# Usage:
+#   * path filename
+#   * path path/to/file
+#   * path filename1 filename2
+
+function path () {
+	if which realpath &> /dev/null; then
+		realpath $*
+	else
+		local arg
+		for arg in $*; do
+			[[ -a $arg ]] && echo $(cd $(dirname $arg); pwd)/$(basename $arg)
+		done
+	fi
+}
