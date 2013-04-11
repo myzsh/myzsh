@@ -1,6 +1,6 @@
 svn_func () {
 	printf "%s" "$(svn info 2>/dev/null| awk "/Repository Root:/ { sub(/^.*\//, \"\", \$0); printf \$0 \"@\"} /Revision:/ {print \$2 \" \"}")"
-	printf "%s" "$PR_RED${$(svn status 2>/dev/null| awk '/^ [C]/ {print $1}' | sort | uniq -c | awk '{printf $2":"$1","}')}$PR_PRIMARY"
+	printf "%s" "${$(svn status 2>/dev/null| awk '/^ [C]/ {print $1}' | sort | uniq -c | awk "{printf \"$PR_RED\"\$2\":\"\$1\",$PR_PRIMARY\"}")}"
 	printf "%s" "${$(svn status 2>/dev/null| awk '/^[DM?X]/ {print $1}' | sort | uniq -c | awk '{printf $2":"$1","}')%%,}"
 }
 
