@@ -1,5 +1,11 @@
-#FU TMUX
-[ "$PWD" = "$HOME" ] && cd /tmp
+# if we're inside tmux and this is a new window
+if [ -n "$TMUX" ] && [ "$(tmux list-panes | wc -l)" = 1 ]; then
+	cd /tmp
+else
+	# if this is a new window, or not a tmux enabled shell and we started in home, go to /tmp instead
+	[ "$PWD" = "$HOME" ] && cd /tmp
+fi
+
 function cd () {
 	# if the user wants to go somewhere special, go there
 	if [ -n "$1" ]; then
