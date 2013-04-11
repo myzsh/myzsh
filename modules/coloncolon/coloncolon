@@ -1,17 +1,39 @@
 # This function is awesome, but if anyone sees any problems with using colon, please let me know
+# Usage:
+# :: host
+#	Attempts to ssh to host, if host is found in the known_hosts file. This is commonly encrypted now so it doesn't work on modern systems
+# ::
+#	Reruns the previous command every second, only stopping when the previous command returns a successful exit code
+# :: ssh host
+#	Attempts to run "ssh host" every second, only stopping when "ssh host" returns a successful exit code
+# :: 30 mount /mnt/usb
+#	Attempts to mount /mnt/usb, delaying 30 seconds inbetween tries
 function :: ()
 {
-	local HOSTA=$(echo $1 | cut -d "@" -f 2)
-	if [ "$1" = "" ]; then
-		!::
-	elif [ -n "$(ssh-keygen -H -F "$HOSTA")" ]; then
+	if [ -z "$1" ]; then
+		cc_loop 1 $(fc -nl - -1)
+
+	elif [ -n "$(ssh-keygen -H -F "${1##*@}")" ]; then
 		ssh $*
-	elif [ -n "`which $1`" ]; then
-		echo "I'm gonna run $* until it exits cleanly"
+
+	elif [[ "$1" = <-> ]]; then
+		cc_loop $*
+	       
+	else
+		cc_loop 1 $*
+	fi
+}
+
+function cc_loop ()
+{
+	delay=$1
+	shift
+	if [ -n "$(which $1)" ]; then
+		echo "Running  $* evey $delay secs until it exits cleanly"
 		until $*; do
-			sleep 1
+			sleep $delay
 		done
 	else
-		echo "I don't know what to do with this."
+		echo "Invalid command: $*"
 	fi
 }
