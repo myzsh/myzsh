@@ -29,7 +29,7 @@ function cc_loop ()
 	delay=$1
 	shift
 	if [ -n "$(which $1)" ]; then
-		echo "Running  $* evey $delay secs until it exits cleanly"
+		echo "Running $* every $delay secs until it exits cleanly"
 		until $*; do
 			sleep $delay
 		done
