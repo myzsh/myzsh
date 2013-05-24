@@ -6,4 +6,18 @@ daysuntil(){ TZ=GMT date +"%j %H:%M:%S" -d "Jan 1 00:00:00 1970 GMT +$(( $(date 
 hostup(){ until ping -c 1 "$1" 2>&1 >/dev/null; do sleep 1; done; }
 hostdown(){ while ping -c 1 "$1" 2>&1 >/dev/null; do sleep 1; done; }
 waitfor(){ until $*; do printf "." 1>&2; sleep 2; done; }
-xml(){ local IFS=\>; while read -d \< E C; do [ "${E:0:1}" != "/" ] && echo "$E=$C"; done} # http://bit.ly/bSOg3K
+xml(){ local IFS=\>;while read -d \< E C;do [ "${E:0:1}" != "/" ]&&echo "$E=$C";done; } # http://bit.ly/bSOg3K
+iargs(){ a="$@";read -a b<<<"${a%%--*}";read -a c<<<"${a##*--}";inotifywait -m -q --format %w%f -r "${b[@]}"|xargs -I{} "${c[@]}"; }
+
+inotifyargs() {
+	d=$1;shift;
+	inotifywait -m -e modify -q --format %w%f -r $d | (
+		while true; do
+			c=$(date +%s)
+			while [ $(date +%s) -lt $[ $c + 5 ] ]; do
+				read -rt 1 a
+				[ -n "$a" ] && echo "$a"
+			done | sort | uniq
+		done
+	) | xargs -I{} "$@";
+}
