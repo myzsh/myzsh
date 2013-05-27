@@ -1,5 +1,5 @@
 pwd_func () {
-	[ "$PWD" = "$HOME" ] && echo "~" || echo "$PWD"
+	[ "${PWD:0:${#HOME}}" = "$HOME" ] && echo "~${PWD:${#HOME}}" || echo "$PWD"
 }
 
 OUTPUT=pwd_func
