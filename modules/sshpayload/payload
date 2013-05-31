@@ -45,7 +45,7 @@ HOST=$(hostname -s)
 cat /etc/motd 2>/dev/null
 NUMPROCS=$(grep -c "^processor" /proc/cpuinfo)
 OFFSET=-1
-while true; do
+while [ -e "$TTY" ]; do
 
 # setup our title
 TITLE1="$HOST"
