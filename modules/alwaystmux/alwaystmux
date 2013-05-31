@@ -5,8 +5,8 @@ if [ -z "$TMUX" ]; then
 		tmux kill-session -t $s
 	done
 	tmux has-session -t main || tmux new-session -d -s main
-        tmux set-option -g prefix C-$key 
-        tmux bind-key C-$key last-window 
+	tmux set-option -g prefix C-$key 
+	tmux bind-key C-$key last-window 
 	tmux bind-key $key send-prefix
-        tmux new-session -t main && exit
+	tmux new-session -t main && exit
 fi
