@@ -1,0 +1,41 @@
+# fix for systems that don't understand TERM=screen-256colors
+infocmp 2>/dev/null >/dev/null || TERM=screen
+
+# kick our hostname back up to our master screen/tmux session
+HOST=$(hostname)
+echo -ne "\x1bk$HOST\x1b\\"
+
+# change our home directory, this doesn't mess up other users who use this shared account
+export HOME=/export/home/blahty
+# create it if it doesn't exist
+[ ! -d "$HOME" ] && mkdir -p "$HOME"
+# copy over our $HOME from the rsync server running on ourself
+rsync --delete -a --partial $(awk '{print $1}' <<< "$SSH_CONNECTION")::home "$HOME/"
+# make sure we own all of it, incase we're sshing as root or something crazy >_>
+chown -R $USER: $HOME
+# clean up any stray svn files immedately. this allows us to keep our master $HOME svn controlled
+rm -rf "$HOME/etc/.svn/"
+
+# change our current directory. I know right?
+cd "$HOME"
+
+# setup for screen
+# use the system's screen if we have it, else hope we brought one over with us
+screen=$(which screen 2>/dev/null)
+[ -z "$screen" ] && screen="$HOME/bin/screen"
+
+# change our shell to zsh, either provided by the system or the one we brought over
+if which zsh 2>/dev/null >/dev/null; then
+	export SHELL=$(which zsh)
+else
+	[ -e $HOME/bin/zsh ] && export SHELL="$HOME/bin/zsh"
+fi
+
+# updated our ssh_auth_sock if we're already running screen
+[ -n "$SSH_AUTH_SOCK" ] && $screen -x main -X setenv SSH_AUTH_SOCK "$SSH_AUTH_SOCK"
+# updated our display if we're already running screen
+[ -n "$DISPLAY" ] && $screen -x main -X setenv DISPLAY "$DISPLAY"
+# start screen or clean up dead screens
+$screen -x main && exit || screen -wipe
+# really start screen
+$screen -S main && exit
