@@ -35,6 +35,7 @@ function preexec {
 
 function myzsh {
 	# TODO need other verbs
+	# TODO check to make sure $2 is sane
 	if [ "$1" = "edit" ]; then
 		[ ! -e "$BASE/modules/$2/$2" ] && echo "Cannot find module $2" && return 1
 		$EDITOR "$BASE/modules/$2/$2"
@@ -42,6 +43,25 @@ function myzsh {
 		[ ! -e "$BASE/modules/$2/$2" ] && echo "Cannot find module $2" && return 1
 		source "$BASE/modules/$2/$2"
 	fi
+}
+# This is just the tab completion stuff. I wonder if it can be merged into myzsh() ?
+function _myzsh {
+	local -a verbs
+	verbs=(
+		'list:List modules'
+		'edit:Edit a module'
+		'reload:Reload modules'
+	)
+	# words[2] is whatever is already typed into the command line after "myzsh "
+	case "$words[2]" in
+	edit)
+		_files -W "$BASE/modules/";;
+	reload)
+		_files -W "$BASE/modules/";;
+	*)
+		_describe -t commands 'myzsh commands' verbs -V1;;
+	esac
+	return 1
 }
 
 # basic system detection
@@ -101,6 +121,6 @@ for m in $TITLE; do
 	myzsh reload "$m" && title_funcs+=($OUTPUT)
 done
 
-# TODO need to update with something like http://stackoverflow.com/questions/1126500/programming-customized-tab-completion-for-zsh
-# our completion should be loaded by now so we can call this:
-compdef "_files -W \"$BASE/modules/\" -/" myzsh
+# TODO make sure our completion stuff is loaded so this works
+# our completion should be loaded by now so we can link our completion function to our management function
+compdef _myzsh myzsh
