@@ -80,7 +80,7 @@ function myzsh {
 					[ "$x" = "$m" ] && printf "E "
 				done
 			)"
-			printf "%${max}s: %-13s %s\n" "$m" "$enabled" "$(grep "#DESC" $m/info.md 2>/dev/null| sed -e 's/#DESC//')"
+			printf "%${max}s: %-13s %s\n" "$m" "$enabled" "$(awk '/^\#+summary/i {getline; print $0}' $m/info.md 2>/dev/null)"
 		done | sort;
 		)
 	elif [ "$1" = "info" ]; then
