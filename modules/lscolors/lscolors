@@ -1,4 +1,4 @@
-if isox; then
+if isosx; then
 	alias ls='ls -F -G'
 	export LSCOLORS=gxfxcxdxbxegedabagacad
 else
