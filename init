@@ -42,6 +42,20 @@ function myzsh {
 	elif [ "$1" = "reload" ]; then
 		[ ! -e "$BASE/modules/$2/$2" ] && echo "Cannot find module $2" && return 1
 		source "$BASE/modules/$2/$2"
+	elif [ "$1" = "update" ]; then
+		# Update via svn, if we can
+		if svn info $BASE 2>/dev/null >/dev/null; then
+			svn up $BASE
+		# TODO elif git something
+		fi
+	elif [ "$1" = "list" ]; then
+		pushd "$BASE/modules" >/dev/null
+		local m
+		for m in *; do
+			[ ! -f "$m/$m" ] && continue
+			printf "%s:	%s\n" "$m" "$(grep "#DESC" $m/info.md 2>/dev/null| sed -e 's/#DESC//')"
+		done
+		popd >/dev/null
 	fi
 }
 # This is just the tab completion stuff. I wonder if it can be merged into myzsh() ?
@@ -51,6 +65,7 @@ function _myzsh {
 		'list:List modules'
 		'edit:Edit a module'
 		'reload:Reload modules'
+		'update:Update myzsh base directory'
 	)
 	# words[2] is whatever is already typed into the command line after "myzsh "
 	case "$words[2]" in
