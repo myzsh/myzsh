@@ -1,6 +1,6 @@
 git_func () {
 	local ingit
-	git branch >/dev/null
+	git branch >/dev/null 2>/dev/null
 	ingit=$?
 	if [ "$ingit" = 0 ]; then
 		local gitstatus
