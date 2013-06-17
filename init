@@ -49,13 +49,24 @@ function myzsh {
 		# TODO elif git something
 		fi
 	elif [ "$1" = "list" ]; then
-		pushd "$BASE/modules" >/dev/null
+		(
+		# This is inside a code block so cd is ok
+		cd "$BASE/modules" >/dev/null
 		local m
+		# this is a hack to find the length of the longest module name
+		max=$(for m in *; do
+			[ ! -f "$m/$m" ] && continue
+			echo ${#m}
+		done | sort -n | tail -n 1);
+		# dump them to the screen
+		printf "%${max}s: %s %s\n" "Module" "Enabled" "Description"
 		for m in *; do
 			[ ! -f "$m/$m" ] && continue
-			printf "%s:	%s\n" "$m" "$(grep "#DESC" $m/info.md 2>/dev/null| sed -e 's/#DESC//')"
-		done
-		popd >/dev/null
+			printf "%${max}s: %s\n" "$m" "$(grep "#DESC" $m/info.md 2>/dev/null| sed -e 's/#DESC//')"
+		done | sort;
+		)
+	elif [ "$1" = "info" ]; then
+		less "$BASE/modules/$2/info.md"
 	fi
 }
 # This is just the tab completion stuff. I wonder if it can be merged into myzsh() ?
@@ -65,6 +76,7 @@ function _myzsh {
 		'list:List modules'
 		'edit:Edit a module'
 		'reload:Reload modules'
+		'info:Info about a module'
 		'update:Update myzsh base directory'
 	)
 	# words[2] is whatever is already typed into the command line after "myzsh "
@@ -72,6 +84,8 @@ function _myzsh {
 	edit)
 		_files -W "$BASE/modules/";;
 	reload)
+		_files -W "$BASE/modules/";;
+	info)
 		_files -W "$BASE/modules/";;
 	*)
 		_describe -t commands 'myzsh commands' verbs -V1;;
