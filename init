@@ -1,5 +1,5 @@
 # our precmd runs first, as it build up the PROMPT variable
-precmd_main () {
+function precmd_main {
 	###
 	# Decide whether to set a screen title
 	if [ -n "$STY" -o -n "$TMUX" ]; then
@@ -8,7 +8,7 @@ precmd_main () {
 			$title_funcs[$i] | read -r OUTPUT
 			[ -n "$OUTPUT" ] && TITLEOUTPUT+="${OUTPUT}:"
 		done
-		printf "\x1bk${TITLEOUTPUT%:}\x1b\\"
+		printf "\x1bk%s\x1b\\" "${TITLEOUTPUT%:}"
 	fi
 	# Now that we have all of our variables set, let our theme compute it's prompt
 	theme_prompt
@@ -33,22 +33,23 @@ function preexec {
 	done
 }
 
-function myzshreload() {
-	[ ! -e "$BASE/modules/$1/$1" ] && echo "Cannot find module $1" && return 1
-	source "$BASE/modules/$1/$1"
-}
-
-function myzshedit() {
-	[ ! -e "$BASE/modules/$1/$1" ] && echo "Cannot find module $1" && return 1
-	$EDITOR "$BASE/modules/$1/$1"
+function myzsh {
+	# TODO need other verbs
+	if [ "$1" = "edit" ]; then
+		[ ! -e "$BASE/modules/$2/$2" ] && echo "Cannot find module $2" && return 1
+		$EDITOR "$BASE/modules/$2/$2"
+	elif [ "$1" = "reload" ]; then
+		[ ! -e "$BASE/modules/$2/$2" ] && echo "Cannot find module $2" && return 1
+		source "$BASE/modules/$2/$2"
+	fi
 }
 
 # basic system detection
-islinux() {
+function islinux {
 	[ $(uname) = "Linux" ]
 }
 
-isosx() {
+function isosx {
 	[ $(uname) = "Darwin" ]
 }
 
@@ -65,41 +66,41 @@ source "$BASE/themes/$THEME/$THEME"
 # Load any one time modules
 for m in $EXTRA; do
 	OUTPUT=""
-	myzshreload "$m"
+	myzsh reload "$m"
 done
 
 
 lp_funcs=()
 for m in $LPRIMARY; do
 	OUTPUT=""
-	myzshreload "$m" && lp_funcs+=($OUTPUT)
+	myzsh reload "$m" && lp_funcs+=($OUTPUT)
 done
 # Figure out our left secondary output
 ls_funcs=()
 for m in $LSECONDARY; do
 	OUTPUT=""
-	myzshreload "$m" && ls_funcs+=($OUTPUT)
+	myzsh reload "$m" && ls_funcs+=($OUTPUT)
 done
 # Figure out our right primary output
 rp_funcs=()
 for m in $RPRIMARY; do
 	OUTPUT=""
-	myzshreload "$m" && rp_funcs+=($OUTPUT)
+	myzsh reload "$m" && rp_funcs+=($OUTPUT)
 done
 # Figure out our right secondary output
 rs_funcs=()
 for m in $RSECONDARY; do
 	OUTPUT=""
-	myzshreload "$m" && rs_funcs+=($OUTPUT)
+	myzsh reload "$m" && rs_funcs+=($OUTPUT)
 done
 
 # Figure out our title output
 title_funcs=()
 for m in $TITLE; do
 	OUTPUT=""
-	myzshreload "$m" && title_funcs+=($OUTPUT)
+	myzsh reload "$m" && title_funcs+=($OUTPUT)
 done
 
+# TODO need to update with something like http://stackoverflow.com/questions/1126500/programming-customized-tab-completion-for-zsh
 # our completion should be loaded by now so we can call this:
-compdef "_files -W \"$BASE/modules/\" -/" myzshedit
-compdef "_files -W \"$BASE/modules/\" -/" myzshreload
+compdef "_files -W \"$BASE/modules/\" -/" myzsh
