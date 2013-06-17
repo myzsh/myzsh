@@ -59,10 +59,28 @@ function myzsh {
 			echo ${#m}
 		done | sort -n | tail -n 1);
 		# dump them to the screen
-		printf "%${max}s: %s %s\n" "Module" "Enabled" "Description"
+		printf "%${max}s: %-13s %s\n" "Module" "Enabled" "Description"
 		for m in *; do
 			[ ! -f "$m/$m" ] && continue
-			printf "%${max}s: %s\n" "$m" "$(grep "#DESC" $m/info.md 2>/dev/null| sed -e 's/#DESC//')"
+			# figure out where our module is enabled, if at all
+			enabled="$(
+				for x in "${LPRIMARY[@]}"; do
+					[ "$x" = "$m" ] && printf "LP "
+				done
+				for x in "${LSECONDARY[@]}"; do
+					[ "$x" = "$m" ] && printf "LS "
+				done
+				for x in "${RPRIMARY[@]}"; do
+					[ "$x" = "$m" ] && printf "RP "
+				done
+				for x in "${RSECONDARY[@]}"; do
+					[ "$x" = "$m" ] && printf "RS "
+				done
+				for x in "${EXTRA[@]}"; do
+					[ "$x" = "$m" ] && printf "E "
+				done
+			)"
+			printf "%${max}s: %-13s %s\n" "$m" "$enabled" "$(grep "#DESC" $m/info.md 2>/dev/null| sed -e 's/#DESC//')"
 		done | sort;
 		)
 	elif [ "$1" = "info" ]; then
