@@ -1,1 +1,6 @@
-alias ls='ls -F --color=auto'
+if isox; then
+	alias ls='ls -F -G'
+	export LSCOLORS=gxfxcxdxbxegedabagacad
+else
+	alias ls='ls -F --color=auto'
+fi
