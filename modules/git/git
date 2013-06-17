@@ -1,4 +1,13 @@
 git_func () {
-	[ -d ".git" ] && echo ${$(git status --porcelain | awk '{print $1}' | sort | uniq -c | awk '{printf $2":"$1","}')%%,}
+	local ingit
+	git branch >/dev/null
+	ingit=$?
+	if [ "$ingit" = 0 ]; then
+		local gitstatus
+		gitstatus="${$(git status --porcelain | awk '{print $1}' | sort | uniq -c | awk '{printf $2":"$1","}')%%,}"
+		branch=$(git -c color.branch=no branch | awk '/^\*/ {print $2}')
+		stash=$() # TODO, maybe use some of lol's flags?
+		printf "%s %s" "$branch" "$gitstatus"
+	fi
 }
 OUTPUT=git_func
