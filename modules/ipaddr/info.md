@@ -1,8 +1,9 @@
-##Summary
+## Summary
 Shows current IPs on interfaces.
 
-##Requires
-nothing
+## Requires
+* ip or ifconfig
+* awk
 
-##Usage
+## Usage
 * Place in a prompt section of .zshrc
