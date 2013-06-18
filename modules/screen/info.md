@@ -1,8 +1,8 @@
 ##Summary
-Start and run inside a tmux session named main.
+Functions for running screen.
 
 ##Requires
-* tmux
+nothing
 
 ##Usage
 * Place in EXTRA section of .zshrc

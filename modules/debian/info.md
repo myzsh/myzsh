@@ -1,8 +1,8 @@
 ##Summary
-Start and run inside a tmux session named main.
+Debian specific functions
 
 ##Requires
-* tmux
+nothing
 
 ##Usage
 * Place in EXTRA section of .zshrc

@@ -1,8 +1,8 @@
 ##Summary
-Start and run inside a tmux session named main.
+Modifies longcmd to use mytter as well
 
 ##Requires
-* tmux
+nothing
 
 ##Usage
 * Place in EXTRA section of .zshrc

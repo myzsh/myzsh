@@ -1,8 +1,8 @@
 ##Summary
-Start and run inside a tmux session named main.
+Neat one-liners from twitter.com/climagic
 
 ##Requires
-* tmux
+nothing
 
 ##Usage
 * Place in EXTRA section of .zshrc

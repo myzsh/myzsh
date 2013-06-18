@@ -1,5 +1,5 @@
 ##Summary
-Shows the jobs running in the current terminal session, if any
+Shows the current date.
 
 ##Requires
 nothing

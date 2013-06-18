@@ -1,5 +1,5 @@
 ##Summary
-Shows the jobs running in the current terminal session, if any
+Shows current vim process if shell is spawned from a vim process.
 
 ##Requires
 nothing

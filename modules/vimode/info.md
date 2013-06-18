@@ -1,8 +1,8 @@
 ##Summary
-Start and run inside a tmux session named main.
+Switches keybindings from the default emacs to VI.
 
 ##Requires
-* tmux
+nothing
 
 ##Usage
 * Place in EXTRA section of .zshrc

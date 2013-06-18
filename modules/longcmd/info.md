@@ -1,8 +1,8 @@
 ##Summary
-Start and run inside a tmux session named main.
+Shows the time a command took, if it ran a long time.
 
 ##Requires
-* tmux
+nothing
 
 ##Usage
 * Place in EXTRA section of .zshrc

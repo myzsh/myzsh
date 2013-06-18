@@ -1,8 +1,8 @@
 ##Summary
-Start and run inside a tmux session named main.
+Modifies ls's -l command to show repo status as well
 
 ##Requires
-* tmux
+nothing
 
 ##Usage
 * Place in EXTRA section of .zshrc

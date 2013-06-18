@@ -1,8 +1,8 @@
 ##Summary
-Start and run inside a tmux session named main.
+Modifies longcmd to use libnotify instead
 
 ##Requires
-* tmux
+nothing
 
 ##Usage
 * Place in EXTRA section of .zshrc

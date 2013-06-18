@@ -1,8 +1,8 @@
 ##Summary
-Start and run inside a tmux session named main.
+Enables colors for the less pager
 
 ##Requires
-* tmux
+nothing
 
 ##Usage
 * Place in EXTRA section of .zshrc

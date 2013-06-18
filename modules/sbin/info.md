@@ -1,8 +1,8 @@
 ##Summary
-Start and run inside a tmux session named main.
+Adds conventional super user bin directories to your path
 
 ##Requires
-* tmux
+nothing
 
 ##Usage
 * Place in EXTRA section of .zshrc
