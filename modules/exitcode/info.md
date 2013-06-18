@@ -1,8 +1,8 @@
-##Summary
+## Summary
 Shows the exit code of the previous command.
 
-##Requires
+## Requires
 nothing
 
-##Usage
+## Usage
 * Place in a prompt section of .zshrc

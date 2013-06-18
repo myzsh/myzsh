@@ -1,8 +1,11 @@
-##Summary
+## Summary
 Shows the current time.
 
-##Requires
+## Requires
 nothing
 
-##Usage
+## Usage
 * Place in a prompt section of .zshrc
+
+## Description
+Prints the current time in the strftime format %H:%M:%S

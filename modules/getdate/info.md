@@ -1,8 +1,11 @@
-##Summary
+## Summary
 Shows the current date.
 
-##Requires
+## Requires
 nothing
 
-##Usage
+## Usage
 * Place in a prompt section of .zshrc
+
+## Description
+Prints the current date in the strftime format %m/%d/%y
