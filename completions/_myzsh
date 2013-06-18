@@ -1,0 +1,27 @@
+#compdef myzsh
+
+# This is just the tab completion stuff. I wonder if it can be merged into myzsh() ?
+_myzsh () {
+	local -a verbs
+	verbs=(
+		'list:List modules'
+		'edit:Edit a module'
+		'reload:Reload modules'
+		'info:Info about a module'
+		'update:Update myzsh base directory'
+	)
+	# words[2] is whatever is already typed into the command line after "myzsh "
+	case "$words[2]" in
+	edit)
+		_files -W "$BASE/modules/";;
+	reload)
+		_files -W "$BASE/modules/";;
+	info)
+		_files -W "$BASE/modules/";;
+	*)
+		_describe -t commands 'myzsh commands' verbs -V1;;
+	esac
+	return 1
+}
+
+_myzsh "$@"
