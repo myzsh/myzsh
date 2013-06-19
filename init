@@ -34,21 +34,26 @@ function preexec {
 }
 
 function myzsh {
-	# TODO need other verbs
-	# TODO check to make sure $2 is sane
-	if [ "$1" = "edit" ]; then
-		[ ! -e "$BASE/modules/$2/$2" ] && echo "Cannot find module $2" && return 1
-		$EDITOR "$BASE/modules/$2/$2"
-	elif [ "$1" = "reload" ]; then
-		[ ! -e "$BASE/modules/$2/$2" ] && echo "Cannot find module $2" && return 1
-		source "$BASE/modules/$2/$2"
-	elif [ "$1" = "update" ]; then
+	verb="$1"
+	mod="$2"
+
+	# edit a module
+	if [ "$verb" = "edit" ]; then
+		[ ! -e "$BASE/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
+		$EDITOR "$BASE/modules/$mod/$mod"
+	# reload a specific module's functions
+	elif [ "$verb" = "reload" ]; then
+		[ ! -e "$BASE/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
+		source "$BASE/modules/$mod/$mod"
+	# update all of myzsh
+	elif [ "$verb" = "update" ]; then
 		# Update via svn, if we can
 		if svn info $BASE 2>/dev/null >/dev/null; then
 			svn up $BASE
 		# TODO elif git something
 		fi
-	elif [ "$1" = "list" ]; then
+	# list info about all modules
+	elif [ "$verb" = "list" ]; then
 		(
 		# This is inside a code block so cd is ok
 		cd "$BASE/modules" >/dev/null
@@ -83,8 +88,10 @@ function myzsh {
 			printf "%${max}s: %-13s %s\n" "$m" "$enabled" "$(awk '/^\#+\ ?Summary/ {getline; print $0}' $m/info.md 2>/dev/null)"
 		done | sort;
 		)
-	elif [ "$1" = "info" ]; then
-		less "$BASE/modules/$2/info.md"
+	# get info about a module
+	elif [ "$verb" = "info" ]; then
+		[ ! -e "$BASE/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
+		less "$BASE/modules/$mod/info.md"
 	fi
 }
 
