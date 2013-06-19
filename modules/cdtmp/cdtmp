@@ -1,7 +1,7 @@
 #if no custom TMPDIR use /tmp
 [ -z "$TMPDIR" ] && TMPDIR="/tmp"
 # if our temp directory doesn't exist, we should try to make it
-[ ! -d "$TMPDIR" ] && mkdir "$TMPDIR" || echo "Couldn't create $TMPDIR." >&2
+[ ! -d "$TMPDIR" ] && ( mkdir "$TMPDIR" || echo "Couldn't create $TMPDIR." >&2 )
 
 # if we're inside tmux and this is a new window
 if [ -n "$TMUX" ] && [ "$(tmux list-panes | wc -l)" = 1 ]; then
