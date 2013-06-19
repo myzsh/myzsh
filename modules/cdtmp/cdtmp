@@ -1,9 +1,14 @@
+#if no custom TMPDIR use /tmp
+[ -z "$TMPDIR" ] && TMPDIR="/tmp"
+# if our temp directory doesn't exist, we should try to make it
+[ ! -d "$TMPDIR" ] && mkdir "$TMPDIR" || echo "Couldn't create $TMPDIR." >&2
+
 # if we're inside tmux and this is a new window
 if [ -n "$TMUX" ] && [ "$(tmux list-panes | wc -l)" = 1 ]; then
-	cd /tmp
+	cd "$TMPDIR"
 else
 	# if this is a new window, or not a tmux enabled shell and we started in home, go to /tmp instead
-	[ "$PWD" = "$HOME" ] && cd /tmp
+	[ "$PWD" = "$HOME" ] && cd "$TMPDIR"
 fi
 
 function cd () {
@@ -11,10 +16,10 @@ function cd () {
 	if [ -n "$1" ]; then
 		builtin cd $*
 	# if we're currently in /tmp, go to $HOME
-	elif [ "$PWD" = "/tmp" ]; then
+	elif [ "$PWD" = "$TMPDIR" ]; then
 		builtin cd "$HOME"
 	# else, go to /tmp
 	else
-		builtin cd /tmp
+	   builtin cd "$TMPDIR"
 	fi
 }
