@@ -7,6 +7,7 @@ theme_all () {
 theme_prompt () {
 	# local variables
 	local i
+	local OUTPUT
 
 	case $TERM in
 		xterm*)
@@ -117,3 +118,4 @@ PR_URCORNER=${altchar[k]:--}
 PR_PRIMARY=${(e)PR_PRIMARY}
 PR_SECONDARY=${(e)PR_SECONDARY}
 
+# vim: filetype=zsh
