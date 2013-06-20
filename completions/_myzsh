@@ -8,6 +8,7 @@ _myzsh () {
 		'edit:Edit a module'
 		'reload:Reload modules'
 		'info:Info about a module'
+		'test:Test about a module'
 		'update:Update myzsh base directory'
 	)
 	# words[2] is whatever is already typed into the command line after "myzsh "
@@ -17,6 +18,8 @@ _myzsh () {
 	reload)
 		_files -W "$BASE/modules/";;
 	info)
+		_files -W "$BASE/modules/";;
+	test)
 		_files -W "$BASE/modules/";;
 	*)
 		_describe -t commands 'myzsh commands' verbs -V1;;

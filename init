@@ -92,6 +92,31 @@ function myzsh {
 	elif [ "$verb" = "info" ]; then
 		[ ! -e "$BASE/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
 		less "$BASE/modules/$mod/info.md"
+	# test a module
+	# TODO needs plenty more work
+	elif [ "$verb" = "test" ]; then
+		[ ! -e "$BASE/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
+		# setup a sub shell so we don't mess up our main environment since this is a function
+		(
+		function getvars() {
+			set | sed '/^LINENO/d;/^ERRNO/d;/^-=/d'
+		}
+		SHELL=/dev/null
+		cd "$BASE/modules"
+		getvars > /tmp/set.before
+		source "$mod/$mod"
+		getvars > /tmp/set.after
+
+		diff -au /tmp/set.before /tmp/set.after
+		if [ -n "$OUTPUT" ]; then
+			getvars > /tmp/set.before
+			printf "OUTPUT:["
+			$OUTPUT
+			echo "]"
+			getvars > /tmp/set.after
+		fi
+		rm /tmp/set.before /tmp/set.after
+		)
 	fi
 }
 
@@ -155,4 +180,4 @@ done
 # TODO make sure our completion stuff is loaded so this works
 # our completion should be loaded by now so we can link our completion function to our management function
 compdef _myzsh myzsh
-# vim: tabstop=4 softtabstop=4 shiftwidth=4 noexpandtab
+# vim: filetype=zsh tabstop=4 softtabstop=4 shiftwidth=4 noexpandtab
