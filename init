@@ -107,13 +107,17 @@ function myzsh {
 		source "$mod/$mod"
 		getvars > /tmp/set.after
 
-		diff -au /tmp/set.before /tmp/set.after
+		echo "== Variables changed during init =="
+		diff -au /tmp/set.before /tmp/set.after | sed '/^ /d;/^@/d;/^+++/d;/^---/d'
 		if [ -n "$OUTPUT" ]; then
+			echo "== Errors while running output function =="
 			getvars > /tmp/set.before
-			printf "OUTPUT:["
-			$OUTPUT
-			echo "]"
+			$OUTPUT |read -r $out
 			getvars > /tmp/set.after
+			echo "== Variables changed after running output function =="
+			diff -au /tmp/set.before /tmp/set.after | sed '/^ /d;/^@/d;/^+++/d;/^---/d'
+			echo "== Output from output function =="
+			echo "[$out]"
 		fi
 		rm /tmp/set.before /tmp/set.after
 		)
