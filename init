@@ -186,7 +186,7 @@ done
 compdef _myzsh myzsh
 
 # alert the user if our shell doesn't look like zsh
-if [[ "$SHELL" =~ "/zsh" ]]; then
+if ! [[ "$SHELL" =~ "/zsh" ]]; then
 	echo "zsh may not be your shell."
 	echo "Run 'myzsh persistant' to set zsh as your shell."
 	echo
