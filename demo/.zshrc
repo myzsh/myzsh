@@ -1,0 +1,1 @@
+../samples/zshrc.default
