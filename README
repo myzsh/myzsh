@@ -1,6 +1,10 @@
 ## What is myzsh?
 This is the set of scripts I use for my zsh prompt.
 
+## Screenshots
+┌─(/tmp)────────────────────────────────────────────────(wlan0:10.42.0.xx/24)─┐
+└─(18:07:05)─                                                     ─(06/22/13)─┘
+
 ## Installation
 Installing is as easy as:
     git clone https://github.com/brimstone/zsh $HOME/.myzsh
