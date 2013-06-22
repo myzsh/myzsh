@@ -10,7 +10,7 @@ function precmd_main {
 		done
 		printf "\x1bk%s\x1b\\" "${TITLEOUTPUT%:}"
 	fi
-	# Now that we have all of our variables set, let our theme compute it's prompt
+	# Now that we have all of our variables set, let our theme compute its prompt
 	theme_prompt
 }
 
@@ -184,4 +184,17 @@ done
 # TODO make sure our completion stuff is loaded so this works
 # our completion should be loaded by now so we can link our completion function to our management function
 compdef _myzsh myzsh
+
+# alert the user if our shell doesn't look like zsh
+if [[ "$SHELL" =~ "/zsh" ]]; then
+	echo "zsh may not be your shell."
+	echo "Run 'myzsh persistant' to set zsh as your shell."
+	echo
+fi
+if [ ! -e "$HOME/.zshrc" ]; then
+	echo "You don't seem to have a .zshrc config file."
+	echo "Run 'myzsh save' to save a default .zshrc file."
+	echo
+fi
+
 # vim: filetype=zsh tabstop=4 softtabstop=4 shiftwidth=4 noexpandtab
