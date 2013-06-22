@@ -1,8 +1,8 @@
 This is the set of scripts I use for my zsh prompt.
 
 To install:
-* Check this out to somewhere like ~/.zsh
-* Copy a sample to ~/.zshrc and change the variables as needed.
+    git clone https://github.com/brimstone/zsh $HOME/.myzsh
+    ZDOTDIR=$HOME/.myzsh zsh -i
 
 Enabling a module is as easy as adding it to the array where you want it to show up. LPRIMARY is all of the modules that show show up on the top left prompt line. Some themes may not use the LSECONDARY and RSECONDARY, they should handle this gracefully.
 

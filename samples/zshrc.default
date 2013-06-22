@@ -1,5 +1,5 @@
 # This is the base of the new zsh directory
-BASE="$HOME/.zsh"
+BASE="$HOME/.myzsh"
 
 # Specify a tmp directory to use across all modules
 TMPDIR="/tmp"
