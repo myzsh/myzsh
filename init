@@ -129,6 +129,27 @@ function myzsh {
 		rm /tmp/set.before /tmp/set.after
 		)
 	;;
+	persistant)
+		# determine if we need to change our shell
+		if [ '$SHELL' =~ '/zsh' ]; then
+			echo "Shell seems to be zsh already."
+			return
+		fi
+		# let the user know what's up and change the shell to zsh
+		echo "Changing shell to be zsh. Enter your login password if prompted."
+		echo "Executing: chsh -s \$(which zsh)"
+		chsh -s $(which zsh)
+	;;
+	save)
+		if ![ -s "$HOME/.zshrc" ]; then
+			rm "$HOME/.zshrc" 2>/dev/null
+			echo "Copying the default config to your $HOME/.zshrc"
+			cp $MYZSH/samples/zshrc.default $HOME/.zshrc
+			return
+		fi
+		echo "This will update LPRIMARY and friends in $HOME/.zshrc"
+		# TODO the elaborate sed line to replace single lines
+	;;
 	*)
 		cat <<dog
 Usage: myzsh command
@@ -142,6 +163,8 @@ Commands:
   reload - Reloads the module and redefines any output functions it specifies
   update - Updates myzsh
   list - Lists all modules
+  save - Saves any changed variables to $HOME/.zshrc
+  persistant - Sets shell to zsh if it's not already
 
 Report bugs to brimstone@the.narro.ws
 myzsh homepage: <https://github.com/brimstone/zsh>
