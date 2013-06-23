@@ -6,7 +6,7 @@ libnotify_after () {
 
 
 # if we didn't load longcmd, load it now
-[ -z "$(whence longcmd_after)" ] && source "$BASE/modules/longcmd/longcmd"
+[ -z "$(whence longcmd_after)" ] && source "$MYZSH/modules/longcmd/longcmd"
 # see if longcmd_before is called
 for ((f=1;f<=${#precmd_funcs};f++)); do
 	[ ${precmd_funcs[f]} = "longcmd_after" ] && precmd_funcs[$f]=()

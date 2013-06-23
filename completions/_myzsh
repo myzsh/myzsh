@@ -14,13 +14,13 @@ _myzsh () {
 	# words[2] is whatever is already typed into the command line after "myzsh "
 	case "$words[2]" in
 	edit)
-		_files -W "$BASE/modules/";;
+		_files -W "$MYZSH/modules/";;
 	reload)
-		_files -W "$BASE/modules/";;
+		_files -W "$MYZSH/modules/";;
 	info)
-		_files -W "$BASE/modules/";;
+		_files -W "$MYZSH/modules/";;
 	test)
-		_files -W "$BASE/modules/";;
+		_files -W "$MYZSH/modules/";;
 	*)
 		_describe -t commands 'myzsh commands' verbs -V1;;
 	esac

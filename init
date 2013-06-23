@@ -39,24 +39,24 @@ function myzsh {
 
 	# edit a module
 	if [ "$verb" = "edit" ]; then
-		[ ! -e "$BASE/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
-		$EDITOR "$BASE/modules/$mod/$mod"
+		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
+		$EDITOR "$MYZSH/modules/$mod/$mod"
 	# reload a specific module's functions
 	elif [ "$verb" = "reload" ]; then
-		[ ! -e "$BASE/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
-		source "$BASE/modules/$mod/$mod"
+		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
+		source "$MYZSH/modules/$mod/$mod"
 	# update all of myzsh
 	elif [ "$verb" = "update" ]; then
 		# Update via svn, if we can
-		if svn info $BASE 2>/dev/null >/dev/null; then
-			svn up $BASE
+		if svn info $MYZSH 2>/dev/null >/dev/null; then
+			svn up $MYZSH
 		# TODO elif git something
 		fi
 	# list info about all modules
 	elif [ "$verb" = "list" ]; then
 		(
 		# This is inside a code block so cd is ok
-		cd "$BASE/modules" >/dev/null
+		cd "$MYZSH/modules" >/dev/null
 		local m
 		# this is a hack to find the length of the longest module name
 		max=$(for m in *; do
@@ -90,19 +90,19 @@ function myzsh {
 		)
 	# get info about a module
 	elif [ "$verb" = "info" ]; then
-		[ ! -e "$BASE/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
-		less "$BASE/modules/$mod/info.md"
+		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
+		less "$MYZSH/modules/$mod/info.md"
 	# test a module
 	# TODO needs plenty more work
 	elif [ "$verb" = "test" ]; then
-		[ ! -e "$BASE/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
+		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
 		# setup a sub shell so we don't mess up our main environment since this is a function
 		(
 		function getvars() {
 			set | sed '/^LINENO/d;/^ERRNO/d;/^-=/d'
 		}
 		SHELL=/dev/null
-		cd "$BASE/modules"
+		cd "$MYZSH/modules"
 		getvars > /tmp/set.before
 		source "$mod/$mod"
 		getvars > /tmp/set.after
@@ -138,8 +138,8 @@ preexec_funcs=()
 precmd_funcs=(precmd_main)
 # then load the theme
 # check for theme, select our default if nothing's set
-[ ! -e "$BASE/themes/$THEME/$THEME" ] && THEME="default"
-source "$BASE/themes/$THEME/$THEME"
+[ ! -e "$MYZSH/themes/$THEME/$THEME" ] && THEME="default"
+source "$MYZSH/themes/$THEME/$THEME"
 # set other globals
 [ -z "$EDITOR" ] && export EDITOR=vim && bindkey -e
 
