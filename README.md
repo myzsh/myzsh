@@ -16,7 +16,7 @@ One of many themes
 ## Installation
 First, clone git and enter a demo mode.
 ````bash
-git clone https://github.com/brimstone/zsh $HOME/.myzsh
+git clone https://github.com/brimstone/myzsh $HOME/.myzsh
 ZDOTDIR=$HOME/.myzsh/demo zsh -i
 ````
 If you don't like myzsh, just `rm -rf $HOME/.myzsh`
