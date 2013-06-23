@@ -14,10 +14,19 @@ First, clone git and enter a demo mode.
 git clone https://github.com/brimstone/zsh $HOME/.myzsh
 ZDOTDIR=$HOME/.myzsh/demo zsh -i
 ````
-
 If you don't like myzsh, just `rm -rf $HOME/.myzsh`
 
 If you do however, run `myzsh persistant` and `myzsh save` and you're good to go!
+
+If you think you know what you're doing and just want to jump right in, change your shell
+````bash
+chsh -s $(which zsh)
+````
+Copy in one of the sample configs
+````bash
+cp $HOME/.myzsh/samples/zshrc.brimstone $HOME/.zshrc
+````
+
 
 ## Configuring
 Enabling a module is as easy as adding it to the array where you want it to show up. LPRIMARY is all of the modules that show show up on the top left prompt line. Some themes may not use the LSECONDARY and RSECONDARY, they should handle this gracefully.
