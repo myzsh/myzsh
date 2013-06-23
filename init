@@ -37,23 +37,28 @@ function myzsh {
 	verb="$1"
 	mod="$2"
 
+	# figure out what to do
+	case "$verb" in
 	# edit a module
-	if [ "$verb" = "edit" ]; then
+	edit)
 		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
 		$EDITOR "$MYZSH/modules/$mod/$mod"
+	;;
 	# reload a specific module's functions
-	elif [ "$verb" = "reload" ]; then
+	reload)
 		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
 		source "$MYZSH/modules/$mod/$mod"
+	;;
 	# update all of myzsh
-	elif [ "$verb" = "update" ]; then
+	update)
 		# Update via svn, if we can
 		if svn info $MYZSH 2>/dev/null >/dev/null; then
 			svn up $MYZSH
 		# TODO elif git something
 		fi
+	;;
 	# list info about all modules
-	elif [ "$verb" = "list" ]; then
+	list)
 		(
 		# This is inside a code block so cd is ok
 		cd "$MYZSH/modules" >/dev/null
@@ -88,13 +93,15 @@ function myzsh {
 			printf "%${max}s: %-13s %s\n" "$m" "$enabled" "$(awk '/^\#+\ ?Summary/ {getline; print $0}' $m/info.md 2>/dev/null)"
 		done | sort;
 		)
+	;;
 	# get info about a module
-	elif [ "$verb" = "info" ]; then
+	info)
 		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
 		less "$MYZSH/modules/$mod/info.md"
 	# test a module
 	# TODO needs plenty more work
-	elif [ "$verb" = "test" ]; then
+	;;
+	test)
 		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
 		# setup a sub shell so we don't mess up our main environment since this is a function
 		(
@@ -121,7 +128,26 @@ function myzsh {
 		fi
 		rm /tmp/set.before /tmp/set.after
 		)
-	fi
+	;;
+	*)
+		cat <<dog
+Usage: myzsh command
+       myzsh edit|reload|info|list [module]
+
+Management functions for myzsh.
+
+Commands:
+  edit - Edits a module with the default editor
+  info - Displays information about a module
+  reload - Reloads the module and redefines any output functions it specifies
+  update - Updates myzsh
+  list - Lists all modules
+
+Report bugs to brimstone@the.narro.ws
+myzsh homepage: <https://github.com/brimstone/zsh>
+dog
+	;;
+	esac
 }
 
 # basic system detection
@@ -197,4 +223,4 @@ if [ ! -e "$HOME/.zshrc" ]; then
 	echo
 fi
 
-# vim: filetype=zsh tabstop=4 softtabstop=4 shiftwidth=4 noexpandtab
+# vim: filetype=zsh noexpandtab

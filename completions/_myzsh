@@ -3,14 +3,8 @@
 # This is just the tab completion stuff. I wonder if it can be merged into myzsh() ?
 _myzsh () {
 	local -a verbs
-	verbs=(
-		'list:List modules'
-		'edit:Edit a module'
-		'reload:Reload modules'
-		'info:Info about a module'
-		'test:Test about a module'
-		'update:Update myzsh base directory'
-	)
+	IFS=$'\n'
+	verbs=( $(myzsh | grep " - " | sed 's/^ *//;s/ - /:/' | sort) )
 	# words[2] is whatever is already typed into the command line after "myzsh "
 	case "$words[2]" in
 	edit)
