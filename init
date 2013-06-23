@@ -55,6 +55,11 @@ function myzsh {
 		if svn info $MYZSH 2>/dev/null >/dev/null; then
 			svn up $MYZSH
 		# TODO elif git something
+		elif [ -d "$MYZSH/.git" ]; then
+			(
+			cd "$MYZSH"
+			git pull
+			)
 		fi
 	;;
 	# list info about all modules
