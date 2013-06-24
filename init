@@ -146,7 +146,7 @@ function myzsh {
 		chsh -s $(which zsh)
 	;;
 	save)
-		if ![ -s "$HOME/.zshrc" ]; then
+		if [ ! -s "$HOME/.zshrc" ]; then
 			rm "$HOME/.zshrc" 2>/dev/null
 			echo "Copying the default config to your $HOME/.zshrc"
 			cp $MYZSH/samples/zshrc.default $HOME/.zshrc
