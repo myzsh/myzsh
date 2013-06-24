@@ -136,7 +136,7 @@ function myzsh {
 	;;
 	persistent)
 		# determine if we need to change our shell
-		if [ "$SHELL" =~ "/zsh" ]; then
+		if [[ "$SHELL" =~ "/zsh" ]]; then
 			echo "Shell seems to be zsh already."
 			return
 		fi
