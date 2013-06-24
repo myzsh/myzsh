@@ -21,7 +21,7 @@ ZDOTDIR=$HOME/.myzsh/demo zsh -i
 ````
 If you don't like myzsh, just `rm -rf $HOME/.myzsh`
 
-If you do however, run `myzsh persistant` and `myzsh save` and you're good to go!
+If you do however, run `myzsh persistent` and `myzsh save` and you're good to go!
 
 If you think you know what you're doing and just want to jump right in, change your shell
 ````bash
