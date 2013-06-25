@@ -39,15 +39,15 @@ function myzsh {
 
 	# figure out what to do
 	case "$verb" in
-	# edit a module
-	edit)
-		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
-		$EDITOR "$MYZSH/modules/$mod/$mod"
-	;;
 	# reload a specific module's functions
 	reload)
 		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
 		source "$MYZSH/modules/$mod/$mod"
+	;;
+	# edit a module
+	edit)
+		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
+		$EDITOR "$MYZSH/modules/$mod/$mod"
 	;;
 	# update all of myzsh
 	update)
