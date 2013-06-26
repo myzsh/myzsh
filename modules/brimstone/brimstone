@@ -31,3 +31,4 @@ unset i
 
 bindkey "^[f" vi-find-next-char
 bindkey "^[F" vi-find-prev-char
+# vim: filetype=zsh noexpandtab

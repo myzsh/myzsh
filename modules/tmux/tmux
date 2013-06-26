@@ -9,3 +9,4 @@ if [ -n "$TMUX" ]; then
 	length=$(tmux list-windows | sed -E 's/^([^ ]*:) /\1/g;s/ (\([0-9]+ panes\) )?\[[0-9]+x.*$//g;s/^(.{0,26}).*/\1/' | tr -d '\n' | wc -c)
 	tmux set -g -t main status-right-length $[ $COLUMNS - $length ] >/dev/null
 fi
+# vim: filetype=zsh noexpandtab

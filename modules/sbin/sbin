@@ -1,1 +1,2 @@
 export PATH=/sbin:/usr/sbin:$PATH
+# vim: filetype=zsh noexpandtab

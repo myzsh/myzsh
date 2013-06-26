@@ -13,3 +13,4 @@ zle -N zle-keymap-select
 set -o vi
 
 OUTPUT=vimode_func
+# vim: filetype=zsh noexpandtab

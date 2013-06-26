@@ -3,3 +3,4 @@ exitcode_func () {
 }
 
 OUTPUT=exitcode_func
+# vim: filetype=zsh noexpandtab

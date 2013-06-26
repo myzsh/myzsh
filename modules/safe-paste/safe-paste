@@ -55,3 +55,4 @@ function _zle_line_finish() {
 # there should probably be something to catch when zle is altered and shuffle the functions off somewhere else
 zle -N zle-line-init _zle_line_init
 zle -N zle-line-finish _zle_line_finish
+# vim: filetype=zsh noexpandtab

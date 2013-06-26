@@ -52,3 +52,4 @@ longcmd_after () {
 setopt interactivecomments
 precmd_funcs+=(longcmd_after)
 preexec_funcs+=(longcmd_before)
+# vim: filetype=zsh noexpandtab

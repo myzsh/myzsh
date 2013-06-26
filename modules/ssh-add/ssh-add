@@ -7,3 +7,4 @@ if [ -n "$SSH_AGENT_PID" ] && [ "$(ssh-add -l 2>/dev/null)" = "The agent has no 
 		fi
 	done
 fi
+# vim: filetype=zsh noexpandtab

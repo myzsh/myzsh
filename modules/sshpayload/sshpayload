@@ -7,3 +7,4 @@ function ssh(){
 		exec \$SHELL"
 	fi
 }
+# vim: filetype=zsh noexpandtab

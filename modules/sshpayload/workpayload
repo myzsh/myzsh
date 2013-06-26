@@ -39,3 +39,4 @@ fi
 $screen -x main && exit || screen -wipe
 # really start screen
 $screen -S main && exit
+# vim: filetype=zsh noexpandtab

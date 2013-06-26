@@ -14,3 +14,4 @@ done
 unset f
 # put us on the end
 precmd_funcs+=(libnotify_after)
+# vim: filetype=zsh noexpandtab

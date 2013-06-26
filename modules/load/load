@@ -6,3 +6,4 @@ load_func () {
 }
 
 OUTPUT=load_func
+# vim: filetype=zsh noexpandtab

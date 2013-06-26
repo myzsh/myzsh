@@ -12,3 +12,4 @@ local f
 for ((f=1;f<=${#precmd_funcs};f++)); do [ ${precmd_funcs[f]} = "longcmd_after" ] && precmd_funcs[$f]=(); done
 # put us on the end
 precmd_funcs+=(mytter_after)
+# vim: filetype=zsh noexpandtab

@@ -16,3 +16,4 @@ function ll {
 		# if it's executable at all, color it green
 	done
 }
+# vim: filetype=zsh noexpandtab

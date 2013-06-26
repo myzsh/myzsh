@@ -2,3 +2,4 @@ theme_prompt () {
 	PROMPT=""
 	RPROMPT=""
 }
+# vim: filetype=zsh noexpandtab

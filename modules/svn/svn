@@ -9,3 +9,4 @@ svn_func () {
 }
 
 OUTPUT=svn_func
+# vim: filetype=zsh noexpandtab

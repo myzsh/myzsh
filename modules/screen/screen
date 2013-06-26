@@ -7,3 +7,4 @@ if [ -n "$STY" ]; then
 	}
 	preexec_funcs+=(preexec_screen)
 fi
+# vim: filetype=zsh noexpandtab

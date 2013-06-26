@@ -4,3 +4,4 @@ if isosx; then
 else
 	alias ls='ls -F --color=auto'
 fi
+# vim: filetype=zsh noexpandtab

@@ -7,3 +7,4 @@ if [ -z "$STY" ]; then
 	screen -S main -e $key
 	exit
 fi
+# vim: filetype=zsh noexpandtab

@@ -3,3 +3,4 @@ jobs_func () {
 }
 
 OUTPUT=jobs_func
+# vim: filetype=zsh noexpandtab

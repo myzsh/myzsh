@@ -10,3 +10,4 @@ if [ -z "$TMUX" ]; then
 	tmux bind-key $key send-prefix
 	tmux new-session -t main && exit
 fi
+# vim: filetype=zsh noexpandtab

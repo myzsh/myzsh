@@ -2,3 +2,4 @@ date_func () {
 	echo "%D{%D}"
 }
 OUTPUT=date_func
+# vim: filetype=zsh noexpandtab

@@ -1,1 +1,2 @@
 export PATH=$PATH:~/bin
+# vim: filetype=zsh noexpandtab

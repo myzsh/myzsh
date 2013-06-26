@@ -24,3 +24,4 @@ theme_prompt () {
 	PROMPT="[$LPOUTPUT ${LSOUTPUT%%:}]%# "
 	RPROMPT="[${RPOUTPUT%% }]"
 }
+# vim: filetype=zsh noexpandtab

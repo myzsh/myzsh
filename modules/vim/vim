@@ -3,3 +3,4 @@ vim_func () {
 }
 
 OUTPUT=vim_func
+# vim: filetype=zsh noexpandtab

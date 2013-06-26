@@ -101,3 +101,4 @@ echo -ne "\x1bk$TITLE1$TITLE2\x1b\\"
 sleep 2
 
 done &
+# vim: filetype=zsh noexpandtab

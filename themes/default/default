@@ -18,3 +18,4 @@ theme_prompt () {
 
 	PROMPT="$LPOUTPUT:$LSOUTPUT%# "
 }
+# vim: filetype=zsh noexpandtab

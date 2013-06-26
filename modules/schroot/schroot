@@ -9,3 +9,4 @@ for s in $(schroot -l 2>/dev/null); do
 	eval "@${s#*:}() { schroot -pc ${s#*:} -- \$@}"
 	eval "root@${s#*:}() { schroot -pc ${s#*:} -u root -- \$@}"
 done
+# vim: filetype=zsh noexpandtab

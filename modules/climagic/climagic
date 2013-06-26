@@ -21,3 +21,4 @@ inotifyargs() {
 		done
 	) | xargs -I{} "$@";
 }
+# vim: filetype=zsh noexpandtab

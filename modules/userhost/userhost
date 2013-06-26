@@ -3,3 +3,4 @@ userhost_func () {
 }
 
 OUTPUT=userhost_func
+# vim: filetype=zsh noexpandtab

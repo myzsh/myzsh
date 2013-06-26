@@ -3,3 +3,4 @@ pwd_func () {
 }
 
 OUTPUT=pwd_func
+# vim: filetype=zsh noexpandtab

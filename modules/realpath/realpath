@@ -40,3 +40,4 @@ function path () {
 		done
 	fi
 }
+# vim: filetype=zsh noexpandtab

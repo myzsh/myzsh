@@ -3,3 +3,4 @@ time_func () {
 }
 
 OUTPUT=time_func
+# vim: filetype=zsh noexpandtab

@@ -37,3 +37,4 @@ function cc_loop ()
 		echo "Invalid command: $*"
 	fi
 }
+# vim: filetype=zsh noexpandtab
