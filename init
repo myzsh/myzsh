@@ -187,6 +187,9 @@ function isosx {
 	[ $(uname) = "Darwin" ]
 }
 
+[ -z "$MYZSH" ] && echo "\$MYZSH variable is undefined. This needs to be defined probably in $HOME/.zshrc"
+[ ! -d "$MYZSH" ] && echo "Directory refered to by \$MYZSH does not exist. You will probably not like the results."
+
 # first Set any variables
 preexec_funcs=()
 precmd_funcs=(precmd_main)
