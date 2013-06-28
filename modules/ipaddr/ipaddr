@@ -11,7 +11,7 @@ else
 
    	if isosx; then
 		ip_func () {
-			echo "${$($IFCONFIG | awk '/^[a-z]/ {if($1 !~ /(vmnet|utun|fw|p2p|gif|stf)/){inf=$1}} /inet /{if($2!="127.0.0.1"){printf inf $2 " "}}')%% }"
+			echo "${$($IFCONFIG | awk '/^[a-z]/ {if($1 !~ /(vmnet|utun|fw|p2p|gif|stf)/){inf=$1}} /inet /{if($2!="127.0.0.1"){printf inf $2 "/" substr($4,3,8) ""}}')%% }"
 		}
 	else
 		ip_func () {
