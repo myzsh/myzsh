@@ -4,24 +4,48 @@
 _myzsh () {
 	local -a verbs
 	IFS=$'\n'
-	verbs=( $(myzsh | grep " - " | sed 's/^ *//;s/ - /:/' | sort) )
 	# words[2] is whatever is already typed into the command line after "myzsh "
 	case "$words[2]" in
+	# FIXME figure out if we can remove the trailing slash on matched modules
 	edit)
-		_files -W "$MYZSH/modules/";;
+		_files -W "$MYZSH/modules/"
+		;;
 	reload)
-		_files -W "$MYZSH/modules/";;
+		_files -W "$MYZSH/modules/"
+		;;
 	info)
-		_files -W "$MYZSH/modules/";;
+		_files -W "$MYZSH/modules/"
+		;;
 	test)
-		_files -W "$MYZSH/modules/";;
+		_files -W "$MYZSH/modules/"
+		;;
 	disable)
-		# FIXME this could be done better, actually reading from the variables
-		_files -W "$MYZSH/modules/";;
+		# actually reading from the variables loaded to this environment
+		local -a modules
+		modules=( $( echo $LPRIMARY $LSECONDARY $RPRIMARY $RSECONDARY $EXTRA |tr ' ' '\n' | sort | uniq ) )
+		compadd $modules
+		;;
 	enable)
+		# if our location isn't exactly what we expect for a valid location
+		if [	"$words[3]" != "lprimary" \
+				-a "$words[3]" != "lsecondary" \
+				-a "$words[3]" != "rprimary" \
+				-a "$words[3]" != "rsecondary" \
+				-a "$words[3]" != "extra" ]; then
+			locations=( "lprimary:Left Primary (upper)"
+						"lsecondary:Left Secondary (lower)"
+						"rprimary:Right Primary (upper)"
+						"rsecondary:Right Secondary (lower)"
+						"extra:Loads, but produces no output"
+					)
+			_describe -t commands 'myzsh enable commands' locations -V1
+		else
+			_files -W "$MYZSH/modules/"
+		fi
+		;;
 		# FIXME this could be done better, fixing [LPRIMARY,LSECONDARY,...] files ...
-		_files -W "$MYZSH/modules/";;
 	*)
+		verbs=( $(myzsh | grep " - " | sed 's/^ *//;s/ - /:/' | sort) )
 		_describe -t commands 'myzsh commands' verbs -V1;;
 	esac
 	return 1

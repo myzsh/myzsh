@@ -175,10 +175,39 @@ function myzsh {
 		for f in {1..${#EXTRA[@]}};
 			[ "$EXTRA[$f]" = "$mod" ] && EXTRA[$f]=()
 		# theme needs to be rehashed now
-		myzsh_init
+		init_myzsh
 	;;
 	enable)
-		# TODO myzsh enable lprimary git svn pwd
+		# make sure our user is calling us properly
+		if [ $# -lt 2 ]; then
+			echo "Usage: myzsh enable [lprimary|lsecondary|rprimary|rsecondary|extra] [module],..."
+			return 1
+		fi
+		# save our location and shift it off the arguments stack
+		location="$1"
+		shift
+		case "$location" in
+			lprimary)
+				LPRIMARY+=($@)
+			;;
+			lsecondary)
+				LSECONDARY+=($@)
+			;;
+			rprimary)
+				RPRIMARY+=($@)
+			;;
+			rsecondary)
+				RSECONDARY+=($@)
+			;;
+			extra)
+				EXTRA+=($@)
+			;;
+			*)
+				echo "Location must be exactly one of lprimary, lsecondary, rprimary, rsecondary, or extra"
+				return 1
+			;;
+		esac
+		init_myzsh
 	;;
 	*)
 		cat <<dog
@@ -196,6 +225,7 @@ Commands:
   save - Saves any changed variables to $HOME/.zshrc
   persistent - Sets shell to zsh if it's not already
   disable - Removes a module from any and all prompt locations
+  enable - Adds a module to a prompt location
 
 Report bugs to brimstone@the.narro.ws
 myzsh homepage: <https://github.com/brimstone/zsh>
@@ -213,7 +243,7 @@ function isosx {
 	[ $(uname) = "Darwin" ]
 }
 
-function myzsh_init {
+function init_myzsh {
 	# first Set any variables
 	preexec_funcs=()
 	precmd_funcs=(precmd_main)
@@ -267,7 +297,7 @@ function myzsh_init {
 [ -z "$EDITOR" ] && export EDITOR=vim && bindkey -e
 
 # setup things
-myzsh_init
+init_myzsh
 
 # TODO make sure our completion stuff is loaded so this works
 # our completion should be loaded by now so we can link our completion function to our management function
