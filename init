@@ -36,7 +36,7 @@ function preexec {
 function myzsh {
 	verb="$1"
 	mod="$2"
-	shift
+	[ -n "$verb" ] && shift
 
 	# figure out what to do
 	case "$verb" in
@@ -161,6 +161,8 @@ function myzsh {
 		echo "$HOME/.zshrc has been updated"
 	;;
     disable)
+		# look for our module everywhere
+		# remove it if we find it
 		local f
 		for f in {1..${#LPRIMARY[@]}};
 			[ "$LPRIMARY[$f]" = "$mod" ] && LPRIMARY[$f]=()
@@ -173,6 +175,7 @@ function myzsh {
 		for f in {1..${#EXTRA[@]}};
 			[ "$EXTRA[$f]" = "$mod" ] && EXTRA[$f]=()
 		# theme needs to be rehashed now
+		myzsh_init
 	;;
 	enable)
 		# TODO myzsh enable lprimary git svn pwd
@@ -210,58 +213,61 @@ function isosx {
 	[ $(uname) = "Darwin" ]
 }
 
+function myzsh_init {
+	# first Set any variables
+	preexec_funcs=()
+	precmd_funcs=(precmd_main)
+	# then load the theme
+	# check for theme, select our default if nothing's set
+	[ ! -e "$MYZSH/themes/$THEME/$THEME" ] && THEME="default"
+	source "$MYZSH/themes/$THEME/$THEME"
+	
+	# TODO this needs to be a function
+	# Load any one time modules
+	for m in $EXTRA; do
+		OUTPUT=""
+		myzsh reload "$m"
+	done
+
+	lp_funcs=()
+	for m in $LPRIMARY; do
+		OUTPUT=""
+		myzsh reload "$m" && lp_funcs+=($OUTPUT)
+	done
+	# Figure out our left secondary output
+	ls_funcs=()
+	for m in $LSECONDARY; do
+		OUTPUT=""
+		myzsh reload "$m" && ls_funcs+=($OUTPUT)
+	done
+	# Figure out our right primary output
+	rp_funcs=()
+	for m in $RPRIMARY; do
+		OUTPUT=""
+		myzsh reload "$m" && rp_funcs+=($OUTPUT)
+	done
+	# Figure out our right secondary output
+	rs_funcs=()
+	for m in $RSECONDARY; do
+		OUTPUT=""
+		myzsh reload "$m" && rs_funcs+=($OUTPUT)
+	done
+
+	# Figure out our title output
+	title_funcs=()
+	for m in $TITLE; do
+		OUTPUT=""
+		myzsh reload "$m" && title_funcs+=($OUTPUT)
+	done
+}
+
 [ -z "$MYZSH" ] && echo "\$MYZSH variable is undefined. This needs to be defined probably in $HOME/.zshrc"
 [ ! -d "$MYZSH" ] && echo "Directory refered to by \$MYZSH does not exist. You will probably not like the results."
-
-# first Set any variables
-preexec_funcs=()
-precmd_funcs=(precmd_main)
-# then load the theme
-# check for theme, select our default if nothing's set
-[ ! -e "$MYZSH/themes/$THEME/$THEME" ] && THEME="default"
-source "$MYZSH/themes/$THEME/$THEME"
 # set other globals
 [ -z "$EDITOR" ] && export EDITOR=vim && bindkey -e
 
-# TODO this needs to be a function
-# Load any one time modules
-for m in $EXTRA; do
-	OUTPUT=""
-	myzsh reload "$m"
-done
-
-
-lp_funcs=()
-for m in $LPRIMARY; do
-	OUTPUT=""
-	myzsh reload "$m" && lp_funcs+=($OUTPUT)
-done
-# Figure out our left secondary output
-ls_funcs=()
-for m in $LSECONDARY; do
-	OUTPUT=""
-	myzsh reload "$m" && ls_funcs+=($OUTPUT)
-done
-# Figure out our right primary output
-rp_funcs=()
-for m in $RPRIMARY; do
-	OUTPUT=""
-	myzsh reload "$m" && rp_funcs+=($OUTPUT)
-done
-# Figure out our right secondary output
-rs_funcs=()
-for m in $RSECONDARY; do
-	OUTPUT=""
-	myzsh reload "$m" && rs_funcs+=($OUTPUT)
-done
-
-# Figure out our title output
-title_funcs=()
-for m in $TITLE; do
-	OUTPUT=""
-	myzsh reload "$m" && title_funcs+=($OUTPUT)
-done
-# TODO end
+# setup things
+myzsh_init
 
 # TODO make sure our completion stuff is loaded so this works
 # our completion should be loaded by now so we can link our completion function to our management function
