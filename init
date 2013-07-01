@@ -152,8 +152,26 @@ function myzsh {
 			cp $MYZSH/samples/zshrc.default $HOME/.zshrc
 			return
 		fi
-		echo "This will update LPRIMARY and friends in $HOME/.zshrc"
-		# TODO the elaborate sed line to replace single lines
+		sed -i "s/^LPRIMARY=[^)]*)\(.*\)/LPRIMARY=\(${LPRIMARY}\)\1/" $HOME/.zshrc
+		sed -i "s/^LSECONDARY=[^)]*)\(.*\)/LSECONDARY=\(${LSECONDARY}\)\1/" $HOME/.zshrc
+		sed -i "s/^RPRIMARY=[^)]*)\(.*\)/RPRIMARY=\(${RPRIMARY}\)\1/" $HOME/.zshrc
+		sed -i "s/^RSECONDARY=[^)]*)\(.*\)/RSECONDARY=\(${RSECONDARY}\)\1/" $HOME/.zshrc
+		sed -i "s/^EXTRA=[^)]*)\(.*\)/EXTRA=(${EXTRA})\1/" $HOME/.zshrc
+		echo "$HOME/.zshrc has been updated"
+	;;
+    disable)
+		local f
+		for f in {1..${#LPRIMARY[@]}};
+			[ "$LPRIMARY[$f]" = "$mod" ] && LPRIMARY[$f]=()
+		for f in {1..${#LSECONDARY[@]}};
+			[ "$LSECONDARY[$f]" = "$mod" ] && LSECONDARY[$f]=()
+		for f in {1..${#RPRIMARY[@]}};
+			[ "$RPRIMARY[$f]" = "$mod" ] && RPRIMARY[$f]=()
+		for f in {1..${#RSECONDARY[@]}};
+			[ "$RSECONDARY[$f]" = "$mod" ] && RSECONDARY[$f]=()
+		for f in {1..${#EXTRA[@]}};
+			[ "$EXTRA[$f]" = "$mod" ] && EXTRA[$f]=()
+		# theme needs to be rehashed now
 	;;
 	*)
 		cat <<dog
@@ -170,6 +188,7 @@ Commands:
   list - Lists all modules
   save - Saves any changed variables to $HOME/.zshrc
   persistent - Sets shell to zsh if it's not already
+  disable - Removes a module from any and all prompt locations
 
 Report bugs to brimstone@the.narro.ws
 myzsh homepage: <https://github.com/brimstone/zsh>
@@ -200,6 +219,7 @@ source "$MYZSH/themes/$THEME/$THEME"
 # set other globals
 [ -z "$EDITOR" ] && export EDITOR=vim && bindkey -e
 
+# TODO this needs to be a function
 # Load any one time modules
 for m in $EXTRA; do
 	OUTPUT=""
@@ -237,6 +257,7 @@ for m in $TITLE; do
 	OUTPUT=""
 	myzsh reload "$m" && title_funcs+=($OUTPUT)
 done
+# TODO end
 
 # TODO make sure our completion stuff is loaded so this works
 # our completion should be loaded by now so we can link our completion function to our management function
