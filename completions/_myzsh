@@ -15,6 +15,12 @@ _myzsh () {
 		_files -W "$MYZSH/modules/";;
 	test)
 		_files -W "$MYZSH/modules/";;
+	disable)
+		# FIXME this could be done better, actually reading from the variables
+		_files -W "$MYZSH/modules/";;
+	enable)
+		# FIXME this could be done better, fixing [LPRIMARY,LSECONDARY,...] files ...
+		_files -W "$MYZSH/modules/";;
 	*)
 		_describe -t commands 'myzsh commands' verbs -V1;;
 	esac
