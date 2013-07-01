@@ -36,6 +36,7 @@ function preexec {
 function myzsh {
 	verb="$1"
 	mod="$2"
+	shift
 
 	# figure out what to do
 	case "$verb" in
@@ -172,6 +173,9 @@ function myzsh {
 		for f in {1..${#EXTRA[@]}};
 			[ "$EXTRA[$f]" = "$mod" ] && EXTRA[$f]=()
 		# theme needs to be rehashed now
+	;;
+	enable)
+		# TODO myzsh enable lprimary git svn pwd
 	;;
 	*)
 		cat <<dog
