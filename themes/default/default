@@ -1,21 +1,121 @@
+# inspired from http://aperiodic.net/phil/prompt/
+
 theme_all () {
-	echo "$1"
+	[ -n "$1" ] && echo "$PR_SECONDARY($PR_PRIMARY$1$PR_SECONDARY)$PR_NO_COLOR"
 }
 
 theme_prompt () {
+	# local variables
 	local i
-	# %# is either # for root or % for not root
+	local OUTPUT
+
+	case $TERM in
+		xterm*)
+			PR_TITLEBAR=$'%{\e]0;%(!.-=*[ROOT]*=- | .)%n@%m:%~\a%}'
+		;;
+		rxvt*)
+			PR_TITLEBAR=$'%{\e]0;%(!.-=*[ROOT]*=- | .)%n@%m:%~\a%}'
+		;;
+		screen*)
+			PR_TITLEBAR=$'%{\e_screen \005 | %(!.-=[ROOT]=- | .)%n@%m:%~\e\\%}'
+		;;
+		*)
+			PR_TITLEBAR=''
+		;;
+	esac
+
+	# figure out our parts
 	LPOUTPUT=""
 	for ((i=1; i <= ${#lp_funcs}; i+=1)); do
-		$lp_funcs[$i] | read OUTPUT
+		$lp_funcs[$i] | read -r OUTPUT
 		LPOUTPUT+=$(theme_all "$OUTPUT")
 	done
 	LSOUTPUT=""
 	for ((i=1; i <= ${#ls_funcs}; i+=1)); do
-		$ls_funcs[$i] | read OUTPUT
+		$ls_funcs[$i] | read -r OUTPUT
 		LSOUTPUT+=$(theme_all "$OUTPUT")
 	done
+	RPOUTPUT=""
+	for ((i=1; i <= ${#rp_funcs}; i+=1)); do
+		$rp_funcs[$i] | read -r OUTPUT
+		RPOUTPUT+=$(theme_all "$OUTPUT")
+	done
+	RSOUTPUT=""
+	for ((i=1; i <= ${#rs_funcs}; i+=1)); do
+		$rs_funcs[$i] | read -r OUTPUT
+		RSOUTPUT+=$(theme_all "$OUTPUT")
+	done
 
-	PROMPT="$LPOUTPUT:$LSOUTPUT%# "
+	# start off prompt with a new line
+	PROMPT="$PR_SET_CHARSET$PR_STITLE$PR_TITLEBAR
+"
+	# set the top left line
+	PROMPT+="$PR_SECONDARY$PR_SHIFT_IN$PR_ULCORNER$PR_HBAR$PR_SHIFT_OUT$LPOUTPUT$PR_SECONDARY$PR_SHIFT_IN"
+	# set the top right line
+	PROMPT2="$PR_SHIFT_OUT$RPOUTPUT$PR_SECONDARY$PR_SHIFT_IN$PR_HBAR$PR_URCORNER$PR_SHIFT_OUT"
+
+	# set the bar in the middle
+	# This might cause a problem if any modules return a %
+	PR_WIDTH=$(sed -e 's/%{[^%]*%}//g' <<< "${LPOUTPUT}${RPOUTPUT}")
+	#regexp-replace PR_WIDTH '%\{[^%]*?%\}' ''
+	PR_WIDTH="${(%)PR_WIDTH}"
+	# The 5 is the up/down corners on each side, plus a single hyphen on each side plus a newline
+	((PR_WIDTH=${COLUMNS} - ${#PR_WIDTH} - 5))
+
+	if [ $PR_WIDTH -lt 0 ]; then
+		PR_WIDTH=0
+	fi
+
+	PROMPT+=${(l.${PR_WIDTH}..q.)}
+	# combine the right with the left
+	PROMPT+="$PROMPT2
+"
+	# set secondary line
+	PROMPT+="$PR_SECONDARY$PR_SHIFT_IN$PR_LLCORNER$PR_HBAR$PR_SHIFT_OUT$LSOUTPUT$PR_SECONDARY$PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT$PR_NO_COLOR "
+	RPROMPT="$PR_SECONDARY$PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT$RSOUTPUT$PR_SECONDARY$PR_SHIFT_IN$PR_HBAR$PR_LRCORNER$PR_SHIFT_OUT$PR_NO_COLOR"
+	PS2="$PR_SECONDARY$PR_SHIFT_IN$PR_HBAR$PR_HBAR$PR_SHIFT_OUT(\
+$PR_PRIMARY%_$PR_SECONDARY)$PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT\
+$PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT$PR_NO_COLOR "
 }
-# vim: filetype=zsh noexpandtab
+
+# make sure colors and terminal settings autoload
+autoload colors zsh/terminfo
+# if we don't have colors, RHEL
+if [ -z "$terminfo" ]; then
+	typeset -A terminfo
+	for k in colors acsc enacs smacs rmacs sgr0 bold; do
+		if (( ! $+terminfo[$k] )); then
+			terminfo[$k]=$(tput $k)
+		fi
+	done
+fi
+
+# if we can do colors, init colors
+[[ "$terminfo[colors]" -ge 8 ]] && colors
+
+# setup our color names, PR_GREEN, PR_LIGHT_BLUE, etc
+for color in RED GREEN YELLOW BLUE MAGENTA CYAN WHITE BLACK GREY; do
+	eval PR_$color='%{$terminfo[bold]$fg[${(L)color}]%}'
+	eval PR_LIGHT_$color='%{$fg[${(L)color}]%}'
+done
+PR_NO_COLOR="%{$terminfo[sgr0]%}"
+
+# Setup our fancy characters, if we can support them
+typeset -A altchar
+set -A altchar ${(s..)terminfo[acsc]}
+PR_SET_CHARSET="%{$terminfo[enacs]%}"
+PR_SHIFT_IN="%{$terminfo[smacs]%}"
+PR_SHIFT_OUT="%{$terminfo[rmacs]%}"
+PR_HBAR=${altchar[q]:--}
+PR_ULCORNER=${altchar[l]:--}
+PR_LLCORNER=${altchar[m]:--}
+PR_LRCORNER=${altchar[j]:--}
+PR_URCORNER=${altchar[k]:--}
+
+# Set our default colors and evaluate our primary colors
+[ -z "$PR_PRIMARY" ] && PR_PRIMARY="%{$terminfo[bold]\x1b[3$( cut -b 3 <<< $(( [#7] 16#$(hostname | md5sum | cut -b 1) + 1)) )m%}"
+[ -z "$PR_SECONDARY" ] && PR_SECONDARY='$PR_BLACK'
+PR_PRIMARY=${(e)PR_PRIMARY}
+PR_SECONDARY=${(e)PR_SECONDARY}
+
+# vim: filetype=zsh
