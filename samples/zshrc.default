@@ -24,7 +24,7 @@ TITLE=(pwd)
 
 # This is the list of modules that get processed once at shell start.
 # They shouldn't generate output.
-EXTRA=(alwaystmux ssh-add localbin autoload brimstone cdtmp tmux lesscolors lscolors ll debian coloncolon longcmd climagic sshpayload safe-paste)
+EXTRA=(ssh-add localbin autoload cdtmp lesscolors lscolors ll coloncolon longcmd safe-paste)
 
 PR_PRIMARY='$PR_GREEN'
 
