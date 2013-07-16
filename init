@@ -103,6 +103,7 @@ function myzsh {
 	# get info about a module
 	info)
 		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
+      [ ! -e "$MYZSH/modules/$mod/info.md" ] && echo "Info missing for module $mod" && return 1
 		less "$MYZSH/modules/$mod/info.md"
 	# test a module
 	# TODO needs plenty more work
