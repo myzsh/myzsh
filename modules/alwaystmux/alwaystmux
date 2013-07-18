@@ -1,13 +1,12 @@
 if [ -z "$TMUX" ]; then
-	key="z"
-	[ -n "$SSH_CLIENT" ] && key="a"
-	for s in $(tmux list-sessions | grep -v attached | awk '/^[0-9]/ {gsub(/:/, "", $1); print $1}'); do
-		tmux kill-session -t $s
-	done
+	[ -z "$LOCAL_TMUX_PREFIX" ] && LOCAL_TMUX_PREFIX="z"
+	[ -z "$REMOTE_TMUX_PREFIX" ] && REMOTE_TMUX_PREFIX="a"
+	key=$LOCAL_TMUX_PREFIX
+	[ -n "$SSH_CLIENT" ] && key=$REMOTE_TMUX_PREFIX
 	tmux has-session -t main || tmux new-session -d -s main
 	tmux set-option -g prefix C-$key 
 	tmux bind-key C-$key last-window 
-	tmux bind-key $key send-prefix
-	tmux new-session -t main && exit
+	tmux bind-key C-$key send-prefix
+	tmux new-session -t main \; set-option destroy-unattached && exit
 fi
 # vim: filetype=zsh noexpandtab
