@@ -18,6 +18,9 @@ function :: ()
 
 	elif [[ "$1" = <-> ]]; then
 		cc_loop $*
+
+	elif [[ "$1" = "::" ]]; then
+		echo "Invalid command: $*"
 	       
 	else
 		cc_loop 1 $*
