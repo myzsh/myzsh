@@ -1,6 +1,9 @@
 if [ -z "$STY" ]; then
-	key="^zz"
-	[ -n "$SSH_CLIENT" ] && key="^aa"
+	[ -z "$LOCAL_SCREEN_PREFIX" ] && LOCAL_SCREEN_PREFIX="z"
+	[ -z "$REMOTE_SCREEN_PREFIX" ] && REMOTE_SCREEN_PREFIX="a"
+	key="^$LOCAL_SCREEN_PREFIX$LOCAL_SCREEN_PREFIX"
+	[ -n "$SSH_CLIENT" ] && key="^$REMOTE_SCREEN_PREFIX$REMOTE_SCREEN_PREFIX"
+	
 	[ -n "$SSH_AUTH_SOCK" ] && screen -x main -X setenv SSH_AUTH_SOCK "$SSH_AUTH_SOCK"
 	[ -n "$DISPLAY" ] && screen -x main -X setenv DISPLAY "$DISPLAY"
 	screen -x main -e $key && exit || screen -wipe
