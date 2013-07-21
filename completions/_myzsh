@@ -43,6 +43,19 @@ _myzsh () {
 			_files -W "$MYZSH/modules/"
 		fi
 		;;
+	remote)
+		# if our location isn't exactly what we expect for a valid location
+		if [	"$words[3]" != "add" \
+				-a "$words[3]" != "remove" ]; then
+			locations=( "add:Add new configs from git repo"
+						"remove:Remove remote configs"
+					)
+			_describe -t commands 'myzsh remote commands' locations -V1
+		else
+			_files -W "$MYZSH/remotes/"
+		fi
+		;;
+
 		# FIXME this could be done better, fixing [LPRIMARY,LSECONDARY,...] files ...
 	*)
 		verbs=( $(myzsh | grep " - " | sed 's/^ *//;s/ - /:/' | sort) )
