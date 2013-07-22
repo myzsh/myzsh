@@ -42,13 +42,13 @@ function myzsh {
 	case "$verb" in
 	# reload a specific module's functions
 	reload)
-		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
-		source "$MYZSH/modules/$mod/$mod"
+		[ ! -e $MYZSH/**/modules/$mod/$mod ] && echo "Cannot find module $mod" && return 1
+		source $MYZSH/**/modules/$mod/$mod
 	;;
 	# edit a module
 	edit)
-		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
-		$EDITOR "$MYZSH/modules/$mod/$mod"
+		[ ! -e $MYZSH/**/modules/$mod/$mod ] && echo "Cannot find module $mod" && return 1
+		$EDITOR $MYZSH/**/modules/$mod/$mod
 	;;
 	# update all of myzsh
 	update)
@@ -105,21 +105,21 @@ function myzsh {
 	;;
 	# get info about a module
 	info)
-		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
-      [ ! -e "$MYZSH/modules/$mod/info.md" ] && echo "Info missing for module $mod" && return 1
-		less "$MYZSH/modules/$mod/info.md"
+		[ ! -e $MYZSH/**/modules/$mod/$mod ] && echo "Cannot find module $mod" && return 1
+      [ ! -e $MYZSH/**/modules/$mod/info.md ] && echo "Info missing for module $mod" && return 1
+		less "$MYZSH/**/modules/$mod/info.md"
 	# test a module
 	# TODO needs plenty more work
 	;;
 	test)
-		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
+		[ ! -e $MYZSH/**/modules/$mod/$mod ] && echo "Cannot find module $mod" && return 1
 		# setup a sub shell so we don't mess up our main environment since this is a function
 		(
 		function getvars() {
 			set | sed '/^LINENO/d;/^ERRNO/d;/^-=/d'
 		}
 		SHELL=/dev/null
-		cd "$MYZSH/modules"
+		cd "$MYZSH/modules" # TODO
 		getvars > /tmp/set.before
 		source "$mod/$mod"
 		getvars > /tmp/set.after
@@ -290,8 +290,8 @@ function init_myzsh {
 	precmd_funcs=(precmd_main)
 	# then load the theme
 	# check for theme, select our default if nothing's set
-	[ ! -e "$MYZSH/themes/$THEME/$THEME" ] && THEME="default"
-	source "$MYZSH/themes/$THEME/$THEME"
+	[ ! -e $MYZSH/**/themes/$THEME/$THEME ] && THEME="default"
+	source $MYZSH/**/themes/$THEME/$THEME
 	
 	# TODO this needs to be a function
 	# Load any one time modules
