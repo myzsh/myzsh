@@ -22,7 +22,7 @@ _myzsh () {
 	disable)
 		# actually reading from the variables loaded to this environment
 		local -a modules
-		modules=( $( echo $LPRIMARY $LSECONDARY $RPRIMARY $RSECONDARY $EXTRA |tr ' ' '\n' | sort | uniq ) )
+		modules=( $( echo $LPRIMARY $LSECONDARY $RPRIMARY $RSECONDARY $EXTRA $TITLE |tr ' ' '\n' | sort | uniq ) )
 		compadd $modules
 		;;
 	enable)
@@ -36,6 +36,7 @@ _myzsh () {
 						"lsecondary:Left Secondary (lower)"
 						"rprimary:Right Primary (upper)"
 						"rsecondary:Right Secondary (lower)"
+						"title:title of the screen or tmux window"
 						"extra:Loads, but produces no output"
 					)
 			_describe -t commands 'myzsh enable commands' locations -V1

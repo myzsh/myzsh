@@ -92,6 +92,9 @@ function myzsh {
 				for x in "${RSECONDARY[@]}"; do
 					[ "$x" = "$m" ] && printf "RS "
 				done
+				for x in "${TITLE[@]}"; do
+					[ "$x" = "$m" ] && printf "T "
+				done
 				for x in "${EXTRA[@]}"; do
 					[ "$x" = "$m" ] && printf "E "
 				done
@@ -158,6 +161,7 @@ function myzsh {
 		sed -i "s/^LSECONDARY=[^)]*)\(.*\)/LSECONDARY=\(${LSECONDARY}\)\1/" $HOME/.zshrc
 		sed -i "s/^RPRIMARY=[^)]*)\(.*\)/RPRIMARY=\(${RPRIMARY}\)\1/" $HOME/.zshrc
 		sed -i "s/^RSECONDARY=[^)]*)\(.*\)/RSECONDARY=\(${RSECONDARY}\)\1/" $HOME/.zshrc
+		sed -i "s/^TITLE=[^)]*)\(.*\)/TITLE=(${TITLE})\1/" $HOME/.zshrc
 		sed -i "s/^EXTRA=[^)]*)\(.*\)/EXTRA=(${EXTRA})\1/" $HOME/.zshrc
 		echo "$HOME/.zshrc has been updated"
 	;;
@@ -173,6 +177,8 @@ function myzsh {
 			[ "$RPRIMARY[$f]" = "$mod" ] && RPRIMARY[$f]=()
 		for f in {1..${#RSECONDARY[@]}};
 			[ "$RSECONDARY[$f]" = "$mod" ] && RSECONDARY[$f]=()
+		for f in {1..${#TITLE[@]}};
+			[ "$TITLE[$f]" = "$mod" ] && TITLE[$f]=()
 		for f in {1..${#EXTRA[@]}};
 			[ "$EXTRA[$f]" = "$mod" ] && EXTRA[$f]=()
 		# theme needs to be rehashed now
@@ -199,6 +205,9 @@ function myzsh {
 			;;
 			rsecondary)
 				RSECONDARY+=($@)
+			;;
+			title)
+				TITLE+=($@)
 			;;
 			extra)
 				EXTRA+=($@)
