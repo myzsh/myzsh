@@ -157,6 +157,7 @@ function myzsh {
 		chsh -s $(which zsh)
 	;;
 	save)
+		grep -q "^MYZSH=" "$HOME/.zshrc" || mv "$HOME/.zshrc" "$HOME/.zshrc.bk"
 		if [ ! -s "$HOME/.zshrc" ]; then
 			rm "$HOME/.zshrc" 2>/dev/null
 			echo "Copying the default config to your $HOME/.zshrc"
