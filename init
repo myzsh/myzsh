@@ -67,39 +67,45 @@ function myzsh {
 	list)
 		(
 		# This is inside a code block so cd is ok
-		cd "$MYZSH/modules" >/dev/null
 		local m
+		local max
 		# this is a hack to find the length of the longest module name
-		max=$(for m in *; do
-			[ ! -f "$m/$m" ] && continue
-			echo ${#m}
+		max=$(for m in $MYZSH/**/modules/*; do
+			n=${m##*/}
+			[ ! -f "$m/$n" ] && continue
+			echo ${#n}
 		done | sort -n | tail -n 1);
 		# dump them to the screen
-		printf "%${max}s: %-13s %s\n" "Module" "Enabled" "Description"
-		for m in *; do
-			[ ! -f "$m/$m" ] && continue
+		printf "%${max}s: %-13s %s %s\n" "Module" "Enabled" "Source" "Description"
+		for m in $MYZSH/**/modules/*; do
+			# find our specific module name
+			n=${m##*/}
+			# find our remote repo, if exists
+			r=${m#$MYZSH/}
+			r=${r%%/*} # FIXME returns "remotes" instead of "testing"
+			[ ! -f "$m/$n" ] && continue
 			# figure out where our module is enabled, if at all
 			enabled="$(
 				for x in "${LPRIMARY[@]}"; do
-					[ "$x" = "$m" ] && printf "LP "
+					[ "$x" = "$n" ] && printf "LP "
 				done
 				for x in "${LSECONDARY[@]}"; do
-					[ "$x" = "$m" ] && printf "LS "
+					[ "$x" = "$n" ] && printf "LS "
 				done
 				for x in "${RPRIMARY[@]}"; do
-					[ "$x" = "$m" ] && printf "RP "
+					[ "$x" = "$n" ] && printf "RP "
 				done
 				for x in "${RSECONDARY[@]}"; do
-					[ "$x" = "$m" ] && printf "RS "
+					[ "$x" = "$n" ] && printf "RS "
 				done
 				for x in "${TITLE[@]}"; do
-					[ "$x" = "$m" ] && printf "T "
+					[ "$x" = "$n" ] && printf "T "
 				done
 				for x in "${EXTRA[@]}"; do
-					[ "$x" = "$m" ] && printf "E "
+					[ "$x" = "$n" ] && printf "E "
 				done
 			)"
-			printf "%${max}s: %-13s %s\n" "$m" "$enabled" "$(awk '/^\#+\ ?Summary/ {getline; print $0}' $m/info.md 2>/dev/null)"
+			printf "%${max}s: %-13s %s %s\n" "$n" "$enabled" "$r" "$(awk '/^\#+\ ?Summary/ {getline; print $1}' $m/info.md 2>/dev/null)"
 		done | sort;
 		)
 	;;
