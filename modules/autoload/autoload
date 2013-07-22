@@ -1,5 +1,5 @@
 # Add our local completion directory
-fpath+=("$MYZSH/completions")
+fpath+=("$MYZSH/completions" $MYZSH/remotes/*/completions(N))
 # load the modules
 autoload -U compinit
 # autocompletion
