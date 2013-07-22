@@ -76,7 +76,7 @@ function myzsh {
 			echo ${#n}
 		done | sort -n | tail -n 1);
 		# dump them to the screen
-		printf "%${max}s: %-13s %s %s\n" "Module" "Enabled" "Source" "Description"
+		printf "%${max}s: %-13s %-13s %s\n" "Module" "Enabled" "Source" "Description"
 		for m in $MYZSH/**/modules/*; do
 			# find our specific module name
 			n=${m##*/}
@@ -105,7 +105,7 @@ function myzsh {
 					[ "$x" = "$n" ] && printf "E "
 				done
 			)"
-			printf "%${max}s: %-13s %s %s\n" "$n" "$enabled" "$r" "$(awk '/^\#+\ ?Summary/ {getline; print $1}' $m/info.md 2>/dev/null)"
+			printf "%${max}s: %-13s %-13s %s\n" "$n" "$enabled" "$r" "$(awk '/^\#+\ ?Summary/ {getline; print $0}' $m/info.md 2>/dev/null)"
 		done | sort;
 		)
 	;;
