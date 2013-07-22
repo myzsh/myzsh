@@ -55,9 +55,12 @@ _myzsh () {
 			_describe -t commands 'myzsh remote commands' locations -V1
 		elif [ "$words[3]" = "remove" ]; then
 			_files -W "$MYZSH/remotes/"
+		elif [ "$words[3]" = "list" ]; then
+			_files -W "$MYZSH/remotes/"
 		else
 			locations=( "add:Add new configs from git repo"
 						"remove:Remove remote configs"
+						"list:Remove remote configs"
 					)
 			_describe -t commands 'myzsh remote commands' locations -V1
 		fi
