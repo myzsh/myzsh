@@ -46,14 +46,23 @@ _myzsh () {
 		;;
 	remote)
 		# if our location isn't exactly what we expect for a valid location
-		if [	"$words[3]" != "add" \
-				-a "$words[3]" != "remove" ]; then
-			locations=( "add:Add new configs from git repo"
-						"remove:Remove remote configs"
+		if [ "$words[3]" = "add" ]; then
+			locations=( "ssh\://:git via ssh"
+						"git\://:git via... git"
+						"http\://:git or svn via http"
+						"https\://:git or svn via https"
 					)
 			_describe -t commands 'myzsh remote commands' locations -V1
-		else
+		elif [ "$words[3]" = "remove" ]; then
 			_files -W "$MYZSH/remotes/"
+		elif [ "$words[3]" = "list" ]; then
+			_files -W "$MYZSH/remotes/"
+		else
+			locations=( "add:Add new configs from git repo"
+						"remove:Remove remote configs"
+						"list:list remote directories"
+					)
+			_describe -t commands 'myzsh remote commands' locations -V1
 		fi
 		;;
 

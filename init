@@ -226,31 +226,39 @@ function myzsh {
 		esac
 		init_myzsh
 	;;
-      remote)
-		# make sure our user is calling us properly
-		if [ $# -lt 2 ]; then
-			echo "Usage: myzsh remote [add|remove] [repo]"
-			return 1
-		fi
+	remote)
 		# save our location and shift it off the arguments stack
 		location="$1"
 		shift
 		case "$location" in
 			add)
 				for repo in $@; do
-				  echo "Adding repo $repo as a remote"
-				  pushd . &>/dev/null
-				  cd "$MYZSH/remotes/"
-				  git clone "$repo"
-				  popd &>/dev/null
+					echo "Adding repo $repo as a remote"
+					pushd "$MYZSH/remotes/" &>/dev/null
+					if [ ${repo%%://*} = "ssh" ]; then
+						git clone "$repo"
+					elif [ ${repo%%://*} = "git" ]; then
+						git clone "$repo"
+					elif [ ${repo%%://*} = "http" ]; then
+						git clone "$repo" || svn co "$repo" || echo "Error accessing $repo via git and svn"
+					elif [ ${repo%%://*} = "https" ]; then
+						git clone "$repo" || svn co "$repo" || echo "Error accessing $repo via git and svn"
+					fi
+					popd &>/dev/null
 				done
 			;;
 			remove)
 				echo "Removing repos $@"
 				rm -rf "$MYZSH/remotes/$@"
 			;;
+			list)
+					pushd "$MYZSH/remotes/" &>/dev/null
+					ls -1
+					popd &>/dev/null
+			;;
 			*)
-				echo "I don't know!"
+				# make sure our user is calling us properly
+				echo "Usage: myzsh remote [list|add [repo]|remove [repo]]"
 				return 1
 			;;
 		esac
