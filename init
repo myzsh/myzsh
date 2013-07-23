@@ -82,7 +82,13 @@ function myzsh {
 			n=${m##*/}
 			# find our remote repo, if exists
 			r=${m#$MYZSH/}
-			r=${r%%/*} # FIXME returns "remotes" instead of "testing"
+			if [ ${r%%/*} = "remotes" ]; then
+				r=${r#remotes/}
+				r=${r%%/*}
+				r=${r:0:13}
+			else
+				r="myzsh"
+			fi
 			[ ! -f "$m/$n" ] && continue
 			# figure out where our module is enabled, if at all
 			enabled="$(
