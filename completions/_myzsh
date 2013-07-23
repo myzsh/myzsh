@@ -60,7 +60,7 @@ _myzsh () {
 		else
 			locations=( "add:Add new configs from git repo"
 						"remove:Remove remote configs"
-						"list:Remove remote configs"
+						"list:list remote directories"
 					)
 			_describe -t commands 'myzsh remote commands' locations -V1
 		fi
