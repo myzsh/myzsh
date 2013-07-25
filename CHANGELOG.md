@@ -4,6 +4,7 @@
 * New history module to share history among other sessions.
 * Added TITLE to enable/disable/save
 * Make backup of .zshrc if it exists and isn't part of myzsh.
+* Added changelog.
 
 ### Bug Fixes
 * Correctly display hex mask in ipaddr module. 
