@@ -1,10 +1,11 @@
-##v1.0.1
+##1.0.1
 ### New Feature 
 * Add custom directory support for modules, themes, and completions. 
 * New history module to share history among other sessions.
 * Added TITLE to enable/disable/save
 * Make backup of .zshrc if it exists and isn't part of myzsh.
 * Added changelog.
+* Added branch icon and stash to git module.
 
 ### Bug Fixes
 * Correctly display hex mask in ipaddr module. 
