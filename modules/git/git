@@ -5,13 +5,16 @@ git_func () {
 	if [ "$ingit" = 0 ]; then
 		local gitstatus
 		branch=$(git -c color.branch=no branch | awk '/^\*/ {print $2}')
-		printf "%s" "$branch"
+		printf "⭠ %s" "$branch"
 
-		gitstatus="${$(git status --porcelain | awk '{print $1}' | sort | uniq -c | awk '{printf $2":"$1","}')%%,}"
+		gitstatus="${$(git status --porcelain | awk '{print $1}' | sort | uniq -c | awk '{printf $2":"$1" "}')%%,}"
 		if [ -n "$gitstatus" ]; then
 			printf " %s" "$gitstatus"
 		fi
-		stash=$() # TODO, maybe use some of lol's flags?
+		stash=$(git stash list | wc -l)
+		if [ $stash -gt 0 ]; then
+			printf " S:%d" "$stash"
+		fi
 
 	fi
 }
