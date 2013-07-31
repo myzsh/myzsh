@@ -251,6 +251,8 @@ function myzsh {
 						git clone "$repo" || svn co "$repo" || echo "Error accessing $repo via git and svn"
 					elif [ ${repo%%://*} = "https" ]; then
 						git clone "$repo" || svn co "$repo" || echo "Error accessing $repo via git and svn"
+					elif [ ${repo%%://*} = "file" ]; then
+						[ -d ${repo#file://*} ] && cp -R ${repo#file://*} . || echo "Error remote must be a directory"
 					fi
 					popd &>/dev/null
 				done

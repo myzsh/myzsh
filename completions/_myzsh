@@ -51,6 +51,7 @@ _myzsh () {
 						"git\://:git via... git"
 						"http\://:git or svn via http"
 						"https\://:git or svn via https"
+						"file\://:copy from local directory"
 					)
 			_describe -t commands 'myzsh remote commands' locations -V1
 		elif [ "$words[3]" = "remove" ]; then
