@@ -18,6 +18,9 @@ function :: ()
 
 	elif [[ "$1" = <-> ]]; then
 		cc_loop $*
+
+	elif [[ "$1" = "::" ]]; then
+		echo "Invalid command: $*"
 	       
 	else
 		cc_loop 1 $*
@@ -28,7 +31,8 @@ function cc_loop ()
 {
 	delay=$1
 	shift
-	if [ -n "$(which $1)" ]; then
+	which $1 &>/dev/null
+	if [ $? -eq 0 ]; then
 		echo "Running $* every $delay secs until it exits cleanly"
 		until $*; do
 			sleep $delay

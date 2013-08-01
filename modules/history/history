@@ -1,0 +1,19 @@
+# Set location of history file
+HISTFILE=$HOME/.zhistory
+
+# Max number of events stored in HISTFILE
+HISTSIZE=SAVEHIST=99999
+
+# Add commands to HISTFILE incrementally
+setopt INC_APPEND_HISTORY
+
+# Trim oldest history event that has a duplicate
+setopt HIST_EXPIRE_DUPS_FIRST
+
+# Do not store events beginning with a space
+setopt HIST_IGNORE_SPACE
+
+# Do not store history evnets
+setopt HIST_NO_STORE
+
+# vim: filetype=zsh noexpandtab

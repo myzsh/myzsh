@@ -42,13 +42,13 @@ function myzsh {
 	case "$verb" in
 	# reload a specific module's functions
 	reload)
-		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
-		source "$MYZSH/modules/$mod/$mod"
+		[ -z $MYZSH/**/modules/$mod/$mod(N) ] && echo "Cannot find module $mod" && return 1
+		source $MYZSH/**/modules/$mod/$mod
 	;;
 	# edit a module
 	edit)
-		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
-		$EDITOR "$MYZSH/modules/$mod/$mod"
+		[ -z $MYZSH/**/modules/$mod/$mod(N) ] && echo "Cannot find module $mod" && return 1
+		$EDITOR $MYZSH/**/modules/$mod/$mod
 	;;
 	# update all of myzsh
 	update)
@@ -67,56 +67,71 @@ function myzsh {
 	list)
 		(
 		# This is inside a code block so cd is ok
-		cd "$MYZSH/modules" >/dev/null
 		local m
+		local max
 		# this is a hack to find the length of the longest module name
-		max=$(for m in *; do
-			[ ! -f "$m/$m" ] && continue
-			echo ${#m}
+		max=$(for m in $MYZSH/**/modules/*; do
+			n=${m##*/}
+			[ ! -f "$m/$n" ] && continue
+			echo ${#n}
 		done | sort -n | tail -n 1);
 		# dump them to the screen
-		printf "%${max}s: %-13s %s\n" "Module" "Enabled" "Description"
-		for m in *; do
-			[ ! -f "$m/$m" ] && continue
+		printf "%${max}s: %-13s %-13s %s\n" "Module" "Enabled" "Source" "Description"
+		for m in $MYZSH/**/modules/*; do
+			# find our specific module name
+			n=${m##*/}
+			# find our remote repo, if exists
+			r=${m#$MYZSH/}
+			if [ ${r%%/*} = "remotes" ]; then
+				r=${r#remotes/}
+				r=${r%%/*}
+				r=${r:0:13}
+			else
+				r="myzsh"
+			fi
+			[ ! -f "$m/$n" ] && continue
 			# figure out where our module is enabled, if at all
 			enabled="$(
 				for x in "${LPRIMARY[@]}"; do
-					[ "$x" = "$m" ] && printf "LP "
+					[ "$x" = "$n" ] && printf "LP "
 				done
 				for x in "${LSECONDARY[@]}"; do
-					[ "$x" = "$m" ] && printf "LS "
+					[ "$x" = "$n" ] && printf "LS "
 				done
 				for x in "${RPRIMARY[@]}"; do
-					[ "$x" = "$m" ] && printf "RP "
+					[ "$x" = "$n" ] && printf "RP "
 				done
 				for x in "${RSECONDARY[@]}"; do
-					[ "$x" = "$m" ] && printf "RS "
+					[ "$x" = "$n" ] && printf "RS "
+				done
+				for x in "${TITLE[@]}"; do
+					[ "$x" = "$n" ] && printf "T "
 				done
 				for x in "${EXTRA[@]}"; do
-					[ "$x" = "$m" ] && printf "E "
+					[ "$x" = "$n" ] && printf "E "
 				done
 			)"
-			printf "%${max}s: %-13s %s\n" "$m" "$enabled" "$(awk '/^\#+\ ?Summary/ {getline; print $0}' $m/info.md 2>/dev/null)"
+			printf "%${max}s: %-13s %-13s %s\n" "$n" "$enabled" "$r" "$(awk '/^\#+\ ?Summary/ {getline; print $0}' $m/info.md 2>/dev/null)"
 		done | sort;
 		)
 	;;
 	# get info about a module
 	info)
-		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
-      [ ! -e "$MYZSH/modules/$mod/info.md" ] && echo "Info missing for module $mod" && return 1
-		less "$MYZSH/modules/$mod/info.md"
+		[ -z $MYZSH/**/modules/$mod/$mod(N) ] && echo "Cannot find module $mod" && return 1
+		[ -z $MYZSH/**/modules/$mod/info.md(N) ] && echo "Info missing for module $mod" && return 1
+		less $MYZSH/**/modules/$mod/info.md
 	# test a module
 	# TODO needs plenty more work
 	;;
 	test)
-		[ ! -e "$MYZSH/modules/$mod/$mod" ] && echo "Cannot find module $mod" && return 1
+		[ -z $MYZSH/**/modules/$mod/$mod(N) ] && echo "Cannot find module $mod" && return 1
 		# setup a sub shell so we don't mess up our main environment since this is a function
 		(
 		function getvars() {
 			set | sed '/^LINENO/d;/^ERRNO/d;/^-=/d'
 		}
 		SHELL=/dev/null
-		cd "$MYZSH/modules"
+		cd "$MYZSH/modules" # TODO
 		getvars > /tmp/set.before
 		source "$mod/$mod"
 		getvars > /tmp/set.after
@@ -148,6 +163,9 @@ function myzsh {
 		chsh -s $(which zsh)
 	;;
 	save)
+		if [ -s "$HOME/.zshrc" ]; then
+		  grep -q "^MYZSH=" "$HOME/.zshrc" &> /dev/null || mv "$HOME/.zshrc" "$HOME/.zshrc.bk"
+		fi
 		if [ ! -s "$HOME/.zshrc" ]; then
 			rm "$HOME/.zshrc" 2>/dev/null
 			echo "Copying the default config to your $HOME/.zshrc"
@@ -158,10 +176,11 @@ function myzsh {
 		sed -i "s/^LSECONDARY=[^)]*)\(.*\)/LSECONDARY=\(${LSECONDARY}\)\1/" $HOME/.zshrc
 		sed -i "s/^RPRIMARY=[^)]*)\(.*\)/RPRIMARY=\(${RPRIMARY}\)\1/" $HOME/.zshrc
 		sed -i "s/^RSECONDARY=[^)]*)\(.*\)/RSECONDARY=\(${RSECONDARY}\)\1/" $HOME/.zshrc
+		sed -i "s/^TITLE=[^)]*)\(.*\)/TITLE=(${TITLE})\1/" $HOME/.zshrc
 		sed -i "s/^EXTRA=[^)]*)\(.*\)/EXTRA=(${EXTRA})\1/" $HOME/.zshrc
 		echo "$HOME/.zshrc has been updated"
 	;;
-    disable)
+	disable)
 		# look for our module everywhere
 		# remove it if we find it
 		local f
@@ -173,6 +192,8 @@ function myzsh {
 			[ "$RPRIMARY[$f]" = "$mod" ] && RPRIMARY[$f]=()
 		for f in {1..${#RSECONDARY[@]}};
 			[ "$RSECONDARY[$f]" = "$mod" ] && RSECONDARY[$f]=()
+		for f in {1..${#TITLE[@]}};
+			[ "$TITLE[$f]" = "$mod" ] && TITLE[$f]=()
 		for f in {1..${#EXTRA[@]}};
 			[ "$EXTRA[$f]" = "$mod" ] && EXTRA[$f]=()
 		# theme needs to be rehashed now
@@ -200,6 +221,9 @@ function myzsh {
 			rsecondary)
 				RSECONDARY+=($@)
 			;;
+			title)
+				TITLE+=($@)
+			;;
 			extra)
 				EXTRA+=($@)
 			;;
@@ -209,6 +233,46 @@ function myzsh {
 			;;
 		esac
 		init_myzsh
+	;;
+	remote)
+		# save our location and shift it off the arguments stack
+		location="$1"
+		shift
+		case "$location" in
+			add)
+				for repo in $@; do
+					echo "Adding repo $repo as a remote"
+					pushd "$MYZSH/remotes/" &>/dev/null
+					if [ ${repo%%://*} = "ssh" ]; then
+						git clone "$repo"
+					elif [ ${repo%%://*} = "git" ]; then
+						git clone "$repo"
+					elif [ ${repo%%://*} = "http" ]; then
+						git clone "$repo" || svn co "$repo" || echo "Error accessing $repo via git and svn"
+					elif [ ${repo%%://*} = "https" ]; then
+						git clone "$repo" || svn co "$repo" || echo "Error accessing $repo via git and svn"
+					elif [ ${repo%%://*} = "file" ]; then
+						[ -d ${repo#file://*} ] && cp -R ${repo#file://*} . || echo "Error remote must be a directory"
+					fi
+					popd &>/dev/null
+				done
+			;;
+			remove)
+				echo "Removing repos $@"
+				rm -rf "$MYZSH/remotes/$@"
+			;;
+			list)
+					pushd "$MYZSH/remotes/" &>/dev/null
+					ls -1
+					popd &>/dev/null
+			;;
+			*)
+				# make sure our user is calling us properly
+				echo "Usage: myzsh remote [list|add [repo]|remove [repo]]"
+				return 1
+			;;
+		esac
+
 	;;
 	*)
 		cat <<dog
@@ -227,6 +291,7 @@ Commands:
   persistent - Sets shell to zsh if it's not already
   disable - Removes a module from any and all prompt locations
   enable - Adds a module to a prompt location
+  remote - Add configs from git repo
 
 Report bugs to brimstone@the.narro.ws
 myzsh homepage: <https://github.com/brimstone/zsh>
@@ -250,8 +315,8 @@ function init_myzsh {
 	precmd_funcs=(precmd_main)
 	# then load the theme
 	# check for theme, select our default if nothing's set
-	[ ! -e "$MYZSH/themes/$THEME/$THEME" ] && THEME="default"
-	source "$MYZSH/themes/$THEME/$THEME"
+	[ -z $MYZSH/**/themes/$THEME/$THEME(N) ] && THEME="default"
+	source $MYZSH/**/themes/$THEME/$THEME
 	
 	# TODO this needs to be a function
 	# Load any one time modules

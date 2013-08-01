@@ -9,9 +9,23 @@ else
 	# if we don't see it in our path, assume also in /sbin, which is typical of linux systems
 	[ -n "$(which ifconfig)" ] && IFCONFIG="/sbin/ifconfig"
 
-   	if isosx; then
+	if isosx; then
+		function hex2cidr {
+			typeset -i 2 hex
+				hex="$1"
+				binary=$(( [##2] $hex ))
+				echo ${#binary%%0*}
+		}
 		ip_func () {
-			echo "${$($IFCONFIG | awk '/^[a-z]/ {if($1 !~ /(vmnet|utun|fw|p2p|gif|stf)/){inf=$1}} /inet /{if($2!="127.0.0.1"){printf inf $2 " "}}')%% }"
+			echo "${$($IFCONFIG | awk 'function hex2cidr(hex) {
+      		gsub("8", "1", hex);
+	      	gsub("c", "11", hex);
+		      gsub("e", "111", hex);
+   		   gsub("f", "1111", hex);
+   	   	gsub("[0x]", "", hex);
+	   	   return length(hex);
+   	 	}
+         /^[a-z]/ {if($1 !~ /(vmnet|utun|fw|p2p|gif|stf)/){inf=$1}} /inet /{if($2!="127.0.0.1"){printf inf $2 "/" hex2cidr($4) " "}}')%% }"
 		}
 	else
 		ip_func () {
