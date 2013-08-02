@@ -1,41 +1,55 @@
+# If no $BATT_TIME default to no
+[ -z "$BATT_TIME" ] && BATT_TIME="no"
+
+# Generate the battery number
 function battery_pct() {
-   typeset -F maxcapacity=$(ioreg -rc "AppleSmartBattery"| grep '^.*"MaxCapacity"\ =\ ' | sed -e 's/^.*"MaxCapacity"\ =\ //')
-   typeset -F currentcapacity=$(ioreg -rc "AppleSmartBattery"| grep '^.*"CurrentCapacity"\ =\ ' | sed -e 's/^.*CurrentCapacity"\ =\ //')
-   integer i=$(((currentcapacity/maxcapacity) * 100))
+   if isosx; then
+      if [[ $(ioreg -rc AppleSmartBattery | grep -c '^.*"ExternalConnected"\ =\ No') -eq 1 ]] ; then
+         typeset -F maxcapacity=$(ioreg -rc "AppleSmartBattery"| grep '^.*"MaxCapacity"\ =\ ' | sed -e 's/^.*"MaxCapacity"\ =\ //')
+         typeset -F currentcapacity=$(ioreg -rc "AppleSmartBattery"| grep '^.*"CurrentCapacity"\ =\ ' | sed -e 's/^.*CurrentCapacity"\ =\ //')
+         integer i=$(((currentcapacity/maxcapacity) * 100))
+      else
+         i="∞"
+      fi
+   else
+      integer i=100
+   fi
    echo $i
 }
-  
-function battery_pct_remaining() {
-   if [[ $(ioreg -rc AppleSmartBattery | grep -c '^.*"ExternalConnected"\ =\ No') -eq 1 ]] ; then
-      battery_pct
-   else
-      echo "External Power"
-   fi
-}
 
+# Generate the time remaining
 function battery_time_remaining() {
-   if [[ $(ioreg -rc AppleSmartBattery | grep -c '^.*"ExternalConnected"\ =\ No') -eq 1 ]] ; then
-      timeremaining=$(ioreg -rc "AppleSmartBattery"| grep '^.*"AvgTimeToEmpty"\ =\ ' | sed -e 's/^.*"AvgTimeToEmpty"\ =\ //')
-      echo "~$((timeremaining / 60)):$((timeremaining % 60))"
-   else
-      echo "∞"
-   fi
-}
-
-function battery_pct_prompt () {
-   if [[ $(ioreg -rc AppleSmartBattery | grep -c '^.*"ExternalConnected"\ =\ No') -eq 1 ]] ; then
-      b=$(battery_pct_remaining)
-      if [ $b -gt 50 ] ; then
-         color='green'
-      elif [ $b -gt 20 ] ; then
-        color='yellow'
+   if isosx; then
+      if [[ $(ioreg -rc AppleSmartBattery | grep -c '^.*"ExternalConnected"\ =\ No') -eq 1 ]] ; then
+         timeremaining=$(ioreg -rc "AppleSmartBattery"| grep '^.*"AvgTimeToEmpty"\ =\ ' | sed -e 's/^.*"AvgTimeToEmpty"\ =\ //')
+         i="~$((timeremaining / 60)):$((timeremaining % 60))"
       else
-        color='red'
+         i="∞"
       fi
-      echo "%{$fg[$color]%}[$(battery_pct_remaining)%%]%{$reset_color%}"
    else
-      echo "∞"
+      i="10:00"
    fi
+   echo $i
 }
 
+# Display the relevant details for the prompt
+function battery_prompt () {
+      b=$(battery_pct)
+      if [[ $(echo $b | grep -c '"∞"') -eq 0 ]] ; then
+         color='green'
+         pct=$(battery_pct)
+      else
+         if [ $b -gt 50 ] ; then
+            color='green'
+         elif [ $b -gt 20 ] ; then
+            color='yellow'
+         else
+            color='red'
+         fi
+         pct=$(battery_pct)%%
+      fi
+      echo "%{$fg[$color]%}[$pct]%{$reset_color%}"
+}
+
+OUTPUT=battery_prompt
 # vim: filetype=zsh noexpandtab
