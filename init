@@ -274,6 +274,12 @@ function myzsh {
 		esac
 
 	;;
+	set)
+		echo Setting: $1
+	;;
+	unset)
+		echo Unsetting: $1
+	;;
 	*)
 		cat <<dog
 Usage: myzsh command
@@ -307,6 +313,16 @@ function islinux {
 
 function isosx {
 	[ $(uname) = "Darwin" ]
+}
+
+function globalvar {
+	local global
+	# build up an array of global variables
+	GLOBALS[$1]=$2
+	# setting $global to the value of the value of $1
+	eval global="\$$1"
+	# if the value of the variable refered to by $1 is nothing, then set it to our second argument
+	[ -z "$global" ] && let $1=$2
 }
 
 function init_myzsh {
@@ -362,6 +378,7 @@ function init_myzsh {
 # set other globals
 [ -z "$EDITOR" ] && export EDITOR=vim && bindkey -e
 
+typeset -A GLOBALS
 # setup things
 init_myzsh
 
