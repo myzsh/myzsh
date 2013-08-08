@@ -275,10 +275,22 @@ function myzsh {
 
 	;;
 	set)
-		echo Setting: $1
+		if [ -z "${GLOBALS[$1]}" ]; then
+			echo "$1 isn't registered as a global variable."
+			return
+		fi
+		echo "Setting: $1 to $2"
+		sed -i "/^$1=/d" ~/.zshrc
+		sed -i "/^source/i $1=$2" ~/.zshrc
+		let $1=$2
 	;;
 	unset)
-		echo Unsetting: $1
+		if [ -z "${GLOBALS[$1]}" ]; then
+			echo "$1 isn't registered as a global variable."
+			return
+		fi
+		echo "Unsetting: $1"
+		sed -i "/^$1/d" ~/.zshrc
 	;;
 	*)
 		cat <<dog
@@ -298,6 +310,8 @@ Commands:
   disable - Removes a module from any and all prompt locations
   enable - Adds a module to a prompt location
   remote - Add configs from git repo
+  set - Set global variables
+  unset - Unset global variables
 
 Report bugs to brimstone@the.narro.ws
 myzsh homepage: <https://github.com/brimstone/zsh>

@@ -66,6 +66,22 @@ _myzsh () {
 			_describe -t commands 'myzsh remote commands' locations -V1
 		fi
 		;;
+	set)
+		# TODO partial match
+		if [ -z "$words[3]" ]; then
+			compadd ${(k)GLOBALS[@]}
+		elif [ -n "${GLOBALS[${words[3]}]}" ]; then
+			local -a array
+			array=( "${GLOBALS[${words[3]}]}" )
+			compadd $array
+		fi
+		;;
+	unset)
+		# TODO partial match
+		if [ -z "$words[3]" ]; then
+			compadd ${(k)GLOBALS[@]}
+		fi
+		;;
 
 		# FIXME this could be done better, fixing [LPRIMARY,LSECONDARY,...] files ...
 	*)
