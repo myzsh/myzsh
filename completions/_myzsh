@@ -32,6 +32,7 @@ _myzsh () {
 				-a "$words[3]" != "rprimary" \
 				-a "$words[3]" != "rsecondary" \
 				-a "$words[3]" != "extra" ]; then
+			local -a locations
 			locations=( "lprimary:Left Primary (upper)"
 						"lsecondary:Left Secondary (lower)"
 						"rprimary:Right Primary (upper)"
@@ -47,6 +48,7 @@ _myzsh () {
 	remote)
 		# if our location isn't exactly what we expect for a valid location
 		if [ "$words[3]" = "add" ]; then
+			local -a locations
 			locations=( "ssh\://:git via ssh"
 						"git\://:git via... git"
 						"http\://:git or svn via http"
@@ -59,6 +61,7 @@ _myzsh () {
 		elif [ "$words[3]" = "list" ]; then
 			_files -W "$MYZSH/remotes/"
 		else
+			local -a locations
 			locations=( "add:Add new configs from git repo"
 						"remove:Remove remote configs"
 						"list:list remote directories"
@@ -67,19 +70,34 @@ _myzsh () {
 		fi
 		;;
 	set)
-		# TODO partial match
-		if [ -z "$words[3]" ]; then
-			compadd ${(k)GLOBALS[@]}
-		elif [ -n "${GLOBALS[${words[3]}]}" ]; then
+		# if our key to set isn't in our globals, suggest a better key
+		if [ -z "${GLOBALS[${words[3]}]}" ]; then
+			local -a vars
+			vars=( $(
+				for k in "${(k)GLOBALS[@]}"; do
+					echo "$k:Default ${GLOBALS[$k]}"
+				done
+			) )
+			_describe -t commands 'myzsh set variables' vars -V1
+			echo "Got this far" >> /tmp/log
+		else
+			# give up the default value for the key
 			local -a array
 			array=( "${GLOBALS[${words[3]}]}" )
 			compadd $array
 		fi
 		;;
 	unset)
-		# TODO partial match
-		if [ -z "$words[3]" ]; then
-			compadd ${(k)GLOBALS[@]}
+		# if our key to set isn't in our globals, suggest a better key
+		if [ -z "${GLOBALS[${words[3]}]}" ]; then
+			local -a vars
+			vars=( $(
+				for k in "${(k)GLOBALS[@]}"; do
+					echo "$k:Default ${GLOBALS[$k]}"
+				done
+			) )
+			_describe -t commands 'myzsh set variables' vars -V1
+			echo "Got this far" >> /tmp/log
 		fi
 		;;
 
