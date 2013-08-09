@@ -6,7 +6,7 @@ if [ -z "$TMUX" ]; then
 	tmux has-session -t main || tmux new-session -d -s main
 	tmux set-option -g prefix C-$key 
 	tmux bind-key C-$key last-window 
-	tmux bind-key C-$key send-prefix
+	tmux bind-key $key send-prefix
 	tmux new-session -t main \; set-option destroy-unattached && exit
 fi
 # vim: filetype=zsh noexpandtab
