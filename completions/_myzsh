@@ -97,7 +97,6 @@ _myzsh () {
 				done
 			) )
 			_describe -t commands 'myzsh set variables' vars -V1
-			echo "Got this far" >> /tmp/log
 		fi
 		;;
 
