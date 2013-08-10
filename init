@@ -284,8 +284,15 @@ function myzsh {
 			return
 		fi
 		echo "Setting: $1 to $2"
-		sed -i "/^$1=/d" ~/.zshrc
-		sed -i "/^source/i $1=$2" ~/.zshrc
+		if isosx; then
+			sed -i "" "/^$1=/d" ~/.zshrc
+			sed -i "" "/^source/i\\
+$1=$2
+" ~/.zshrc # OS X is dumb
+		else
+			sed -i "" "/^$1=/d" ~/.zshrc
+			sed -i "" "/^source/i $1=$2" ~/.zshrc
+		fi
 		let $1=$2
 	;;
 	unset)
