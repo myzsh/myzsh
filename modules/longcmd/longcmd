@@ -11,6 +11,8 @@
 #            LONGCMD_TIME=30
 #
 ################################################################################
+globalvar LONGCMD_TIME 30
+
 longcmd_before () {
 	local f
 	# get our cmd
@@ -40,7 +42,7 @@ longcmd_after () {
 	unset LONGCMD_START
 
 	# If our delta is not very long, bail
-	[ $LONGCMD_SECS -lt ${LONGCMD_TIME:-30} ] && unset LONGCMD_SECS && return
+	[ $LONGCMD_SECS -lt $LONGCMD_TIME ] && unset LONGCMD_SECS && return
 
 	LONGCMD_SECS=$(TZ=GMT date -d@$LONGCMD_SECS +%H:%M:%S)
 	LONGCMD_SECS=${LONGCMD_SECS##00:}
