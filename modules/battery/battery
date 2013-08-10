@@ -12,7 +12,9 @@ function battery_pct() {
          i="∞"
       fi
    else
-      integer i=100
+		local acpi="$(acpi -b 2>/dev/null)"
+		local battp=${acpi%%%*}
+		integer i=${battp##* }
    fi
    echo $i
 }
@@ -27,7 +29,9 @@ function battery_time_remaining() {
          i="∞"
       fi
    else
-      i="10:00"
+		local acpi="$(acpi -b 2>/dev/null)"
+		local tmp=${acpi% *}
+		i="~${tmp##* }"
    fi
    echo $i
 }
@@ -48,6 +52,7 @@ function battery_prompt() {
          fi
          pct=$(battery_pct)%%
       fi
+# ⚡
       echo "%{$fg[$color]%}[$pct]%{$reset_color%}"
 }
 
