@@ -178,6 +178,7 @@ function myzsh {
 		sed -i "s/^RSECONDARY=[^)]*)\(.*\)/RSECONDARY=\(${RSECONDARY}\)\1/" $HOME/.zshrc
 		sed -i "s/^TITLE=[^)]*)\(.*\)/TITLE=(${TITLE})\1/" $HOME/.zshrc
 		sed -i "s/^EXTRA=[^)]*)\(.*\)/EXTRA=(${EXTRA})\1/" $HOME/.zshrc
+		sed -i "s/^THEME=.*/THEME=\"${THEME}\"/" $HOME/.zshrc
 		echo "$HOME/.zshrc has been updated"
 	;;
 	disable)
@@ -308,7 +309,8 @@ $1=$2
 			echo "Theme $1 not found"
 			return
 		fi
-		sed -i "s/^THEME=[^)]*)\(.*\)/THEME=\(${THEME}\)\1/" $HOME/.zshrc
+		THEME="$1"
+		source $MYZSH/**/themes/$THEME/$THEME
 	;;
 	*)
 		cat <<dog

@@ -102,11 +102,13 @@ _myzsh () {
 
 	theme)
 		local -a themes
+		local t
+		local desc
 		themes=( $(
 			for t in $MYZSH/**/themes/*(N); do
 				t=${t%%/}
-				# TODO dump $t/info.md | summary or something
-				echo "${t##*/}:Theme "
+				desc="$(awk '/^\#+\ ?Summary/ {getline; print $0}' $t/info.md 2>/dev/null)"
+				echo "${t##*/}:${desc:-No Description}"
 			done | sort
 		) )
 		_describe -t commands 'myzsh themes' themes -V1
