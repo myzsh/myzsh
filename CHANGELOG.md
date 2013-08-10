@@ -1,3 +1,7 @@
+## 1.1.1
+### Bug Fixes
+* Fixed issue with alwaystmux key bind to last-window.
+
 ## 1.1.0
 ### New Feature
 * Add custom directory support for modules, themes, and completions.

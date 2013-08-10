@@ -1,5 +1,4 @@
-#if no custom TMPDIR use /tmp
-[ -z "$TMPDIR" ] && TMPDIR="/tmp"
+globalvar TMPDIR "/tmp"
 # if our temp directory doesn't exist, we should try to make it
 [ ! -d "$TMPDIR" ] && ( mkdir "$TMPDIR" || echo "Couldn't create $TMPDIR." >&2 )
 
