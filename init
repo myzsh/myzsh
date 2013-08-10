@@ -303,6 +303,13 @@ $1=$2
 		echo "Unsetting: $1"
 		sed -i "/^$1/d" ~/.zshrc
 	;;
+	theme)
+		if [ ! -e "$MYZSH/themes/$1/$1" -a ! -e "$MYZSH/remotes/*/themes/$1/$1" ]; then
+			echo "Theme $1 not found"
+			return
+		fi
+		sed -i "s/^THEME=[^)]*)\(.*\)/THEME=\(${THEME}\)\1/" $HOME/.zshrc
+	;;
 	*)
 		cat <<dog
 Usage: myzsh command
@@ -323,6 +330,7 @@ Commands:
   remote - Add configs from git repo
   set - Set global variables
   unset - Unset global variables
+  theme - Set current theme
 
 Report bugs to brimstone@the.narro.ws
 myzsh homepage: <https://github.com/brimstone/zsh>

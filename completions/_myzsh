@@ -42,7 +42,7 @@ _myzsh () {
 					)
 			_describe -t commands 'myzsh enable commands' locations -V1
 		else
-			_files -W "$MYZSH/modules/"
+			_files -W "$MYZSH/modules/" # TODO need support for remotes
 		fi
 		;;
 	remote)
@@ -100,7 +100,18 @@ _myzsh () {
 		fi
 		;;
 
-		# FIXME this could be done better, fixing [LPRIMARY,LSECONDARY,...] files ...
+	theme)
+		local -a themes
+		themes=( $(
+			for t in $MYZSH/**/themes/*(N); do
+				t=${t%%/}
+				# TODO dump $t/info.md | summary or something
+				echo "${t##*/}:Theme "
+			done | sort
+		) )
+		_describe -t commands 'myzsh themes' themes -V1
+	;;
+	# FIXME this could be done better, fixing [LPRIMARY,LSECONDARY,...] files ...
 	*)
 		verbs=( $(myzsh | grep " - " | sed 's/^ *//;s/ - /:/' | sort) )
 		_describe -t commands 'myzsh commands' verbs -V1;;
