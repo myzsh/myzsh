@@ -76,7 +76,7 @@ _myzsh () {
 			vars=( $(
 				for k in "${(k)GLOBALS[@]}"; do
 					echo "$k:Default ${GLOBALS[$k]}"
-				done
+				done | sort
 			) )
 			_describe -t commands 'myzsh set variables' vars -V1
 			echo "Got this far" >> /tmp/log
@@ -94,7 +94,7 @@ _myzsh () {
 			vars=( $(
 				for k in "${(k)GLOBALS[@]}"; do
 					echo "$k:Default ${GLOBALS[$k]}"
-				done
+				done | sort
 			) )
 			_describe -t commands 'myzsh set variables' vars -V1
 		fi
