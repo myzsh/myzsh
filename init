@@ -351,11 +351,11 @@ function isosx {
 function globalvar {
 	local global
 	# build up an array of global variables
-	GLOBALS[$1]=$2
+	GLOBALS[$1]="$2"
 	# setting $global to the value of the value of $1
 	eval global="\$$1"
 	# if the value of the variable refered to by $1 is nothing, then set it to our second argument
-	[ -z "$global" ] && let $1=$2
+	[ -z "$global" ] && eval "$1=\"$2\""
 }
 
 function init_myzsh {
