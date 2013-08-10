@@ -33,9 +33,9 @@ function battery_time_remaining() {
 }
 
 # Display the relevant details for the prompt
-function battery_prompt () {
+function battery_prompt() {
       b=$(battery_pct)
-      if [[ $(echo $b | grep -c '"∞"') -eq 0 ]] ; then
+      if [[ "$b" == "∞" ]] ; then
          color='green'
          pct=$(battery_pct)
       else
