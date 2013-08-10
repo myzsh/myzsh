@@ -42,7 +42,17 @@ _myzsh () {
 					)
 			_describe -t commands 'myzsh enable commands' locations -V1
 		else
-			_files -W "$MYZSH/modules/"
+			local -a modules
+			local t
+			local desc
+			modules=( $(
+				for t in $MYZSH/**/modules/*(N); do
+					t=${t%%/}
+					desc="$(awk '/^\#+\ ?Summary/ {getline; print $0}' $t/info.md 2>/dev/null)"
+					echo "${t##*/}:${desc:-No Description}"
+				done | sort
+			) )
+			_describe -t commands 'myzsh modules' modules -V1
 		fi
 		;;
 	remote)
