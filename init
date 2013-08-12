@@ -163,22 +163,35 @@ function myzsh {
 		chsh -s $(which zsh)
 	;;
 	save)
+		# backup .zshrc if it's not MYZSH enabled
 		if [ -s "$HOME/.zshrc" ]; then
 		  grep -q "^MYZSH=" "$HOME/.zshrc" &> /dev/null || mv "$HOME/.zshrc" "$HOME/.zshrc.bk"
 		fi
+		# copy over our default zshrc if we don't have one
 		if [ ! -s "$HOME/.zshrc" ]; then
 			rm "$HOME/.zshrc" 2>/dev/null
 			echo "Copying the default config to your $HOME/.zshrc"
-			cp $MYZSH/samples/zshrc.default $HOME/.zshrc
+			cp "$MYZSH/samples/zshrc.default" "$HOME/.zshrc"
 			return
 		fi
-		sed -i "s/^LPRIMARY=[^)]*)\(.*\)/LPRIMARY=\(${LPRIMARY}\)\1/" $HOME/.zshrc
-		sed -i "s/^LSECONDARY=[^)]*)\(.*\)/LSECONDARY=\(${LSECONDARY}\)\1/" $HOME/.zshrc
-		sed -i "s/^RPRIMARY=[^)]*)\(.*\)/RPRIMARY=\(${RPRIMARY}\)\1/" $HOME/.zshrc
-		sed -i "s/^RSECONDARY=[^)]*)\(.*\)/RSECONDARY=\(${RSECONDARY}\)\1/" $HOME/.zshrc
-		sed -i "s/^TITLE=[^)]*)\(.*\)/TITLE=(${TITLE})\1/" $HOME/.zshrc
-		sed -i "s/^EXTRA=[^)]*)\(.*\)/EXTRA=(${EXTRA})\1/" $HOME/.zshrc
-		sed -i "s/^THEME=.*/THEME=\"${THEME}\"/" $HOME/.zshrc
+		sed -i"" -e "s/^LPRIMARY=[^)]*)\(.*\)/LPRIMARY=\(${LPRIMARY}\)\1/" "$HOME/.zshrc"
+		sed -i"" "s/^LSECONDARY=[^)]*)\(.*\)/LSECONDARY=\(${LSECONDARY}\)\1/" $HOME/.zshrc
+		sed -i"" "s/^RPRIMARY=[^)]*)\(.*\)/RPRIMARY=\(${RPRIMARY}\)\1/" $HOME/.zshrc
+		sed -i"" "s/^RSECONDARY=[^)]*)\(.*\)/RSECONDARY=\(${RSECONDARY}\)\1/" $HOME/.zshrc
+		sed -i"" "s/^TITLE=[^)]*)\(.*\)/TITLE=(${TITLE})\1/" $HOME/.zshrc
+		sed -i"" "s/^EXTRA=[^)]*)\(.*\)/EXTRA=(${EXTRA})\1/" $HOME/.zshrc
+		sed -i"" "s/^THEME=.*/THEME=\"${THEME}\"/" $HOME/.zshrc
+		local global
+		for k in "${(k)GLOBALS[@]}"; do
+			# get our global variable abstractly
+			eval global="\$$k"
+			sed -i"" "/^$k=/d" "$HOME/.zshrc"
+			if [ "${GLOBALS[$k]}" != "$global" ]; then
+				sed -i"" "/^source/i\\
+$k=\"$global\"
+" "$HOME/.zshrc" # OS X is dumb
+			fi
+		done
 		echo "$HOME/.zshrc has been updated"
 	;;
 	disable)
@@ -285,15 +298,6 @@ function myzsh {
 			return
 		fi
 		echo "Setting: $1 to $2"
-		if isosx; then
-			sed -i "" "/^$1=/d" ~/.zshrc
-			sed -i "" "/^source/i\\
-$1=$2
-" ~/.zshrc # OS X is dumb
-		else
-			sed -i "" "/^$1=/d" ~/.zshrc
-			sed -i "" "/^source/i $1=$2" ~/.zshrc
-		fi
 		let $1=$2
 	;;
 	unset)
@@ -302,7 +306,7 @@ $1=$2
 			return
 		fi
 		echo "Unsetting: $1"
-		sed -i "/^$1/d" ~/.zshrc
+		let $1=${GLOBALS[$1]}
 	;;
 	theme)
 		if [ ! -e "$MYZSH/themes/$1/$1" -a ! -e "$MYZSH/remotes/*/themes/$1/$1" ]; then
