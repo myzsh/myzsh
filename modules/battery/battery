@@ -38,22 +38,21 @@ function battery_time_remaining() {
 
 # Display the relevant details for the prompt
 function battery_prompt() {
-      b=$(battery_pct)
-      if [[ "$b" == "⚡" ]] ; then
-         color='green'
-         pct=$(battery_pct)
-      else
-         if [ $b -gt 50 ] ; then
+      color='green'
+      batt_time=""
+      pct=$(battery_pct)
+
+      if [[ "$pct" != "⚡" ]] ; then
+         if [ $pct -gt 50 ] ; then
             color='green'
-         elif [ $b -gt 20 ] ; then
+         elif [ $pct -gt 20 ] ; then
             color='yellow'
          else
             color='red'
          fi
-         pct=$(battery_pct)%%
+         pct=${pct}%
 
-         batt_time="";
-         [ $BATT_TIME != 0 ] && batt_time=" $(battery_time_remaining)";
+         [ $BATT_TIME != 0 ] && batt_time=" $(battery_time_remaining)"
       fi
 
       echo "%{$fg[$color]%}$pct%$batt_time%{$reset_color%}"
