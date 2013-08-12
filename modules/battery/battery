@@ -1,5 +1,8 @@
 # If no $BATT_TIME default to no
-[ -z "$BATT_TIME" ] && BATT_TIME="no"
+[ -z "$BATT_TIME" ] && BATT_TIME=0
+# If not $BATT_METER default to no
+[ -z "$BATT_METER" ] && BATT_METER=0
+
 
 # Generate the battery number
 function battery_pct() {
@@ -9,7 +12,7 @@ function battery_pct() {
          typeset -F currentcapacity=$(ioreg -rc "AppleSmartBattery"| grep '^.*"CurrentCapacity"\ =\ ' | sed -e 's/^.*CurrentCapacity"\ =\ //')
          integer i=$(((currentcapacity/maxcapacity) * 100))
       else
-         i="∞"
+         i="⚡"
       fi
    else
 		local acpi="$(acpi -b 2>/dev/null)"
@@ -39,7 +42,7 @@ function battery_time_remaining() {
 # Display the relevant details for the prompt
 function battery_prompt() {
       b=$(battery_pct)
-      if [[ "$b" == "∞" ]] ; then
+      if [[ "$b" == "⚡" ]] ; then
          color='green'
          pct=$(battery_pct)
       else
@@ -53,7 +56,7 @@ function battery_prompt() {
          pct=$(battery_pct)%%
       fi
 # ⚡
-      echo "%{$fg[$color]%}[$pct]%{$reset_color%}"
+      echo "%{$fg[$color]%}[$pct]%$(battery_time_remainng){$reset_color%}"
 }
 
 OUTPUT=battery_prompt
