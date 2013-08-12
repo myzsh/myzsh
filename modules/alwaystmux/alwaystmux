@@ -1,12 +1,12 @@
+globalvar TMUX_LOCAL_PREFIX z
+globalvar TMUX_REMOTE_PREFIX a
 if [ -z "$TMUX" ]; then
-	[ -z "$LOCAL_TMUX_PREFIX" ] && LOCAL_TMUX_PREFIX="z"
-	[ -z "$REMOTE_TMUX_PREFIX" ] && REMOTE_TMUX_PREFIX="a"
-	key=$LOCAL_TMUX_PREFIX
-	[ -n "$SSH_CLIENT" ] && key=$REMOTE_TMUX_PREFIX
+	key=$TMUX_LOCAL_PREFIX
+	[ -n "$SSH_CLIENT" ] && key=$TMUX_REMOTE_PREFIX
 	tmux has-session -t main || tmux new-session -d -s main
 	tmux set-option -g prefix C-$key 
 	tmux bind-key C-$key last-window 
-	tmux bind-key C-$key send-prefix
+	tmux bind-key $key send-prefix
 	tmux new-session -t main \; set-option destroy-unattached && exit
 fi
 # vim: filetype=zsh noexpandtab

@@ -2,22 +2,35 @@
 
 # This is just the tab completion stuff. I wonder if it can be merged into myzsh() ?
 _myzsh () {
+	getmodulearray() {
+		local -a modules
+		local m
+		local desc
+		modules=( $(
+			for m in $MYZSH/**/$1/*(N); do
+				m=${m%%/}
+				desc="$(awk '/^\#+\ ?Summary/ {getline; print $0}' $m/info.md 2>/dev/null)"
+				echo "${m##*/}:${desc:-No Description for ${m##*/}}"
+			done | sort
+		) )
+		_describe -t commands "myzsh $1" modules -V1
+	}
 	local -a verbs
 	IFS=$'\n'
 	# words[2] is whatever is already typed into the command line after "myzsh "
 	case "$words[2]" in
 	# FIXME figure out if we can remove the trailing slash on matched modules
 	edit)
-		_files -W "$MYZSH/modules/"
+		getmodulearray modules
 		;;
 	reload)
-		_files -W "$MYZSH/modules/"
+		getmodulearray modules
 		;;
 	info)
-		_files -W "$MYZSH/modules/"
+		getmodulearray modules
 		;;
 	test)
-		_files -W "$MYZSH/modules/"
+		getmodulearray modules
 		;;
 	disable)
 		# actually reading from the variables loaded to this environment
@@ -32,6 +45,7 @@ _myzsh () {
 				-a "$words[3]" != "rprimary" \
 				-a "$words[3]" != "rsecondary" \
 				-a "$words[3]" != "extra" ]; then
+			local -a locations
 			locations=( "lprimary:Left Primary (upper)"
 						"lsecondary:Left Secondary (lower)"
 						"rprimary:Right Primary (upper)"
@@ -41,12 +55,13 @@ _myzsh () {
 					)
 			_describe -t commands 'myzsh enable commands' locations -V1
 		else
-			_files -W "$MYZSH/modules/"
+			getmodulearray modules
 		fi
 		;;
 	remote)
 		# if our location isn't exactly what we expect for a valid location
 		if [ "$words[3]" = "add" ]; then
+			local -a locations
 			locations=( "ssh\://:git via ssh"
 						"git\://:git via... git"
 						"http\://:git or svn via http"
@@ -59,6 +74,7 @@ _myzsh () {
 		elif [ "$words[3]" = "list" ]; then
 			_files -W "$MYZSH/remotes/"
 		else
+			local -a locations
 			locations=( "add:Add new configs from git repo"
 						"remove:Remove remote configs"
 						"list:list remote directories"
@@ -66,8 +82,51 @@ _myzsh () {
 			_describe -t commands 'myzsh remote commands' locations -V1
 		fi
 		;;
+	set)
+		# if our key to set isn't in our globals, suggest a better key
+		if [ -z "${GLOBALS[${words[3]}]}" ]; then
+			local -a vars
+			vars=( $(
+				for k in "${(k)GLOBALS[@]}"; do
+					echo "$k:Current: $(eval echo \$$k) Default ${GLOBALS[$k]}"
+				done | sort
+			) )
+			_describe -t commands 'myzsh set variables' vars -V1
+			echo "Got this far" >> /tmp/log
+		else
+			# give up the default value for the key
+			local -a array
+			array=( "${GLOBALS[${words[3]}]}" )
+			compadd $array
+		fi
+		;;
+	unset)
+		# if our key to set isn't in our globals, suggest a better key
+		if [ -z "${GLOBALS[${words[3]}]}" ]; then
+			local -a vars
+			vars=( $(
+				for k in "${(k)GLOBALS[@]}"; do
+					echo "$k:Current: $(eval echo \$$k) Default ${GLOBALS[$k]}"
+				done | sort
+			) )
+			_describe -t commands 'myzsh set variables' vars -V1
+		fi
+		;;
 
-		# FIXME this could be done better, fixing [LPRIMARY,LSECONDARY,...] files ...
+	theme)
+		local -a themes
+		local t
+		local desc
+		themes=( $(
+			for t in $MYZSH/**/themes/*(N); do
+				t=${t%%/}
+				desc="$(awk '/^\#+\ ?Summary/ {getline; print $0}' $t/info.md 2>/dev/null)"
+				echo "${t##*/}:${desc:-No Description}"
+			done | sort
+		) )
+		_describe -t commands 'myzsh themes' themes -V1
+	;;
+	# FIXME this could be done better, fixing [LPRIMARY,LSECONDARY,...] files ...
 	*)
 		verbs=( $(myzsh | grep " - " | sed 's/^ *//;s/ - /:/' | sort) )
 		_describe -t commands 'myzsh commands' verbs -V1;;

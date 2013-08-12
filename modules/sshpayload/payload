@@ -20,30 +20,34 @@ getmem () { # echo
 
 #DOC getdisks: return information about mounted partitions
 getdisks () {
-	#Filesystem             Type  Size  Used Avail Use% Mounted on
-	#/dev/mapper/liani-root ext4  110G   56G   54G  52% /
-	#/dev/sda1              ext4  120M   29M   85M  26% /boot
-
-	df -TP -x devtmpfs -x tmpfs -x rootfs | sort | awk 'BEGIN { d = 0 }
+	(
+	if [ $(uname) = "Darwin" ]; then
+		df -kT noautofs,devfs
+	else
+		df -P -x devtmpfs -x tmpfs -x rootfs
+	fi
+	) | sort | awk 'BEGIN { d = 0 }
 	/^[^F]/ {
 		d=d+1
-		print "DEV" d "=\"" $1 "\""
-		print "TYPE" d "=\"" $2 "\""
-		printf("SIZE" d "=\"%d\"\n", $3 / 1024)
-		printf("USED" d "=\"%d\"\n", $4 / 1024)
-		printf("USEDP" d "=\"%d\"\n", $6)
-		printf("FREE" d "=\"%d\"\n", $5 / 1024)
-		printf("FREEP" d "=\"%d\"\n", (100-$6))
-		print "MNT" d "=\"" $7 "\""
+		print "TYPE" d "=\"" $1 "\""
+		printf("SIZE" d "=\"%d\"\n", $2 / 1024)
+		printf("USED" d "=\"%d\"\n", $3 / 1024)
+		printf("USEDP" d "=\"%d\"\n", $5)
+		printf("FREE" d "=\"%d\"\n", $6 / 1024)
+		printf("FREEP" d "=\"%d\"\n", (100-$5))
+		print "MNT" d "=\"" $6 "\""
 	}
 	END {
 		print "DISKS=\"" d "\""
 	}'
 }
 
+# fix for systems that don't understand TERM=screen-256colors
+infocmp 2>/dev/null >/dev/null || TERM=screen
+
 HOST=$(hostname -s)
 cat /etc/motd 2>/dev/null
-NUMPROCS=$(grep -c "^processor" /proc/cpuinfo)
+NUMPROCS=$(grep -c "^processor" /proc/cpuinfo 2>/dev/null)
 OFFSET=-1
 while [ -e "$TTY" ]; do
 
@@ -53,7 +57,7 @@ TITLE2=""
 
 # get our load and show it if it's high
 eval $(getload)
-if [ ${LOAD%%.*} -gt "$NUMPROCS" ]; then
+if [ "${LOAD%%.*}" -gt "$NUMPROCS" ]; then
 	TITLE2="$TITLE2 $LOAD"
 fi
 

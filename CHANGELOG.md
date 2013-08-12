@@ -1,3 +1,13 @@
+## 1.2.0
+### New Feature
+* `myzsh set` to set global variables like TMPDIR. Don't forget to `myzsh save`!
+* `myzsh theme` to set a new theme.
+* Multiple cleanup and reformatting of functions.
+ 
+### Bug Fixes
+* Fixed issue with alwaystmux key bind to last-window.
+* Multiple compatibility improvements for OSX. 
+
 ## 1.1.0
 ### New Feature
 * Add custom directory support for modules, themes, and completions.

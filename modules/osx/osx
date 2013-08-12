@@ -1,2 +1,2 @@
-sleep(){ osascript <<< 'tell application "System Events" to sleep'; }
+nap(){ osascript <<< 'tell application "System Events" to sleep'; }
 # vim: filetype=zsh noexpandtab
