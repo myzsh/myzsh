@@ -42,6 +42,10 @@ function myzsh {
 	case "$verb" in
 	# reload a specific module's functions
 	reload)
+		if [ -z "$mod" ]; then
+			echo "Must specify a module to reload"
+			return 1
+		fi
 		[ -z $MYZSH/**/modules/$mod/$mod(N) ] && echo "Cannot find module $mod" && return 1
 		source $MYZSH/**/modules/$mod/$mod
 	;;
