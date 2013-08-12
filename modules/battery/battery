@@ -56,7 +56,7 @@ function battery_prompt() {
          [ $BATT_TIME != 0 ] && batt_time=" $(battery_time_remaining)";
       fi
 
-      echo "%{$fg[$color]%}$pct%$batt_time{$reset_color%}"
+      echo "%{$fg[$color]%}$pct%$batt_time%{$reset_color%}"
 }
 
 OUTPUT=battery_prompt
