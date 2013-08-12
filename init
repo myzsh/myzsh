@@ -175,19 +175,19 @@ function myzsh {
 			return
 		fi
 		sed -i"" -e "s/^LPRIMARY=[^)]*)\(.*\)/LPRIMARY=\(${LPRIMARY}\)\1/" "$HOME/.zshrc"
-		sed -i"" "s/^LSECONDARY=[^)]*)\(.*\)/LSECONDARY=\(${LSECONDARY}\)\1/" $HOME/.zshrc
-		sed -i"" "s/^RPRIMARY=[^)]*)\(.*\)/RPRIMARY=\(${RPRIMARY}\)\1/" $HOME/.zshrc
-		sed -i"" "s/^RSECONDARY=[^)]*)\(.*\)/RSECONDARY=\(${RSECONDARY}\)\1/" $HOME/.zshrc
-		sed -i"" "s/^TITLE=[^)]*)\(.*\)/TITLE=(${TITLE})\1/" $HOME/.zshrc
-		sed -i"" "s/^EXTRA=[^)]*)\(.*\)/EXTRA=(${EXTRA})\1/" $HOME/.zshrc
-		sed -i"" "s/^THEME=.*/THEME=\"${THEME}\"/" $HOME/.zshrc
+		sed -i"" -e "s/^LSECONDARY=[^)]*)\(.*\)/LSECONDARY=\(${LSECONDARY}\)\1/" "$HOME/.zshrc"
+		sed -i"" -e "s/^RPRIMARY=[^)]*)\(.*\)/RPRIMARY=\(${RPRIMARY}\)\1/" "$HOME/.zshrc"
+		sed -i"" -e "s/^RSECONDARY=[^)]*)\(.*\)/RSECONDARY=\(${RSECONDARY}\)\1/" "$HOME/.zshrc"
+		sed -i"" -e "s/^TITLE=[^)]*)\(.*\)/TITLE=(${TITLE})\1/" "$HOME/.zshrc"
+		sed -i"" -e "s/^EXTRA=[^)]*)\(.*\)/EXTRA=(${EXTRA})\1/" "$HOME/.zshrc"
+		sed -i"" -e "s/^THEME=.*/THEME=\"${THEME}\"/" "$HOME/.zshrc"
 		local global
 		for k in "${(k)GLOBALS[@]}"; do
 			# get our global variable abstractly
 			eval global="\$$k"
-			sed -i"" "/^$k=/d" "$HOME/.zshrc"
+			sed -i"" -e "/^$k=/d" "$HOME/.zshrc"
 			if [ "${GLOBALS[$k]}" != "$global" ]; then
-				sed -i"" "/^source/i\\
+				sed -i"" -e "/^source/i\\
 $k=\"$global\"
 " "$HOME/.zshrc" # OS X is dumb
 			fi
