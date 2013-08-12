@@ -1,8 +1,5 @@
-# If no $BATT_TIME default to no
-[ -z "$BATT_TIME" ] && BATT_TIME=0
-# If not $BATT_METER default to no
-[ -z "$BATT_METER" ] && BATT_METER=0
-
+globalvar BATT_TIME 0
+globalvar BATT_METER 0
 
 # Generate the battery number
 function battery_pct() {
@@ -54,9 +51,12 @@ function battery_prompt() {
             color='red'
          fi
          pct=$(battery_pct)%%
+
+         batt_time="";
+         [ $BATT_TIME != 0 ] && batt_time=" $(battery_time_remaining)";
       fi
-# ⚡
-      echo "%{$fg[$color]%}[$pct]%$(battery_time_remainng){$reset_color%}"
+
+      echo "%{$fg[$color]%}$pct%$batt_time{$reset_color%}"
 }
 
 OUTPUT=battery_prompt
