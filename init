@@ -42,6 +42,10 @@ function myzsh {
 	case "$verb" in
 	# reload a specific module's functions
 	reload)
+		if [ -z "$mod" ]; then
+			echo "Must specify a module to reload"
+			return 1
+		fi
 		[ -z $MYZSH/**/modules/$mod/$mod(N) ] && echo "Cannot find module $mod" && return 1
 		source $MYZSH/**/modules/$mod/$mod
 	;;
@@ -163,21 +167,35 @@ function myzsh {
 		chsh -s $(which zsh)
 	;;
 	save)
+		# backup .zshrc if it's not MYZSH enabled
 		if [ -s "$HOME/.zshrc" ]; then
 		  grep -q "^MYZSH=" "$HOME/.zshrc" &> /dev/null || mv "$HOME/.zshrc" "$HOME/.zshrc.bk"
 		fi
+		# copy over our default zshrc if we don't have one
 		if [ ! -s "$HOME/.zshrc" ]; then
 			rm "$HOME/.zshrc" 2>/dev/null
 			echo "Copying the default config to your $HOME/.zshrc"
-			cp $MYZSH/samples/zshrc.default $HOME/.zshrc
+			cp "$MYZSH/samples/zshrc.default" "$HOME/.zshrc"
 			return
 		fi
-		sed -i "s/^LPRIMARY=[^)]*)\(.*\)/LPRIMARY=\(${LPRIMARY}\)\1/" $HOME/.zshrc
-		sed -i "s/^LSECONDARY=[^)]*)\(.*\)/LSECONDARY=\(${LSECONDARY}\)\1/" $HOME/.zshrc
-		sed -i "s/^RPRIMARY=[^)]*)\(.*\)/RPRIMARY=\(${RPRIMARY}\)\1/" $HOME/.zshrc
-		sed -i "s/^RSECONDARY=[^)]*)\(.*\)/RSECONDARY=\(${RSECONDARY}\)\1/" $HOME/.zshrc
-		sed -i "s/^TITLE=[^)]*)\(.*\)/TITLE=(${TITLE})\1/" $HOME/.zshrc
-		sed -i "s/^EXTRA=[^)]*)\(.*\)/EXTRA=(${EXTRA})\1/" $HOME/.zshrc
+		sed -i"" -e "s/^LPRIMARY=[^)]*)\(.*\)/LPRIMARY=\(${LPRIMARY}\)\1/" "$HOME/.zshrc"
+		sed -i"" -e "s/^LSECONDARY=[^)]*)\(.*\)/LSECONDARY=\(${LSECONDARY}\)\1/" "$HOME/.zshrc"
+		sed -i"" -e "s/^RPRIMARY=[^)]*)\(.*\)/RPRIMARY=\(${RPRIMARY}\)\1/" "$HOME/.zshrc"
+		sed -i"" -e "s/^RSECONDARY=[^)]*)\(.*\)/RSECONDARY=\(${RSECONDARY}\)\1/" "$HOME/.zshrc"
+		sed -i"" -e "s/^TITLE=[^)]*)\(.*\)/TITLE=(${TITLE})\1/" "$HOME/.zshrc"
+		sed -i"" -e "s/^EXTRA=[^)]*)\(.*\)/EXTRA=(${EXTRA})\1/" "$HOME/.zshrc"
+		sed -i"" -e "s/^THEME=.*/THEME=\"${THEME}\"/" "$HOME/.zshrc"
+		local global
+		for k in "${(k)GLOBALS[@]}"; do
+			# get our global variable abstractly
+			eval global="\$$k"
+			sed -i"" -e "/^$k=/d" "$HOME/.zshrc"
+			if [ "${GLOBALS[$k]}" != "$global" ]; then
+				sed -i"" -e "/^source/i\\
+$k=\"$global\"
+" "$HOME/.zshrc" # OS X is dumb
+			fi
+		done
 		echo "$HOME/.zshrc has been updated"
 	;;
 	disable)
@@ -284,15 +302,6 @@ function myzsh {
 			return
 		fi
 		echo "Setting: $1 to $2"
-		if isosx; then
-			sed -i "" "/^$1=/d" ~/.zshrc
-			sed -i "" "/^source/i\\
-$1=$2
-" ~/.zshrc # OS X is dumb
-		else
-			sed -i "" "/^$1=/d" ~/.zshrc
-			sed -i "" "/^source/i $1=$2" ~/.zshrc
-		fi
 		let $1=$2
 	;;
 	unset)
@@ -301,7 +310,15 @@ $1=$2
 			return
 		fi
 		echo "Unsetting: $1"
-		sed -i "/^$1/d" ~/.zshrc
+		let $1=${GLOBALS[$1]}
+	;;
+	theme)
+		if [ ! -e "$MYZSH/themes/$1/$1" -a ! -e "$MYZSH/remotes/*/themes/$1/$1" ]; then
+			echo "Theme $1 not found"
+			return
+		fi
+		THEME="$1"
+		source $MYZSH/**/themes/$THEME/$THEME
 	;;
 	*)
 		cat <<dog
@@ -323,6 +340,7 @@ Commands:
   remote - Add configs from git repo
   set - Set global variables
   unset - Unset global variables
+  theme - Set current theme
 
 Report bugs to brimstone@the.narro.ws
 myzsh homepage: <https://github.com/brimstone/zsh>
@@ -343,11 +361,11 @@ function isosx {
 function globalvar {
 	local global
 	# build up an array of global variables
-	GLOBALS[$1]=$2
+	GLOBALS[$1]="$2"
 	# setting $global to the value of the value of $1
 	eval global="\$$1"
 	# if the value of the variable refered to by $1 is nothing, then set it to our second argument
-	[ -z "$global" ] && let $1=$2
+	[ -z "$global" ] && eval "$1=\"$2\""
 }
 
 function init_myzsh {
