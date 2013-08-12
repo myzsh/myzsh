@@ -6,7 +6,7 @@ git_func () {
 	ingit=$?
 	if [ "$ingit" = 0 ]; then
 		local gitstatus
-		[ $GIT_USE_ICONS = 1 ] && printf "⭠ "
+		[ $GIT_USE_ICONS != 0 ] && printf "⭠ "
 		branch=$(git -c color.branch=no branch | awk '/^\*/ {print $2}')
 		printf "%s" "$branch"
 
