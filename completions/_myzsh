@@ -10,7 +10,7 @@ _myzsh () {
 			for m in $MYZSH/**/$1/*(N); do
 				m=${m%%/}
 				desc="$(awk '/^\#+\ ?Summary/ {getline; print $0}' $m/info.md 2>/dev/null)"
-				echo "${m##*/}:${desc:-No Description}"
+				echo "${m##*/}:${desc:-No Description for ${m##*/}}"
 			done | sort
 		) )
 		_describe -t commands "myzsh $1" modules -V1
