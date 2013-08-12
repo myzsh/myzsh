@@ -31,7 +31,7 @@ function battery_time_remaining() {
    else
 		local acpi="$(acpi -b 2>/dev/null)"
 		local tmp=${acpi% *}
-		i="~${tmp##* }"
+		i="${tmp##* }"
    fi
    echo $i
 }
@@ -43,12 +43,10 @@ function battery_prompt() {
       pct=$(battery_pct)
 
       if [[ "$pct" != "⚡" ]] ; then
-         if [ $pct -gt 50 ] ; then
-            color='green'
-         elif [ $pct -gt 20 ] ; then
-            color='yellow'
-         else
+         if [ $pct -lt 21 ] ; then
             color='red'
+         elif [ $pct -lt 51 ] ; then
+            color='yellow'
          fi
          pct=${pct}%
 
