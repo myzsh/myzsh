@@ -2,22 +2,35 @@
 
 # This is just the tab completion stuff. I wonder if it can be merged into myzsh() ?
 _myzsh () {
+	getmodulearray() {
+		local -a modules
+		local m
+		local desc
+		modules=( $(
+			for m in $MYZSH/**/$1/*(N); do
+				m=${m%%/}
+				desc="$(awk '/^\#+\ ?Summary/ {getline; print $0}' $m/info.md 2>/dev/null)"
+				echo "${m##*/}:${desc:-No Description for ${m##*/}}"
+			done | sort
+		) )
+		_describe -t commands "myzsh $1" modules -V1
+	}
 	local -a verbs
 	IFS=$'\n'
 	# words[2] is whatever is already typed into the command line after "myzsh "
 	case "$words[2]" in
 	# FIXME figure out if we can remove the trailing slash on matched modules
 	edit)
-		_files -W "$MYZSH/modules/"
+		getmodulearray modules
 		;;
 	reload)
-		_files -W "$MYZSH/modules/"
+		getmodulearray modules
 		;;
 	info)
-		_files -W "$MYZSH/modules/"
+		getmodulearray modules
 		;;
 	test)
-		_files -W "$MYZSH/modules/"
+		getmodulearray modules
 		;;
 	disable)
 		# actually reading from the variables loaded to this environment
@@ -42,7 +55,7 @@ _myzsh () {
 					)
 			_describe -t commands 'myzsh enable commands' locations -V1
 		else
-			_files -W "$MYZSH/modules/" # TODO need support for remotes
+			getmodulearray modules
 		fi
 		;;
 	remote)
@@ -75,7 +88,7 @@ _myzsh () {
 			local -a vars
 			vars=( $(
 				for k in "${(k)GLOBALS[@]}"; do
-					echo "$k:Default ${GLOBALS[$k]}"
+					echo "$k:Current: $(eval echo \$$k) Default ${GLOBALS[$k]}"
 				done | sort
 			) )
 			_describe -t commands 'myzsh set variables' vars -V1
@@ -93,7 +106,7 @@ _myzsh () {
 			local -a vars
 			vars=( $(
 				for k in "${(k)GLOBALS[@]}"; do
-					echo "$k:Default ${GLOBALS[$k]}"
+					echo "$k:Current: $(eval echo \$$k) Default ${GLOBALS[$k]}"
 				done | sort
 			) )
 			_describe -t commands 'myzsh set variables' vars -V1
