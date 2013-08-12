@@ -24,7 +24,7 @@ function battery_time_remaining() {
    if isosx; then
       if [[ $(ioreg -rc AppleSmartBattery | grep -c '^.*"ExternalConnected"\ =\ No') -eq 1 ]] ; then
          timeremaining=$(ioreg -rc "AppleSmartBattery"| grep '^.*"AvgTimeToEmpty"\ =\ ' | sed -e 's/^.*"AvgTimeToEmpty"\ =\ //')
-         i="~$((timeremaining / 60)):$((timeremaining % 60))"
+         i="$((timeremaining / 60)):$((timeremaining % 60))"
       else
          i="∞"
       fi
