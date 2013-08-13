@@ -12,9 +12,11 @@ function battery_pct() {
          i="⚡"
       fi
    else
-		local acpi="$(acpi -b 2>/dev/null)"
-		local battp=${acpi%%%*}
-		integer i=${battp##* }
+      if [[ $(acpi 2&>/dev/null | grep -c '^Battery.*Discharging') -gt 0 ]] ; then
+         i=$(acpi | cut -f2 -d ',' | tr -cd '[:digit:]')
+      else
+         i="⚡"
+      fi
    fi
    echo $i
 }
