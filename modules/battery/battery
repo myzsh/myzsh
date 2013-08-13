@@ -28,7 +28,7 @@ function battery_time_remaining() {
          timeremaining=$(ioreg -rc "AppleSmartBattery"| grep '^.*"AvgTimeToEmpty"\ =\ ' | sed -e 's/^.*"AvgTimeToEmpty"\ =\ //')
          i="$((timeremaining / 60)):$((timeremaining % 60))"
       else
-         i="∞"
+         i="⚡"
       fi
    else
 		local acpi="$(acpi -b 2>/dev/null)"
