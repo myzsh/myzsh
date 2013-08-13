@@ -1,3 +1,4 @@
+globalvar BATT_PCT 0
 globalvar BATT_TIME 0
 globalvar BATT_METER 0
 
@@ -63,7 +64,7 @@ function battery_prompt() {
          fi
 
 		   [ $BATT_METER != 0 ] && batt_prompt[$index]="$(battery_meter $batt_pct)" && index=$index+1
-         batt_prompt[$index]="${batt_pct}%%" && index=$index+1
+         [ $BATT_PCT != 0 ] && batt_prompt[$index]="${batt_pct}%%" && index=$index+1
          [ $BATT_TIME != 0 ] && batt_prompt[$index]="$(battery_time_remaining)"
       else
          batt_prompt[$index]="${batt_pct}"
