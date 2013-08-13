@@ -4,41 +4,41 @@ globalvar BATT_METER 0
 
 # Generate the battery number
 function battery_pct() {
-   if isosx; then
-      if [[ $(ioreg -rc AppleSmartBattery | grep -c '^.*"ExternalConnected"\ =\ No') -eq 1 ]] ; then
-         typeset -F maxcapacity=$(ioreg -rc "AppleSmartBattery"| grep '^.*"MaxCapacity"\ =\ ' | sed -e 's/^.*"MaxCapacity"\ =\ //')
-         typeset -F currentcapacity=$(ioreg -rc "AppleSmartBattery"| grep '^.*"CurrentCapacity"\ =\ ' | sed -e 's/^.*CurrentCapacity"\ =\ //')
-         integer i=$(((currentcapacity/maxcapacity) * 100))
-      else
-         i="⚡"
-      fi
-   else
-      if [[ $(acpi 2&>/dev/null | grep -c '^Battery.*Discharging') -gt 0 ]] ; then
-         i=$(acpi | cut -f2 -d ',' | tr -cd '[:digit:]')
-      else
-         i="⚡"
-      fi
-   fi
-   echo $i
+	if isosx; then
+		if [[ $(ioreg -rc AppleSmartBattery | grep -c '^.*"ExternalConnected"\ =\ No') -eq 1 ]] ; then
+			typeset -F maxcapacity=$(ioreg -rc "AppleSmartBattery"| grep '^.*"MaxCapacity"\ =\ ' | sed -e 's/^.*"MaxCapacity"\ =\ //')
+			typeset -F currentcapacity=$(ioreg -rc "AppleSmartBattery"| grep '^.*"CurrentCapacity"\ =\ ' | sed -e 's/^.*CurrentCapacity"\ =\ //')
+			integer i=$(((currentcapacity/maxcapacity) * 100))
+		else
+			i="⚡"
+		fi
+	else
+		if [[ $(acpi 2&>/dev/null | grep -c '^Battery.*Discharging') -gt 0 ]] ; then
+			i=$(acpi | cut -f2 -d ',' | tr -cd '[:digit:]')
+		else
+			i="⚡"
+		fi
+	fi
+	echo $i
 }
 
 # Generate the time remaining
 function battery_time_remaining() {
-   if isosx; then
-      if [[ $(ioreg -rc AppleSmartBattery | grep -c '^.*"ExternalConnected"\ =\ No') -eq 1 ]] ; then
-         timeremaining=$(ioreg -rc "AppleSmartBattery"| grep '^.*"AvgTimeToEmpty"\ =\ ' | sed -e 's/^.*"AvgTimeToEmpty"\ =\ //')
-         i="$((timeremaining / 60)):$((timeremaining % 60))"
-      else
-         i="⚡"
-      fi
-   else
-      if [[ $(acpi 2&>/dev/null | grep -c '^Battery.*Discharging') -gt 0 ]] ; then
-         i="${${$(acpi -b 2>/dev/null)##*, }%% *}"
-      else
-         i="⚡"
-      fi
-   fi
-   echo $i
+	if isosx; then
+		if [[ $(ioreg -rc AppleSmartBattery | grep -c '^.*"ExternalConnected"\ =\ No') -eq 1 ]] ; then
+			timeremaining=$(ioreg -rc "AppleSmartBattery"| grep '^.*"AvgTimeToEmpty"\ =\ ' | sed -e 's/^.*"AvgTimeToEmpty"\ =\ //')
+			i="$((timeremaining / 60)):$((timeremaining % 60))"
+		else
+			i="⚡"
+		fi
+	else
+		if [[ $(acpi 2&>/dev/null | grep -c '^Battery.*Discharging') -gt 0 ]] ; then
+			i="${${$(acpi -b 2>/dev/null)##*, }%% *}"
+		else
+			i="⚡"
+		fi
+	fi
+	echo $i
 }
 
 # Determine the meter character to display
@@ -50,31 +50,31 @@ function battery_meter() {
 
 # Display the relevant details for the prompt
 function battery_prompt() {
-      index=1
-      prompt=""
-      batt_prompt=()
-      color='green'
-      batt_pct=$(battery_pct)
+		index=1
+		prompt=""
+		batt_prompt=()
+		color='green'
+		batt_pct=$(battery_pct)
 
-      if [[ "$batt_pct" != "⚡" ]] ; then
-         if [ $batt_pct -lt 21 ] ; then
-            color='red'
-         elif [ $batt_pct -lt 51 ] ; then
-            color='yellow'
-         fi
+		if [[ "$batt_pct" != "⚡" ]] ; then
+			if [ $batt_pct -lt 21 ] ; then
+				color='red'
+			elif [ $batt_pct -lt 51 ] ; then
+				color='yellow'
+			fi
 
-		   [ $BATT_METER != 0 ] && batt_prompt[$index]="$(battery_meter $batt_pct)" && index=$index+1
-         [ $BATT_PCT != 0 ] && batt_prompt[$index]="${batt_pct}%%" && index=$index+1
-         [ $BATT_TIME != 0 ] && batt_prompt[$index]="$(battery_time_remaining)"
-      else
-         batt_prompt[$index]="${batt_pct}"
-      fi
+			[ $BATT_METER != 0 ] && batt_prompt[$index]="$(battery_meter $batt_pct)" && index=$index+1
+			[ $BATT_PCT != 0 ] && batt_prompt[$index]="${batt_pct}%%" && index=$index+1
+			[ $BATT_TIME != 0 ] && batt_prompt[$index]="$(battery_time_remaining)"
+		else
+			batt_prompt[$index]="${batt_pct}"
+		fi
 
-      for f in {1..${#batt_prompt[@]}};
-         prompt="${prompt%}$batt_prompt[$f] "
-      prompt="${prompt%"${prompt##*[![:space:]]}"}"
+		for f in {1..${#batt_prompt[@]}};
+			prompt="${prompt%}$batt_prompt[$f] "
+		prompt="${prompt%"${prompt##*[![:space:]]}"}"
 
-      echo "%{$fg[$color]%}$prompt%{$reset_color%}"
+		echo "%{$fg[$color]%}$prompt%{$reset_color%}"
 }
 
 OUTPUT=battery_prompt
