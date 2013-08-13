@@ -44,7 +44,7 @@ function battery_time_remaining() {
 # Determine the meter character to display
 function battery_meter() {
 	local -a range
-	range=( $( for f in {1..8}; do printf "\u258$f "; done; ) )
+	range=( $( for f in {1..9}; do printf "\u258$f "; done; ) )
 	echo ${range[$[ $1 / 10 ]]}
 }
 
