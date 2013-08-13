@@ -350,13 +350,23 @@ dog
 }
 
 # basic system detection
-function islinux {
-	[ $(uname) = "Linux" ]
-}
-
-function isosx {
-	[ $(uname) = "Darwin" ]
-}
+if [ $(uname) = "Linux" ]; then
+	function islinux {
+		return true
+	}
+	function isosx {
+		return false
+	}
+elif [ $(uname) = "Darwin" ]; then
+	function islinux {
+		return false
+	}
+	function isosx {
+		return true
+	}
+else
+	echo "Please report uname=$(uname) to brimstone@the.narro.ws. Thanks!"
+fi
 
 function globalvar {
 	local global
