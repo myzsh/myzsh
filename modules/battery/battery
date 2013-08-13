@@ -38,7 +38,7 @@ function battery_time_remaining() {
 
 function battery_meter() {
 	local -a range
-	range=( $( for f in {1..3}; do printf "\u258$f "; done; printf "%{\x1b[7m%}\u2580%{\x1b[0m%} "; for f in {4..8}; do printf "\u258$f "; done) )
+	range=( $( for f in {1..3}; do printf "\u258$f "; done; printf "%%{\x1b[7m%%}\u2580%%{\x1b[0m%%} "; for f in {4..8}; do printf "\u258$f "; done) )
 	echo ${range[$[ $1 / 10 ]]}
 }
 
