@@ -1,0 +1,19 @@
+# make sure colors and terminal settings autoload
+autoload colors zsh/terminfo
+# if we don't have colors, RHEL
+if [ -z "$terminfo" ]; then
+	typeset -A terminfo
+	for k in colors acsc enacs smacs rmacs sgr0 bold; do
+		if (( ! $+terminfo[$k] )); then
+			terminfo[$k]=$(tput $k)
+		fi
+	done
+fi
+
+# if we can do colors, init colors
+if [ "$terminfo[colors]" -ge 8 ]; then
+	colors
+	fg[nocolor]=${terminfo[sgr0]}
+fi
+
+# vim: filetype=zsh noexpandtab

@@ -517,17 +517,17 @@ function init_myzsh {
 	# first Set any variables
 	preexec_funcs=()
 	precmd_funcs=(precmd_main)
-	# then load the theme
-	# check for theme, select our default if nothing's set
-	[ -z $MYZSH/**/themes/$THEME/$THEME(N) ] && THEME="default"
-	source $MYZSH/**/themes/$THEME/$THEME
-	
-	# TODO this needs to be a function
+
 	# Load any one time modules
 	for m in $EXTRA; do
 		OUTPUT=""
 		myzsh reload "$m"
 	done
+
+	# then load the theme
+	# check for theme, select our default if nothing's set
+	[ -z $MYZSH/**/themes/$THEME/$THEME(N) ] && THEME="default"
+	source $MYZSH/**/themes/$THEME/$THEME
 
 	lp_funcs=()
 	for m in $LPRIMARY; do
