@@ -352,17 +352,17 @@ dog
 # basic system detection
 if [ $(uname) = "Linux" ]; then
 	function islinux {
-		return true
+		return 0
 	}
 	function isosx {
-		return false
+		return 1
 	}
 elif [ $(uname) = "Darwin" ]; then
 	function islinux {
-		return false
+		return 1
 	}
 	function isosx {
-		return true
+		return 0
 	}
 else
 	echo "Please report uname=$(uname) to brimstone@the.narro.ws. Thanks!"
