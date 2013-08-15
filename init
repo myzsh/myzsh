@@ -320,6 +320,11 @@ $k=\"$global\"
 		THEME="$1"
 		source $MYZSH/**/themes/$THEME/$THEME
 	;;
+	version)
+		branch=$(cd "$MYZSH"; git -c color.branch=no branch | awk '/^\*/ {print $2}')
+		[ $branch = "master" ] && branch="stable"
+		echo "$MYZSH_VERSION $branch"
+	;;
 	*)
 		cat <<dog
 Usage: myzsh command
@@ -341,6 +346,7 @@ Commands:
   set - Set global variables
   unset - Unset global variables
   theme - Set current theme
+  version - Displays current myzsh version
 
 Report bugs to brimstone@the.narro.ws
 myzsh homepage: <https://github.com/brimstone/zsh>
