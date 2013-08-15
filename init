@@ -426,6 +426,8 @@ function init_myzsh {
 	done
 }
 
+MYZSH_VERSION="1.2.0"
+
 [ -z "$MYZSH" ] && echo "\$MYZSH variable is undefined. This needs to be defined probably in $HOME/.zshrc"
 [ ! -d "$MYZSH" ] && echo "Directory refered to by \$MYZSH does not exist. You will probably not like the results."
 # set other globals
