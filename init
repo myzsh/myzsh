@@ -349,7 +349,7 @@ Commands:
   version - Displays current myzsh version
 
 Report bugs to brimstone@the.narro.ws
-myzsh homepage: <https://github.com/brimstone/zsh>
+myzsh homepage: <https://github.com/brimstone/myzsh>
 dog
 	;;
 	esac
