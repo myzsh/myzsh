@@ -1,4 +1,4 @@
-globalvar TMPDIR "/tmp"
+globalvar TMPDIR "/tmp" 'Temporary directory to cycled between with $HOME'
 # if our temp directory doesn't exist, we should try to make it
 [ ! -d "$TMPDIR" ] && ( mkdir "$TMPDIR" || echo "Couldn't create $TMPDIR." >&2 )
 

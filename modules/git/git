@@ -1,4 +1,4 @@
-globalvar GIT_USE_ICONS 0
+globalvar GIT_USE_ICONS 0 "Enables Icons in prompt"
 
 git_func () {
 	local ingit
