@@ -220,9 +220,15 @@ $k=\"$global\"
 	enable)
 		# make sure our user is calling us properly
 		if [ $# -lt 2 ]; then
-			echo "Usage: myzsh enable [lprimary|lsecondary|rprimary|rsecondary|extra] [module],..."
+			echo "Usage: myzsh enable [lprimary|lsecondary|rprimary|rsecondary|extra] [module] ..."
 			return 1
 		fi
+		foreach mod in $@; do
+			if [ ! -s $MYZSH/**/modules/$mod/$mod ]; then
+				echo "Module $mod doesn't exist."
+				return 1
+			fi
+		done
 		# save our location and shift it off the arguments stack
 		location="$1"
 		shift
