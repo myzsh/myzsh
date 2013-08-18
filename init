@@ -51,8 +51,12 @@ function myzsh {
 	;;
 	# edit a module
 	edit)
-		[ -z $MYZSH/**/modules/$mod/$mod(N) ] && myzsh error "Cannot find module $mod" && return 1
-		$EDITOR $MYZSH/**/modules/$mod/$mod
+		if [ -z "$mod" ]; then
+			$EDITOR "$HOME/.zshrc"
+		else
+			[ -z $MYZSH/**/modules/$mod/$mod(N) ] && myzsh error "Cannot find module $mod" && return 1
+			$EDITOR $MYZSH/**/modules/$mod/$mod
+		fi
 	;;
 	# update all of myzsh
 	update)
@@ -330,6 +334,7 @@ $k=\"$global\"
 		branch=$(cd "$MYZSH"; git -c color.branch=no branch | awk '/^\*/ {print $2}')
 		[ $branch = "master" ] && branch="stable"
 		echo "$MYZSH_VERSION $branch"
+	;;
 	debug)
 		if [ $# != 2 ]; then
 			myzsh error "Usage: myzsh debug <DEBUGLEVEL> <MSG>"
