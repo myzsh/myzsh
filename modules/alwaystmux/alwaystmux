@@ -1,4 +1,4 @@
-globalvar TMUX_LOCAL_PREFIX z "Key to signal tmux session is local"
+globalvar TMUX_LOCAL_PREFIX z "Key to signal when tmux session is local"
 globalvar TMUX_REMOTE_PREFIX a "Key to signal when tmux session is remote"
 if [ -z "$TMUX" ]; then
 	key=$TMUX_LOCAL_PREFIX
