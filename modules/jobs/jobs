@@ -1,5 +1,9 @@
 jobs_func () {
-	echo ${$(jobs | awk '/^\[/ {gsub("[\[\]]", "", $1); printf $1 ":" $4 ","}' 2>/dev/null)%%,}
+	(
+	# TODO this still needs to be cut down to a size somehow
+	jobs -r | sed -e 's/ *running */:/;/^(pwd/d'
+	jobs -s | sed -e 's/ *+ *suspended (.*) */:/'
+	) | tr '\n' ' '
 }
 
 OUTPUT=jobs_func
