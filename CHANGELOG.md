@@ -1,5 +1,22 @@
+## 1.2.1
+### New Features
+* Added description and module to `myzsh set` information
+* Added variable for current version. Closes Issue #26
+* Forgot the `myzsh version` command. Now Issue #26 can be closed
+* Manual merge of new helper function branch
+* markeddowned the readme a bit more, added a screenshot
+* Missed a few variables
+* Updated documentation about using and developing for myzsh a bit
+* Adding descriptions to global variables
+* Fixed link at the bottom of help
+* Added helper functions, debug, warning and error
+
+### Bug Fixes
+* Issue #20: Finally added a way to simply edit .zshrc from anywhere Bug fix: Fixed case statement from last commit
+* You can no longer enable modules that don't exist
+
 ## 1.2.0
-### New Feature
+### New Features
 * `myzsh set` to set global variables like TMPDIR. Don't forget to `myzsh save`!
 * `myzsh theme` to set a new theme.
 * Multiple cleanup and reformatting of functions.
@@ -9,7 +26,7 @@
 * Multiple compatibility improvements for OSX. 
 
 ## 1.1.0
-### New Feature
+### New Features
 * Add custom directory support for modules, themes, and completions.
 * New history module to share history among other sessions.
 * Added TITLE to enable/disable/save
@@ -27,6 +44,6 @@
 
 <!---
 Kind of used this line
-`git log 1.0.0.. --pretty=format:'[%h](http://github.com/brimstone/myzsh/commit/%H) - %s' --reverse`
+`git log $(git tag -l | sort -rn | head -n 1).. --pretty=format:'[%h](http://github.com/brimstone/myzsh/commit/%H) - %s' --reverse | sed -e 's/^.* - //' | sort`
 -->
 
