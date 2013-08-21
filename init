@@ -161,7 +161,7 @@ function myzsh {
 	;;
 	persistent)
 		# determine if we need to change our shell
-		if [[ "$SHELL" =~ "/zsh" ]]; then
+		if [ "${SHELL##*/}" = "zsh" ]; then
 			myzsh error "Shell seems to be zsh already."
 			return
 		fi
@@ -486,7 +486,7 @@ globalvar DEBUG 0
 compdef _myzsh myzsh
 
 # alert the user if our shell doesn't look like zsh
-if ! [[ "$SHELL" =~ "/zsh" ]]; then
+if [ "${SHELL##*/}" != "zsh" ]; then
 	myzsh warning "zsh may not be your shell."
 	myzsh warning "Run 'myzsh persistent' to set zsh as your shell."
 	echo
