@@ -2,16 +2,10 @@
 This is the set of scripts I use for my zsh prompt, a configuration framework for myzsh, if you will.
 
 ## Why myzsh?
-I first started of with phil's prompt.[1] After using and tweaking it for a few years, I found oh-my-zsh. I don't like how they handled themes and plugins, so after a glorious night of hacking, I developed my own framework. I hope you like it. :)
+I first started of with [phil's prompt](http://aperiodic.net/phil/prompt/). After using and tweaking it for a few years, I found oh-my-zsh. I don't like how they handled themes and plugins, so after a glorious night of hacking, I developed my own framework. I hope you like it. :)
 
-1: http://aperiodic.net/phil/prompt/
-
-## Screenshots
-One of many themes
-````
-┌─(/tmp)────────────────────────────────────────────────(wlan0:10.42.0.xx/24)─┐
-└─(18:07:05)─                                                     ─(06/22/13)─┘
-````
+## Screenshot
+![OS X](http://brimstone.github.io/myzsh/screenshot.1.osx.png)
 
 ## Installation
 First, clone git and enter a demo mode.
