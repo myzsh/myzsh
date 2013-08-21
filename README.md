@@ -27,7 +27,7 @@ cp $HOME/.myzsh/samples/zshrc.default $HOME/.zshrc
 ````
 
 ## Configuring
-Enabling a module is as easy as adding it to the array where you want it to show up. LPRIMARY is all of the modules that show show up on the top left prompt line. Some themes may not use the LSECONDARY and RSECONDARY, they should handle this gracefully.
+Enabling a module is as easy as adding it to the array where you want it to show up. `LPRIMARY` is all of the modules that show show up on the top left prompt line. Some themes may not use the `LSECONDARY` and `RSECONDARY`, they should handle this gracefully.
 ````bash
 myzsh enable lprimary git
 ````
