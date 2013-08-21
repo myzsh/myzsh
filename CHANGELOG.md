@@ -1,4 +1,4 @@
-## 1.2.1
+## 1.3.0
 ### New Features
 * Added description and module to `myzsh set` information
 * Added variable for current version. Closes Issue #26
