@@ -477,11 +477,14 @@ MYZSH_VERSION="1.2.0"
 typeset -A GLOBALS
 typeset -A GLOBALMODS
 typeset -A GLOBALDESCS
-# setup things
-init_myzsh
 globalvar DEBUG 0
 
-# TODO make sure our completion stuff is loaded so this works
+# Add our local completion directory
+fpath+=("$MYZSH/completions" $MYZSH/remotes/*/completions(N))
+# load the modules
+autoload -U compinit
+# autocompletion
+compinit
 # our completion should be loaded by now so we can link our completion function to our management function
 compdef _myzsh myzsh
 
@@ -496,5 +499,8 @@ if [ ! -e "$HOME/.zshrc" ]; then
 	myzsh warning "Run 'myzsh save' to save a default .zshrc file."
 	echo
 fi
+
+# setup things
+init_myzsh
 
 # vim: filetype=zsh noexpandtab

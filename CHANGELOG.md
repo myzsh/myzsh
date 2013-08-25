@@ -11,6 +11,7 @@
 * Fixed link at the bottom of help
 * Added helper functions, debug, warning and error
 * Added license
+* Moved autoloading to the main script
 
 ### Bug Fixes
 * Issue #20: Finally added a way to simply edit .zshrc from anywhere Bug fix: Fixed case statement from last commit
