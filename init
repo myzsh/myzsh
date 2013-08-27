@@ -120,7 +120,7 @@ function myzsh {
 				done
 			)"
 			printf "%${max}s: %-13s %-13s %s\n" "$n" "$enabled" "$r" "$(awk '/^\#+\ ?Summary/ {getline; print $0}' $m/info.md 2>/dev/null)"
-		done | sort;
+		done | sort -b
 		)
 	;;
 	# get info about a module
