@@ -1,9 +1,8 @@
 jobs_func () {
-	(
-	# TODO this still needs to be cut down to a size somehow
-	jobs -r | sed -e 's/ *running */:/;/^(pwd/d'
-	jobs -s | sed -e 's/ *+ *suspended (.*) */:/'
-	) | tr '\n' ' '
+	local out
+	out=$(for j in ${(k)jobs[@]}
+		printf "%s " "$j:${jobs[$j]}")
+	echo ${out%% }
 }
 
 OUTPUT=jobs_func
