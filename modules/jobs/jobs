@@ -1,7 +1,7 @@
 jobs_func () {
 	local out
 	out=$(for j in ${(k)jobs[@]}
-		printf "%s " "$j:${jobs[$j]}")
+		printf "%s " "$j:$(sed 's/ .* /.../' <<< "${jobs[$j]}")")
 	echo ${out%% }
 }
 
