@@ -18,6 +18,8 @@ function precmd {
 	# Capture our exit code
 	local exitcode=$?
 	# run all of our precmd functions setup for us
+	local -A jobs
+	jobs=( ${(kv)jobtexts[@]} )
 	local i
 	for ((i=1; i <= ${#precmd_funcs}; i+=1)); do
 		$precmd_funcs[$i]
