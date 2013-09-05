@@ -1,5 +1,5 @@
 ##Summary
-Sets up autoloader and enables some handy tab completion features
+Enables some handy tab completion features
 
 ##Requires
 nothing

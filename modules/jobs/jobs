@@ -1,5 +1,8 @@
 jobs_func () {
-	echo ${$(jobs | awk '/^\[/ {gsub("[\[\]]", "", $1); printf $1 ":" $4 ","}' 2>/dev/null)%%,}
+	local out
+	out=$(for j in ${(k)jobs[@]}
+		printf "%s " "$j:$(sed 's/ .* /.../' <<< "${jobs[$j]}")")
+	echo ${out%% }
 }
 
 OUTPUT=jobs_func
