@@ -36,8 +36,8 @@ function preexec {
 }
 
 function myzsh {
-	verb="$1"
-	mod="$2"
+	local verb="$1"
+	local mod="$2"
 	[ -n "$verb" ] && shift
 
 	# figure out what to do
@@ -56,7 +56,16 @@ function myzsh {
 		if [ -z "$mod" ]; then
 			$EDITOR "$HOME/.zshrc"
 		else
-			[ -z $MYZSH/**/modules/$mod/$mod(N) ] && myzsh error "Cannot find module $mod" && return 1
+			if [ -z $MYZSH/**/modules/$mod/$mod(N) ]; then
+				myzsh error "Cannot find module $mod"
+				printf "Create it? (y/n):"
+				if read -q; then
+					mkdir "$MYZSH/modules/$mod"
+					touch "$MYZSH/modules/$mod/$mod"
+				else
+					return 1
+				fi
+			fi
 			$EDITOR $MYZSH/**/modules/$mod/$mod
 		fi
 	;;
