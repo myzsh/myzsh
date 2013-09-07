@@ -10,9 +10,8 @@ theme_prompt () {
 		$ls_funcs[$i] | read OUTPUT
 		[ -n "$OUTPUT" ] && LSOUTPUT+="$OUTPUT "
 	done
-	
-	PROMPT="
-"
+
+	PROMPT=""	
 	[ -n "$LPOUTPUT" ] && PROMPT+="$PR_PRIMARY$LPOUTPUT
 "
 	PROMPT+="$PR_SECONDARY$LSOUTPUT❯$PR_NO_COLOR "
