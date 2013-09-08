@@ -1,3 +1,7 @@
+## 1.4.0
+### New Features
+* Added battery module to provide battery percentage and details to myzsh prompt
+
 ## 1.3.0
 ### New Features
 * Added description and module to `myzsh set` information
