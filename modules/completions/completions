@@ -1,0 +1,3 @@
+# add an arrow-key driven interface to autocompletion
+zstyle ':completion:*' menu select=1 _complete _ignored _approximate
+# vim: filetype=zsh noexpandtab

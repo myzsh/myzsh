@@ -1,4 +1,4 @@
-globalvar GIT_USE_ICONS 0
+globalvar GIT_USE_ICONS 0 "Enables Icons in prompt"
 
 git_func () {
 	local ingit
@@ -10,11 +10,11 @@ git_func () {
 		branch=$(git -c color.branch=no branch | awk '/^\*/ {print $2}')
 		printf "%s" "$branch"
 
-		gitstatus="${$(git status --porcelain | awk '{print $1}' | sort | uniq -c | awk '{printf $2":"$1" "}')%%,}"
+		gitstatus="${$(git status --porcelain 2>/dev/null | awk '{print $1}' | sort | uniq -c | awk '{printf $2":"$1" "}')%%,}"
 		if [ -n "$gitstatus" ]; then
 			printf " %s" "$gitstatus"
 		fi
-		stash=$(git stash list | wc -l)
+		stash=$(git stash list 2>/dev/null | wc -l)
 		if [ $stash -gt 0 ]; then
 			printf " S:%d" "$stash"
 		fi

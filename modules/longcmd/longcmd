@@ -11,7 +11,7 @@
 #            LONGCMD_TIME=30
 #
 ################################################################################
-globalvar LONGCMD_TIME 30
+globalvar LONGCMD_TIME 30 "Time before a program is considered long"
 
 longcmd_before () {
 	local f
