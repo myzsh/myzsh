@@ -1,0 +1,46 @@
+theme_prompt () {
+	local i
+	LPOUTPUT=""
+	for ((i=1; i <= ${#lp_funcs}; i+=1)); do
+		$lp_funcs[$i] | read OUTPUT
+		[ -n "$OUTPUT" ] && LPOUTPUT+="$OUTPUT "
+	done
+	LSOUTPUT=""
+	for ((i=1; i <= ${#ls_funcs}; i+=1)); do
+		$ls_funcs[$i] | read OUTPUT
+		[ -n "$OUTPUT" ] && LSOUTPUT+="$OUTPUT "
+	done
+
+	PROMPT=""
+	[ -n "$LPOUTPUT" ] && PROMPT+="$PR_PRIMARY$LPOUTPUT
+"
+	PROMPT+="$PR_SECONDARY$LSOUTPUT❯$PR_NO_COLOR "
+	RPROMPT=""
+}
+
+# setup colors
+autoload colors zsh/terminfo
+# if we don't have colors, RHEL
+if [ -z "$terminfo" ]; then
+	typeset -A terminfo
+	for k in colors acsc enacs smacs rmacs sgr0 bold; do
+		if (( ! $+terminfo[$k] )); then
+			terminfo[$k]=$(tput $k)
+		fi
+	done
+fi
+[[ "$terminfo[colors]" -ge 8 ]] && colors
+# setup our color names, PR_GREEN, PR_LIGHT_BLUE, etc
+for color in RED GREEN YELLOW BLUE MAGENTA CYAN WHITE BLACK GREY; do
+	eval PR_$color='%{$terminfo[bold]$fg[${(L)color}]%}'
+	eval PR_LIGHT_$color='%{$fg[${(L)color}]%}'
+done
+[ -z "$PR_PRIMARY" ] && PR_PRIMARY="%{$terminfo[bold]\x1b[3$( cut -b 3 <<< $(( [#7] 16#$(hostname | md5sum | cut -b 1) + 1)) )m%}"
+[ -z "$PR_SECONDARY" ] && PR_SECONDARY='$PR_BLACK'
+	#PR_PRIMARY=$(echo $PR_PRIMARY)
+PR_PRIMARY="$(echo "$PR_PRIMARY")"
+PR_SECONDARY=${(e)PR_SECONDARY}
+PR_SET_CHARSET="%{$terminfo[enacs]%}"
+PR_NO_COLOR="%{$terminfo[sgr0]%}"
+
+# vim: filetype=zsh noexpandtab
