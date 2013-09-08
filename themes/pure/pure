@@ -11,7 +11,7 @@ theme_prompt () {
 		[ -n "$OUTPUT" ] && LSOUTPUT+="$OUTPUT "
 	done
 
-	PROMPT=""	
+	PROMPT=""
 	[ -n "$LPOUTPUT" ] && PROMPT+="$PR_PRIMARY$LPOUTPUT
 "
 	PROMPT+="$PR_SECONDARY$LSOUTPUT❯$PR_NO_COLOR "
