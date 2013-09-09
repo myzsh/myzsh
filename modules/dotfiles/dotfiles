@@ -7,7 +7,11 @@ if [ -d "$DOTFILES_DIR" ]; then
 		echo "Checking out $DOTFILES_REPO to $DOTFILES_DIR"
 	fi
 	# update the repo if it's stale at all
+	# TODO .svn support
 	( cd "$DOTFILES_DIR"
+	if [ $[ $(date +%s) - $(stat -c %Y "$DOTFILES_DIR/.git/FETCH_HEAD") ] -gt $[ 86400 * 7 ] ]; then
+		git pull
+	fi
 	for f in *; do
 		[ -e "$HOME/.$f" -a ! -h "$HOME/.$f" ] && continue
 		# check to see if our dotfile is linked to where we expect
