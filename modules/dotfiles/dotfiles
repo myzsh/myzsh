@@ -1,0 +1,19 @@
+globalvar DOTFILES_REPO "" "Path to repository for dotfiles"
+globalvar DOTFILES_DIR "$HOME/dotfiles" "Path to local cache of dot files"
+
+if [ -d "$DOTFILES_DIR" ]; then
+	# check out the repo locally, if we don't already have it
+	if [ -n "$DOTFILES_REPO" -a ! -d "$DOTFILES_DIR" ]; then
+		echo "Checking out $DOTFILES_REPO to $DOTFILES_DIR"
+	fi
+	# update the repo if it's stale at all
+	( cd "$DOTFILES_DIR"
+	for f in *; do
+		[ -e "$HOME/.$f" -a ! -h "$HOME/.$f" ] && continue
+		# check to see if our dotfile is linked to where we expect
+		# if it's not, remove it and relink it
+		[ "$(readlink -f "$HOME/.$f")" != "$DOTFILES_DIR/$f" ] && ln -f -s "${DOTFILES_DIR##$HOME/}/$f" "$HOME/.$f"
+	done
+	)
+fi
+# vim: filetype=zsh noexpandtab
