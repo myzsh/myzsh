@@ -305,7 +305,12 @@ $k=\"$global\"
 
 	;;
 	set)
-		if [ -z "${GLOBALS[$1]}" ]; then
+		local flag=0
+		local key
+		for key in "${(k)GLOBALS[@]}"; do
+			[ "$key" = "$1" ] && flag=1
+		done
+		if [ $flag = 0 ]; then
 			myzsh error "$1 isn't registered as a global variable."
 			return
 		fi
@@ -314,7 +319,7 @@ $k=\"$global\"
 			return
 		fi
 		echo "Setting: $1 to $2"
-		let $1=$2
+		eval $1="$2"
 	;;
 	unset)
 		if [ -z "${GLOBALS[$1]}" ]; then
