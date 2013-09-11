@@ -20,4 +20,13 @@ if [ -d "$DOTFILES_DIR" ]; then
 	done
 	)
 fi
+
+dotfiles_check() {
+	(cd "$DOTFILES_DIR"
+	for f in *; do
+		[ -e "$HOME/.$f" -a ! -h "$HOME/.$f" ] && echo "$f is not a link"
+		[ "$(readlink -f "$HOME/.$f")" != "$DOTFILES_DIR/$f" ] && echo "$f doesn't point at our dotfile"
+	done
+	)
+}
 # vim: filetype=zsh noexpandtab
