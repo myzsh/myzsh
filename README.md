@@ -47,12 +47,14 @@ Also, you could directly edit your `$HOME/.zshrc` if you wanted.
 ## Writing a Module
 Modules simply need to be in a directory with their name, in either the `$MYZSH/modules` or `$MYZSH/remotes/$remote_name/modules` directory.
 
+Start editing a new module with simply `myzsh edit helloworld`
+
 The most simple module would simply define a function and echo something to standard out:
 ````bash
-function my_module {
+function helloworld {
 	echo "Hello World"
 }
-OUTPUT=my_module
+OUTPUT=helloworld
 ````
 The `OUTPUT` variable is defined to be the name of the function that needs to be called for your module. If you have any other setup logic, that can go pretty much anywhere in this file as well. It will only be sourced once.
 
