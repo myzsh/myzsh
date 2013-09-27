@@ -71,13 +71,25 @@ function myzsh {
 	;;
 	# update all of myzsh
 	update)
-		# Update via svn, if we can
-		if svn info $MYZSH 2>/dev/null >/dev/null; then
-			svn up $MYZSH
-		# TODO elif git something
-		elif [ -d "$MYZSH/.git" ]; then
+		local dir="$1"
+		if [ -z "$dir" ]; then
+			myzsh update ".."
 			(
-			cd "$MYZSH"
+				cd $MYZSH/remotes
+				for d in *; do
+					myzsh update "$d"
+				done
+			)
+			return
+		fi
+		dir="$MYZSH/remotes/$dir"
+		# Update via svn, if we can
+		if svn info "$dir" 2>/dev/null >/dev/null; then
+			svn up "$dir"
+		# TODO elif git something
+		elif [ -d "$dir/.git" ]; then
+			(
+			cd "$dir"
 			# figure out our current branch
 			local branch=$(git -c color.branch=no branch | awk '/^\*/ {print $2}')
 			# if we're not on master or dev
