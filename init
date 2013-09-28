@@ -42,6 +42,30 @@ function myzsh {
 
 	# figure out what to do
 	case "$verb" in
+	# Make a new branch based of the development branch
+	branch)
+		local branch="$1"
+		if [ -z "$branch" ]; then
+			myzsh error "Must specify a branch to fork from dev."
+			return
+		fi
+		cd $MYZSH
+		git checkout dev
+		git checkout -b "$branch"
+	;;
+	# merge a branch into the development branch
+	merge)
+		local branch="$1"
+		if [ -z "$branch" ]; then
+			myzsh error "Must specify a branch to merge into dev."
+			return
+		fi
+		cd $MYZSH
+		git checkout "$branch" || return
+		git rebase dev || return
+		git checkout dev
+		git merge --no-ff "$branch" -m "Merge branch '$branch' into dev"
+	;;
 	# reload a specific module's functions
 	reload)
 		if [ -z "$mod" ]; then
