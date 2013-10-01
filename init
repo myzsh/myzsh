@@ -76,7 +76,7 @@ function myzsh {
 			myzsh update ".."
 			(
 				cd $MYZSH/remotes
-				for d in *; do
+				for d in *(N); do
 					myzsh update "$d"
 				done
 			)
