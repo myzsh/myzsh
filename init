@@ -117,7 +117,6 @@ function myzsh {
 		else
 			dir="$MYZSH/remotes/$dir"
 		fi
-		echo $dir
 		# Update via svn, if we can
 		if svn info "$dir" 2>/dev/null >/dev/null; then
 			svn up "$dir"
