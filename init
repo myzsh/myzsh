@@ -151,6 +151,8 @@ function myzsh {
 			echo "Decided that git was the best? $dir"
 			cd "$dir"
 			git pull
+		else
+			myzsh error "Unable to update remote $(basename "$dir")"
 		fi
 	;;
 	# list info about all modules
