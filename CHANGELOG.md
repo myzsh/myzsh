@@ -1,6 +1,7 @@
 ## 1.4.0
 ### New Features
-* Added battery module to provide battery percentage and details to myzsh prompt
+* Battery module to provide battery percentage and details to myzsh prompt
+* myzsh update now updates myzsh and remotes if they are in svn or git
 
 ### Bug Fixes
 * Found some errors with out `myzsh set` operates
