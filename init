@@ -71,14 +71,60 @@ function myzsh {
 	;;
 	# update all of myzsh
 	update)
-		# Update via svn, if we can
-		if svn info $MYZSH 2>/dev/null >/dev/null; then
-			svn up $MYZSH
-		# TODO elif git something
-		elif [ -d "$MYZSH/.git" ]; then
+		local dir="$1"
+		if [ -z "$dir" ]; then
 			(
-			cd "$MYZSH"
-			git pull
+				cd "$MYZSH"
+				# figure out our current branch
+				local branch=$(git -c color.branch=no branch | awk '/^\*/ {print $2}')
+				# if we're not on master or dev
+				if [ "$branch" != "master" -a "$branch" != "dev" ]; then
+					# assume the user knows what they're doing
+					git pull
+				else
+					local -A remotes
+					remotes[github]="https://github.com/brimstone/myzsh"
+					remotes[gitorious]="git://gitorious.org/brimstone/myzsh.git"
+					remotes[bitbucket]="https://bitbucket.org/brimston3/myzsh.git"
+					remotes[thenarrows]="https://the.narro.ws/git/myzsh"
+					# loop over all of our remotes
+					for r in $(git remote); do
+						# if our remote is known
+						if [ -n "$remotes[$r]" ]; then
+							# update it
+							git pull "$r" "$branch"
+							# remove it from our temp array
+							unset "remotes[$r]"
+						else
+						# other wise, remove it
+							git remote remove "$r"
+						fi
+					done
+					# if we missed any remotes, set them up now and fetch from them
+					for r in "${(k)remotes[@]}"; do
+						git remote add "$r" "$remotes[$r]"
+						git pull "$r" "$branch"
+					done
+				fi
+			)
+			(
+				cd $MYZSH/remotes
+				for d in *(N); do
+					myzsh update "$d"
+				done
+			)
+			dir="$MYZSH"
+		else
+			dir="$MYZSH/remotes/$dir"
+		fi
+		# Update via svn, if we can
+		if svn info "$dir" 2>/dev/null >/dev/null; then
+			svn up "$dir"
+		# else git something
+		elif [ -d "$dir/.git" ]; then
+			(
+				cd "$dir"
+				git pull
 			)
 		fi
 	;;

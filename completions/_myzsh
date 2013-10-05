@@ -126,6 +126,15 @@ _myzsh () {
 		) )
 		_describe -t commands 'myzsh themes' themes -V1
 	;;
+	update)
+		local -a array=()
+		array=( $(
+			cd "$MYZSH/remotes/"
+			for d in *
+				echo "$d"
+		) )
+		compadd $array
+	;;
 	# FIXME this could be done better, fixing [LPRIMARY,LSECONDARY,...] files ...
 	*)
 		verbs=( $(myzsh | grep " - " | sed 's/^ *//;s/ - /:/' | sort) )
