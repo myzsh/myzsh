@@ -72,7 +72,7 @@ function myzsh {
 			myzsh error "Must specify a module to reload"
 			return 1
 		fi
-		[ -z $MYZSH/**/modules/$mod/$mod(N) ] && myzsh error "Cannot find module $mod" && return 1
+		[ -z $MYZSH/**/modules/$mod/$mod(N) ] 2>/dev/null && myzsh error "Cannot find module $mod" && return 1
 		source $MYZSH/**/modules/$mod/$mod
 	;;
 	# edit a module
