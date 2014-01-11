@@ -526,6 +526,7 @@ function init_myzsh {
 
 	# then load the theme
 	# check for theme, select our default if nothing's set
+	[ -z "$THEME" ] && THEME="default"
 	[ -z $MYZSH/**/themes/$THEME/$THEME(N) ] && THEME="default"
 	source $MYZSH/**/themes/$THEME/$THEME
 
