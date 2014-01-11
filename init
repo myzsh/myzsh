@@ -614,7 +614,7 @@ fi
 # Check environment
 
 # alert the user if our shell doesn't look like zsh
-if [ "${SHELL##*/}" != "zsh" ]; then
+if [ -n "$SHELL" -a "${SHELL##*/}" != "zsh" ]; then
 	myzsh warning "zsh may not be your shell."
 	myzsh warning "Run 'myzsh persistent' to set zsh as your shell."
 	echo
