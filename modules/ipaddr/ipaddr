@@ -1,6 +1,8 @@
+globalvar IPADDR_IGNORE_NET "docker0|fw|gif|lo|lxcbr0|p2p|stf|utnn|vmnet" "Network devices to ignore"
+
 if which ip >/dev/null; then
 	ip_func () {
-		echo "${$(ip -o addr | awk '/inet /{if ($2!="lo"){printf $2 ":" $4 " "}}')%% }"
+          echo "${$(ip -o addr | awk -v ignore="$IPADDR_IGNORE_NET" '/inet /{if ($2 !~ ignore){printf $2 ":" $4 " "}}')%% }"
 	}
 else
 	#modified from ifconfig module
@@ -17,7 +19,7 @@ else
 				echo ${#binary%%0*}
 		}
 		ip_func () {
-			echo "${$($IFCONFIG | awk 'function hex2cidr(hex) {
+			echo "${$($IFCONFIG | awk -v ignore="$IPADDR_IGNORE_NET" 'function hex2cidr(hex) {
       		gsub("8", "1", hex);
 	      	gsub("c", "11", hex);
 		      gsub("e", "111", hex);
@@ -25,11 +27,11 @@ else
    	   	gsub("[0x]", "", hex);
 	   	   return length(hex);
    	 	}
-         /^[a-z]/ {if($1 !~ /(vmnet|utun|fw|p2p|gif|stf)/){inf=$1}} /inet /{if($2!="127.0.0.1"){printf inf $2 "/" hex2cidr($4) " "}}')%% }"
+         /^[a-z]/ {if($1 !~ ignore){inf=$1}} /inet /{if($2!="127.0.0.1"){printf inf $2 "/" hex2cidr($4) " "}}')%% }"
 		}
 	else
 		ip_func () {
-			echo "${$($IFCONFIG | awk '/^[a-z]/ {inf=$1} /inet addr/{gsub(/addr:/, "", $2); if($2!="127.0.0.1"){printf inf ":" $2 " "}}')%% }"
+                  echo "${$($IFCONFIG | awk -v ignore="$IPADDR_IGNORE_NET" '/^[a-z]/ {inf=$1} /inet addr/{gsub(/addr:/, "", $2); if(inf !~ ignore){printf inf ":" $2 " "}}')%% }"
 		}
 	fi
 fi
