@@ -3,6 +3,7 @@
 * Battery module to provide battery percentage and details to myzsh prompt
 * myzsh update now updates myzsh and remotes if they are in svn or git
 * Fixed longcmd for OSX Issue #31
+* Added IPADDR_IGNORE_NET global
 
 ### Bug Fixes
 * Found some errors with out `myzsh set` operates
