@@ -92,7 +92,6 @@ _myzsh () {
 				done | sort
 			) )
 			_describe -t commands 'myzsh set variables' vars -V1
-			echo "Got this far" >> /tmp/log
 		else
 			# give up the default value for the key
 			local -a array
