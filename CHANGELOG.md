@@ -8,6 +8,7 @@
 ### Bug Fixes
 * Found some errors with out `myzsh set` operates
 * Hid error with multiple modules having the same name
+* bindkey wasn't being set correctly when $EDITOR was set
 
 ## 1.3.0
 ### New Features
