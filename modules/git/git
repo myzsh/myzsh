@@ -7,7 +7,11 @@ git_func () {
 	if [ "$ingit" = 0 ]; then
 		local gitstatus
 		[ $GIT_USE_ICONS != 0 ] && printf "⭠ "
-		branch=$(git -c color.branch=no branch | awk '/^\*/ {print $2}')
+		if [[ $(git --version | awk '{print $3}' | cut -d'.' -f1) -le 1 && $(git --version | awk '{print $3}' | cut -d'.' -f2) -le 7 && $(git --version | awk '{print $3}' | cut -d'.' -f3) -le 1 ]]; then
+			branch=$(git branch | awk '/^\*/ {print $2}')
+		else
+			branch=$(git -c color.branch=no branch | awk '/^\*/ {print $2}')
+		fi
 		printf "%s" "$branch"
 
 		gitstatus="${$(git status --porcelain 2>/dev/null | awk '{print $1}' | sort | uniq -c | awk '{printf $2":"$1" "}')%%,}"
