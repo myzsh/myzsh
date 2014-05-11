@@ -7,11 +7,17 @@ git_func () {
 	if [ "$ingit" = 0 ]; then
 		local gitstatus
 		[ $GIT_USE_ICONS != 0 ] && printf "⭠ "
-		if [[ $(git --version | awk '{print $3}' | cut -d'.' -f1) -le 1 && $(git --version | awk '{print $3}' | cut -d'.' -f2) -le 7 && $(git --version | awk '{print $3}' | cut -d'.' -f3) -le 1 ]]; then
+		
+		# Check if greater than version 1.7.1
+		current_ver=$(git --version | awk '{print $3}')
+		min_ver="1.7.2"
+
+		if [[ (current_ver[1] -gt min_ver[1]) || (current_ver[1] -eq min_ver[1] && current_ver[3] -gt min_ver[3]) || (current_ver[1] -eq min_ver[1] && current_ver[3] -eq min_ver[3] && current_ver[5] -ge min_ver[5]) ]]; then
 			branch=$(git branch | awk '/^\*/ {print $2}')
 		else
-			branch=$(git -c color.branch=no branch | awk '/^\*/ {print $2}')
+			branch=$(git -c color.branch=no branch | awk '/^\*/ {print $2}')" min"
 		fi
+		
 		printf "%s" "$branch"
 
 		gitstatus="${$(git status --porcelain 2>/dev/null | awk '{print $1}' | sort | uniq -c | awk '{printf $2":"$1" "}')%%,}"
