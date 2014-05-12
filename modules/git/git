@@ -15,7 +15,7 @@ git_func () {
 		if [[ (current_ver[1] -gt min_ver[1]) || (current_ver[1] -eq min_ver[1] && current_ver[3] -gt min_ver[3]) || (current_ver[1] -eq min_ver[1] && current_ver[3] -eq min_ver[3] && current_ver[5] -ge min_ver[5]) ]]; then
 			branch=$(git branch | awk '/^\*/ {print $2}')
 		else
-			branch=$(git -c color.branch=no branch | awk '/^\*/ {print $2}')" min"
+			branch=$(git -c color.branch=no branch | awk '/^\*/ {print $2}')
 		fi
 		
 		printf "%s" "$branch"
