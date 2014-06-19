@@ -5,9 +5,23 @@ git_func () {
 	git branch >/dev/null 2>/dev/null
 	ingit=$?
 	if [ "$ingit" = 0 ]; then
+		local current_ver
+		local min_ver
 		local gitstatus
+		local stash
 		[ $GIT_USE_ICONS != 0 ] && printf "⭠ "
-		branch=$(git -c color.branch=no branch | awk '/^\*/ {print $2}')
+		
+		# Check if greater than version 1.7.1
+		current_ver=$(git --version | awk '{print $3}')
+		min_ver="1.7.2"
+
+		autoload -U is-at-least
+		if is-at-least "$min_ver" "$current_ver"; then
+			branch=$(git -c color.branch=no branch | awk '/^\*/ {print $2}')
+		else
+			branch=$(git branch | awk '/^\*/ {print $2}')
+		fi
+		
 		printf "%s" "$branch"
 
 		gitstatus="${$(git status --porcelain 2>/dev/null | awk '{print $1}' | sort | uniq -c | awk '{printf $2":"$1" "}')%%,}"
