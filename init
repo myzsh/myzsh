@@ -36,19 +36,43 @@ function preexec {
 }
 
 function myzsh {
-	verb="$1"
-	mod="$2"
+	local verb="$1"
+	local mod="$2"
 	[ -n "$verb" ] && shift
 
 	# figure out what to do
 	case "$verb" in
+	# Make a new branch based of the development branch
+	branch)
+		local branch="$1"
+		if [ -z "$branch" ]; then
+			myzsh error "Must specify a branch to fork from dev."
+			return
+		fi
+		cd $MYZSH
+		git checkout dev
+		git checkout -b "$branch"
+	;;
+	# merge a branch into the development branch
+	merge)
+		local branch="$1"
+		if [ -z "$branch" ]; then
+			myzsh error "Must specify a branch to merge into dev."
+			return
+		fi
+		cd $MYZSH
+		git checkout "$branch" || return
+		git rebase dev || return
+		git checkout dev
+		git merge --no-ff "$branch" -m "Merge branch '$branch' into dev"
+	;;
 	# reload a specific module's functions
 	reload)
 		if [ -z "$mod" ]; then
 			myzsh error "Must specify a module to reload"
 			return 1
 		fi
-		[ -z $MYZSH/**/modules/$mod/$mod(N) ] && myzsh error "Cannot find module $mod" && return 1
+		[ -z $MYZSH/**/modules/$mod/$mod(N) ] 2>/dev/null && myzsh error "Cannot find module $mod" && return 1
 		source $MYZSH/**/modules/$mod/$mod
 	;;
 	# edit a module
@@ -56,21 +80,79 @@ function myzsh {
 		if [ -z "$mod" ]; then
 			$EDITOR "$HOME/.zshrc"
 		else
-			[ -z $MYZSH/**/modules/$mod/$mod(N) ] && myzsh error "Cannot find module $mod" && return 1
+			if [ -z $MYZSH/**/modules/$mod/$mod(N) ]; then
+				myzsh error "Cannot find module $mod"
+				printf "Create it? (y/n):"
+				if read -q; then
+					mkdir "$MYZSH/modules/$mod"
+					touch "$MYZSH/modules/$mod/$mod"
+				else
+					return 1
+				fi
+			fi
 			$EDITOR $MYZSH/**/modules/$mod/$mod
 		fi
 	;;
 	# update all of myzsh
 	update)
-		# Update via svn, if we can
-		if svn info $MYZSH 2>/dev/null >/dev/null; then
-			svn up $MYZSH
-		# TODO elif git something
-		elif [ -d "$MYZSH/.git" ]; then
+		local dir="$1"
+		if [ -z "$dir" ]; then
 			(
-			cd "$MYZSH"
-			git pull
+				echo "Updating myzsh"
+				cd "$MYZSH"
+				# figure out our current branch
+				local branch=$(git -c color.branch=no branch | awk '/^\*/ {print $2}')
+				# if we're not on master or dev
+				if [ "$branch" != "master" -a "$branch" != "dev" ]; then
+					# assume the user knows what they're doing
+					git pull
+				else
+					local -A remotes
+					remotes[github]="https://github.com/brimstone/myzsh"
+					remotes[gitorious]="git://gitorious.org/brimstone/myzsh.git"
+					remotes[bitbucket]="https://bitbucket.org/brimston3/myzsh.git"
+					remotes[thenarrows]="https://the.narro.ws/git/myzsh"
+					# loop over all of our remotes
+					for r in $(git remote); do
+						# if our remote is already configured
+						if [ -n "$remotes[$r]" ]; then
+							# update it
+							git pull "$r" "$branch"
+							# remove it from our temp array
+							unset "remotes[$r]"
+						else
+						# other wise, remove it
+							git remote remove "$r"
+						fi
+					done
+					# if we missed any remotes, set them up now and fetch from them
+					for r in "${(k)remotes[@]}"; do
+						git remote add "$r" "$remotes[$r]"
+						git pull "$r" "$branch"
+					done
+				fi
 			)
+			(
+				cd $MYZSH/remotes
+				for d in *(N); do
+					echo "Updating remote $d"
+					myzsh update "$d"
+				done
+			)
+			return
+		else
+			dir="$MYZSH/remotes/$dir"
+		fi
+		# Update via svn, if we can
+		if svn info "$dir" 2>/dev/null >/dev/null; then
+			svn up "$dir"
+		# else git something
+		elif [ -d "$dir/.git" ]; then
+			echo "Decided that git was the best? $dir"
+			cd "$dir"
+			git pull
+		else
+			myzsh error "Unable to update remote $(basename "$dir")"
 		fi
 	;;
 	# list info about all modules
@@ -305,7 +387,12 @@ $k=\"$global\"
 
 	;;
 	set)
-		if [ -z "${GLOBALS[$1]}" ]; then
+		local flag=0
+		local key
+		for key in "${(k)GLOBALS[@]}"; do
+			[ "$key" = "$1" ] && flag=1
+		done
+		if [ $flag = 0 ]; then
 			myzsh error "$1 isn't registered as a global variable."
 			return
 		fi
@@ -314,15 +401,20 @@ $k=\"$global\"
 			return
 		fi
 		echo "Setting: $1 to $2"
-		let $1=$2
+		eval $1="$2"
 	;;
 	unset)
-		if [ -z "${GLOBALS[$1]}" ]; then
+		local flag=0
+		local key
+		for key in "${(k)GLOBALS[@]}"; do
+			[ "$key" = "$1" ] && flag=1
+		done
+		if [ $flag = 0 ]; then
 			myzsh error "$1 isn't registered as a global variable."
 			return
 		fi
 		echo "Unsetting: $1"
-		let $1=${GLOBALS[$1]}
+		eval $1="${GLOBALS[$1]}"
 	;;
 	theme)
 		if [ ! -e "$MYZSH/themes/$1/$1" -a ! -e "$MYZSH/remotes/*/themes/$1/$1" ]; then
@@ -425,17 +517,18 @@ function init_myzsh {
 	# first Set any variables
 	preexec_funcs=()
 	precmd_funcs=(precmd_main)
-	# then load the theme
-	# check for theme, select our default if nothing's set
-	[ -z $MYZSH/**/themes/$THEME/$THEME(N) ] && THEME="default"
-	source $MYZSH/**/themes/$THEME/$THEME
-	
-	# TODO this needs to be a function
+
 	# Load any one time modules
 	for m in $EXTRA; do
 		OUTPUT=""
 		myzsh reload "$m"
 	done
+
+	# then load the theme
+	# check for theme, select our default if nothing's set
+	[ -z "$THEME" ] && THEME="default"
+	[ -z $MYZSH/**/themes/$THEME/$THEME(N) ] && THEME="default"
+	source $MYZSH/**/themes/$THEME/$THEME
 
 	lp_funcs=()
 	for m in $LPRIMARY; do
@@ -469,17 +562,24 @@ function init_myzsh {
 	done
 }
 
+################################################################################
+# Global variables
+
 MYZSH_VERSION="1.3.0"
 
 [ -z "$MYZSH" ] && myzsh error "\$MYZSH variable is undefined. This needs to be defined probably in $HOME/.zshrc"
 [ ! -d "$MYZSH" ] && myzsh error "Directory refered to by \$MYZSH does not exist. You will probably not like the results."
 # set other globals
-[ -z "$EDITOR" ] && export EDITOR=vim && bindkey -e
+[ -z "$EDITOR" ] && export EDITOR=vim
+bindkey -e
 
 typeset -A GLOBALS
 typeset -A GLOBALMODS
 typeset -A GLOBALDESCS
 globalvar DEBUG 0
+
+################################################################################
+# Setup completion things
 
 # Add our local completion directory
 fpath+=("$MYZSH/completions" $MYZSH/remotes/*/completions(N))
@@ -490,8 +590,32 @@ compinit
 # our completion should be loaded by now so we can link our completion function to our management function
 compdef _myzsh myzsh
 
+################################################################################
+# Colors!
+
+# make sure colors and terminal settings autoload
+autoload colors zsh/terminfo
+# if we don't have colors, RHEL
+if [ -z "$terminfo" ]; then
+	typeset -A terminfo
+	for k in colors acsc enacs smacs rmacs sgr0 bold; do
+		if (( ! $+terminfo[$k] )); then
+			terminfo[$k]=$(tput $k)
+		fi
+	done
+fi
+
+# if we can do colors, init colors
+if [ "$terminfo[colors]" -ge 8 ]; then
+	colors
+	fg[nocolor]=${terminfo[sgr0]}
+fi
+
+################################################################################
+# Check environment
+
 # alert the user if our shell doesn't look like zsh
-if [ "${SHELL##*/}" != "zsh" ]; then
+if [ -n "$SHELL" -a "${SHELL##*/}" != "zsh" ]; then
 	myzsh warning "zsh may not be your shell."
 	myzsh warning "Run 'myzsh persistent' to set zsh as your shell."
 	echo
@@ -502,7 +626,8 @@ if [ ! -e "$HOME/.zshrc" ]; then
 	echo
 fi
 
-# setup things
+################################################################################
+# Finally, setup theme and modules
 init_myzsh
 
 # vim: filetype=zsh noexpandtab

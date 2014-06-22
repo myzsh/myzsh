@@ -22,9 +22,9 @@ getmem () { # echo
 getdisks () {
 	(
 	if [ $(uname) = "Darwin" ]; then
-		df -kT noautofs,devfs
+		df -kT noautofs,devfs 2>/dev/null
 	else
-		df -P -x devtmpfs -x tmpfs -x rootfs
+		df -P -x devtmpfs -x tmpfs -x rootfs 2>/dev/null
 	fi
 	) | sort | awk 'BEGIN { d = 0 }
 	/^[^F]/ {

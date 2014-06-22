@@ -31,4 +31,9 @@ unset i
 
 bindkey "^[f" vi-find-next-char
 bindkey "^[F" vi-find-prev-char
+
+gitpushall() {
+	for r in $(git remote)
+		git push $r
+}
 # vim: filetype=zsh noexpandtab

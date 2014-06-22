@@ -78,21 +78,6 @@ $PR_PRIMARY%_$PR_SECONDARY)$PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT\
 $PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT$PR_NO_COLOR "
 }
 
-# make sure colors and terminal settings autoload
-autoload colors zsh/terminfo
-# if we don't have colors, RHEL
-if [ -z "$terminfo" ]; then
-	typeset -A terminfo
-	for k in colors acsc enacs smacs rmacs sgr0 bold; do
-		if (( ! $+terminfo[$k] )); then
-			terminfo[$k]=$(tput $k)
-		fi
-	done
-fi
-
-# if we can do colors, init colors
-[[ "$terminfo[colors]" -ge 8 ]] && colors
-
 # setup our color names, PR_GREEN, PR_LIGHT_BLUE, etc
 for color in RED GREEN YELLOW BLUE MAGENTA CYAN WHITE BLACK GREY; do
 	eval PR_$color='%{$terminfo[bold]$fg[${(L)color}]%}'
