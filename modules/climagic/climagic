@@ -7,7 +7,7 @@ hostup(){ until ping -c 1 "$1" 2>&1 >/dev/null; do sleep 1; done; }
 hostdown(){ while ping -c 1 "$1" 2>&1 >/dev/null; do sleep 1; done; }
 waitfor(){ until $*; do printf "." 1>&2; sleep 2; done; }
 xml(){ local IFS=\>;while read -d \< E C;do [ "${E:0:1}" != "/" ]&&echo "$E=$C";done; } # http://bit.ly/bSOg3K
-iargs(){a="$@";read -A b<<<"${a%% -- *}";read -A c<<<"${a##* -- }";inotifywait -e close_write -m -q --format %w%f -r "${b[@]}"|xargs -I{} "${c[@]}" \; echo;}
+iargs(){a="$@";read -A b<<<"${a%% -- *}";read -A c<<<"${a##* -- }";inotifywait -e close_write -m -q --format %w%f -r "${b[@]}"|xargs -I{} "${c[@]}";}
 
 inotifyargs() {
 	d=$1;shift;
