@@ -347,6 +347,11 @@ $k=\"$global\"
 		init_myzsh
 	;;
 	remote)
+		# make sure our user is calling us properly
+		if [ $# -lt 2 ]; then
+			myzsh error "Usage: myzsh remote [list|add [repo]|remove [repo]]"
+			return 1
+		fi
 		# save our location and shift it off the arguments stack
 		location="$1"
 		shift
