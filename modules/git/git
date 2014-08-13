@@ -17,9 +17,9 @@ git_func () {
 
 		autoload -U is-at-least
 		if is-at-least "$min_ver" "$current_ver"; then
-			branch=$(git -c color.branch=no branch | awk '/^\*/ {print $2}')
+			branch=$(git -c color.branch=no branch | awk '/^\*/ {print $2}' | sed 's/(//')
 		else
-			branch=$(git branch | awk '/^\*/ {print $2}')
+			branch=$(git branch | awk '/^\*/ {print $2}' | sed 's/(//')
 		fi
 		
 		printf "%s" "$branch"
@@ -32,7 +32,6 @@ git_func () {
 		if [ $stash -gt 0 ]; then
 			printf " S:%d" "$stash"
 		fi
-
 	fi
 }
 OUTPUT=git_func
