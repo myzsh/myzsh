@@ -24,13 +24,28 @@ git_func () {
 		
 		printf "%s" "$branch"
 
-		gitstatus="${$(git status --porcelain 2>/dev/null | awk '{print $1}' | sort | uniq -c | awk '{printf $2":"$1" "}')%%,}"
+		gitstatus="${$(git status --porcelain 2>/dev/null | awk '{print $1}' | sort | uniq -c | awk '{printf $2":"$1}')%%,}"
 		if [ -n "$gitstatus" ]; then
 			printf " %s" "$gitstatus"
 		fi
 		stash=$(git stash list 2>/dev/null | wc -l)
 		if [ $stash -gt 0 ]; then
 			printf " S:%d" "$stash"
+		fi
+
+		local_repo="$(git rev-parse @)"
+		remote_repo="no_remote" && [[ -n "$(git branch -vv | awk '/^\*.*\[.*\]/' | cut -d \[ -f 2 | cut -d \] -f 1)" ]] && remote_repo="$(git rev-parse '@{u}')"
+		base="no_base" && [[ -n "$(git branch -vv | awk '/^\*.*\[.*\]/' | cut -d \[ -f 2 | cut -d \] -f 1)" ]] && base="$(git merge-base @ '@{u}')"
+		if [ "$local_repo" = "$remote_repo" ]; then
+			printf ""
+		elif [ "$local_repo" = "$base" ]; then
+			printf " pull"
+		elif [ "$remote_repo" = "$base" ]; then
+			printf " push"
+		elif [ "$remote_repo" = "no_remote" ]; then
+			printf " no-remote"
+		else
+			printf " diverged"
 		fi
 	fi
 }
