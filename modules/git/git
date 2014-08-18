@@ -1,4 +1,5 @@
 globalvar GIT_USE_ICONS 0 "Enables Icons in prompt"
+globalvar GIT_FETCH_CACHE_TIME 3600 "Frequency in which the git remote cache should be checked"
 
 git_func () {
 	local ingit
@@ -24,14 +25,18 @@ git_func () {
 		
 		printf "%s" "$branch"
 
-		gitstatus="${$(git status --porcelain 2>/dev/null | awk '{print $1}' | sort | uniq -c | awk '{printf $2":"$1}')%%,}"
+		gitstatus="${$(git status --porcelain 2>/dev/null | awk '{print $1}' | sort | uniq -c | awk '{printf " "$2":"$1}')%%,}"
 		if [ -n "$gitstatus" ]; then
-			printf " %s" "$gitstatus"
+			printf "%s" "$gitstatus"
 		fi
 		stash=$(git stash list 2>/dev/null | wc -l)
 		if [ $stash -gt 0 ]; then
 			printf " S:%d" "$stash"
 		fi
+
+		# check to see if we haven't fetched in a while
+		[ $[ $(date +%s) - $(stat -c %Y "$(git rev-parse --show-toplevel)/.git/FETCH_HEAD" 2>/dev/null) ] -gt $GIT_FETCH_CACHE_TIME ] \
+		&& git fetch &
 
 		local_repo="$(git rev-parse @)"
 		remote_repo="no_remote" && [[ -n "$(git branch -vv | awk '/^\*.*\[.*\]/' | cut -d \[ -f 2 | cut -d \] -f 1)" ]] && remote_repo="$(git rev-parse '@{u}')"
