@@ -36,10 +36,12 @@ git_func () {
 
 		# check to see if we haven't fetched in a while
 		if islinux; then
-			[ $[ $(date +%s) - $(stat -c %Y "$(git rev-parse --show-toplevel)/.git/FETCH_HEAD" 2>/dev/null) ] -gt $GIT_FETCH_CACHE_TIME ] \
+			[ -e "$(git rev-parse --show-toplevel)/.git/FETCH_HEAD" ] \
+			&& [ $[ $(date +%s) - $(stat -c %Y "$(git rev-parse --show-toplevel)/.git/FETCH_HEAD" 2>/dev/null) ] -gt $GIT_FETCH_CACHE_TIME ] \
 			&& git fetch &
 		else
-			[ $[ $(date +%s) - $(stat -f %c "$(git rev-parse --show-toplevel)/.git/FETCH_HEAD" 2>/dev/null) ] -gt $GIT_FETCH_CACHE_TIME ] \
+			[ -e "$(git rev-parse --show-toplevel)/.git/FETCH_HEAD" ] \
+			&& [ $[ $(date +%s) - $(stat -f %c "$(git rev-parse --show-toplevel)/.git/FETCH_HEAD" 2>/dev/null) ] -gt $GIT_FETCH_CACHE_TIME ] \
 			&& git fetch &
 		fi
 
