@@ -570,7 +570,7 @@ function init_myzsh {
 ################################################################################
 # Global variables
 
-MYZSH_VERSION="1.4.0"
+MYZSH_VERSION="1.4.2"
 
 [ -z "$MYZSH" ] && myzsh error "\$MYZSH variable is undefined. This needs to be defined probably in $HOME/.zshrc"
 [ ! -d "$MYZSH" ] && myzsh error "Directory refered to by \$MYZSH does not exist. You will probably not like the results."
