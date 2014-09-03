@@ -45,19 +45,23 @@ git_func () {
 			&& git fetch &
 		fi
 
-		local_repo="$(git rev-parse @)"
-		remote_repo="no_remote" && [[ -n "$(git branch -vv | awk '/^\*.*\[.*\]/' | cut -d \[ -f 2 | cut -d \] -f 1)" ]] && remote_repo="$(git rev-parse '@{u}')"
-		base="no_base" && [[ -n "$(git branch -vv | awk '/^\*.*\[.*\]/' | cut -d \[ -f 2 | cut -d \] -f 1)" ]] && base="$(git merge-base @ '@{u}')"
-		if [ "$local_repo" = "$remote_repo" ]; then
-			printf ""
-		elif [ "$local_repo" = "$base" ]; then
-			printf " pull"
-		elif [ "$remote_repo" = "$base" ]; then
-			printf " push"
-		elif [ "$remote_repo" = "no_remote" ]; then
-			printf " no-remote"
+		if [ "$(git log 2>/dev/null)" != "" ]; then
+			local_repo="$(git rev-parse @)"
+			remote_repo="no_remote" && [[ -n "$(git branch -vv | awk '/^\*.*\[.*\]/' | cut -d \[ -f 2 | cut -d \] -f 1)" ]] && remote_repo="$(git rev-parse '@{u}')"
+			base="no_base" && [[ -n "$(git branch -vv | awk '/^\*.*\[.*\]/' | cut -d \[ -f 2 | cut -d \] -f 1)" ]] && base="$(git merge-base @ '@{u}')"
+			if [ "$local_repo" = "$remote_repo" ]; then
+				printf ""
+			elif [ "$local_repo" = "$base" ]; then
+				printf " pull"
+			elif [ "$remote_repo" = "$base" ]; then
+				printf " push"
+			elif [ "$remote_repo" = "no_remote" ]; then
+				printf " no-remote"
+			else
+				printf " diverged"
+			fi
 		else
-			printf " diverged"
+			printf " new"
 		fi
 	fi
 }
