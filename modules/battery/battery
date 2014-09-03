@@ -5,23 +5,25 @@ globalvar BATT_METER 0
 if isosx; then
 	# Generate the battery number
 	function battery_pct {
-		if [[ $(ioreg -rc AppleSmartBattery | grep -c '^.*"ExternalConnected"\ =\ No') -eq 1 ]] ; then
-			typeset -F maxcapacity=$(ioreg -rc "AppleSmartBattery"| grep '^.*"MaxCapacity"\ =\ ' | sed -e 's/^.*"MaxCapacity"\ =\ //')
-			typeset -F currentcapacity=$(ioreg -rc "AppleSmartBattery"| grep '^.*"CurrentCapacity"\ =\ ' | sed -e 's/^.*CurrentCapacity"\ =\ //')
-			integer i=$(((currentcapacity/maxcapacity) * 100))
-			echo $i
-		else
-			echo "⚡"
-		fi
+		typeset -F maxcapacity=$(ioreg -rc "AppleSmartBattery"| grep '^.*"MaxCapacity"\ =\ ' | sed -e 's/^.*"MaxCapacity"\ =\ //')
+		typeset -F currentcapacity=$(ioreg -rc "AppleSmartBattery"| grep '^.*"CurrentCapacity"\ =\ ' | sed -e 's/^.*CurrentCapacity"\ =\ //')
+		integer i=$(((currentcapacity/maxcapacity) * 100))
+		echo $i
 	}
 	# Generate the time remaining
 	function battery_time_remaining {
-		if [[ $(ioreg -rc AppleSmartBattery | grep -c '^.*"ExternalConnected"\ =\ No') -eq 1 ]] ; then
-			timeremaining=$(ioreg -rc "AppleSmartBattery"| grep '^.*"AvgTimeToEmpty"\ =\ ' | sed -e 's/^.*"AvgTimeToEmpty"\ =\ //')
-			echo "$((timeremaining / 60)):$((timeremaining % 60))"
+		timeremaining=$(ioreg -rc "AppleSmartBattery"| grep '^.*"AvgTimeToEmpty"\ =\ ' | sed -e 's/^.*"AvgTimeToEmpty"\ =\ //')
+		echo "$((timeremaining / 60)):$((timeremaining % 60))"
+	}
+	# Generate charging status
+	function battery_charging {
+		if [[ $(ioreg -rc AppleSmartBattery | grep ExternalConnected | sed -e 's/^.*"ExternalConnected"\ =\ //') = "No" ]] ; then
+			integer i=1
 		else
-			echo "⚡"
+			integer i=0
 		fi
+
+		echo $i
 	}
 	# Display the relevant details for the prompt
 	function battery_prompt() {
@@ -29,19 +31,19 @@ if isosx; then
 			local color='green'
 			local batt_pct=$(battery_pct)
 
-			if [[ $batt_pct != "⚡" ]] ; then
+			if [ battery_charging ] ; then
+				prompt="⚡ "
+			else
 				if [ $batt_pct -lt 21 ] ; then
 					color='red'
 				elif [ $batt_pct -lt 51 ] ; then
 					color='yellow'
 				fi
-
-				[ $BATT_METER != 0 ] && prompt="$prompt$(battery_meter $batt_pct) "
-				[ $BATT_PCT != 0 ] && prompt="$prompt${batt_pct}%% "
-				[ $BATT_TIME != 0 ] && prompt="$prompt$(battery_time_remaining) "
-			else
-				prompt=$batt_pct
 			fi
+
+			[ $BATT_METER != 0 ] && prompt="$prompt$(battery_meter $batt_pct) "
+			[ $BATT_PCT != 0 ] && prompt="$prompt${batt_pct}%% "
+			[ $BATT_TIME != 0 ] && prompt="$prompt$(battery_time_remaining) "
 
 			echo "%{$fg[$color]%}${prompt%% }%{$reset_color%}"
 	}
