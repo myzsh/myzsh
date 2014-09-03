@@ -35,8 +35,13 @@ git_func () {
 		fi
 
 		# check to see if we haven't fetched in a while
-		[ $[ $(date +%s) - $(stat -c %Y "$(git rev-parse --show-toplevel)/.git/FETCH_HEAD" 2>/dev/null) ] -gt $GIT_FETCH_CACHE_TIME ] \
-		&& git fetch &
+		if islinux; then
+			[ $[ $(date +%s) - $(stat -c %Y "$(git rev-parse --show-toplevel)/.git/FETCH_HEAD" 2>/dev/null) ] -gt $GIT_FETCH_CACHE_TIME ] \
+			&& git fetch &
+		else
+			[ $[ $(date +%s) - $(stat -f %c "$(git rev-parse --show-toplevel)/.git/FETCH_HEAD" 2>/dev/null) ] -gt $GIT_FETCH_CACHE_TIME ] \
+			&& git fetch &
+		fi
 
 		local_repo="$(git rev-parse @)"
 		remote_repo="no_remote" && [[ -n "$(git branch -vv | awk '/^\*.*\[.*\]/' | cut -d \[ -f 2 | cut -d \] -f 1)" ]] && remote_repo="$(git rev-parse '@{u}')"
