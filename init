@@ -348,7 +348,7 @@ $k=\"$global\"
 	;;
 	remote)
 		# make sure our user is calling us properly
-		if [ $# -lt 2 ]; then
+		if (( $# < 2 )) && [[ $1 != list ]]; then
 			myzsh error "Usage: myzsh remote [list|add [repo]|remove [repo]]"
 			return 1
 		fi
@@ -365,11 +365,13 @@ $k=\"$global\"
 					elif [ ${repo%%://*} = "git" ]; then
 						git clone "$repo"
 					elif [ ${repo%%://*} = "http" ]; then
-						git clone "$repo" || svn co "$repo" || myzsh error "Error accessing $repo via git and svn"
+						git clone "$repo" || svn co "$repo" || myzsh error "Error accessing $repo via git or svn"
 					elif [ ${repo%%://*} = "https" ]; then
-						git clone "$repo" || svn co "$repo" || myzsh error "Error accessing $repo via git and svn"
+						git clone "$repo" || svn co "$repo" || myzsh error "Error accessing $repo via git or svn"
 					elif [ ${repo%%://*} = "file" ]; then
 						[ -d ${repo#file://*} ] && cp -R ${repo#file://*} . || myzsh error "Error remote must be a directory"
+					else
+						git clone "$repo" || svn co "$repo" || myzsh error "Adding repo $repo"
 					fi
 					popd &>/dev/null
 				done
