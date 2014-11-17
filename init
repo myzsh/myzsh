@@ -111,7 +111,7 @@ function myzsh {
 					remotes[github]="https://github.com/brimstone/myzsh"
 					remotes[gitorious]="git://gitorious.org/brimstone/myzsh.git"
 					remotes[bitbucket]="https://bitbucket.org/brimston3/myzsh.git"
-					remotes[thenarrows]="https://the.narro.ws/git/myzsh"
+					remotes[thenarrows]="https://the.narro.ws/git/brimstone/myzsh.git"
 					# loop over all of our remotes
 					for r in $(git remote); do
 						# if our remote is already configured
