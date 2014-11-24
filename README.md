@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/myzsh/myzsh.png?label=ready&title=Ready)](https://waffle.io/myzsh/myzsh)
 ## What is myzsh?
 This is the set of scripts I use for my zsh prompt, a configuration framework for myzsh, if you will.
 
