@@ -38,11 +38,11 @@ git_func () {
 		if islinux; then
 			[ -e "$(git rev-parse --show-toplevel)/.git/FETCH_HEAD" ] \
 			&& [ $[ $(date +%s) - $(stat -c %Y "$(git rev-parse --show-toplevel)/.git/FETCH_HEAD" 2>/dev/null) ] -gt $GIT_FETCH_CACHE_TIME ] \
-			&& git fetch &
+			&& git fetch 2>/dev/null &
 		else
 			[ -e "$(git rev-parse --show-toplevel)/.git/FETCH_HEAD" ] \
 			&& [ $[ $(date +%s) - $(stat -f %c "$(git rev-parse --show-toplevel)/.git/FETCH_HEAD" 2>/dev/null) ] -gt $GIT_FETCH_CACHE_TIME ] \
-			&& git fetch &
+			&& git fetch 2>/dev/null &
 		fi
 
 		if [ "$(git log 2>/dev/null)" != "" ]; then
