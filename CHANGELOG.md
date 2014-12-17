@@ -4,6 +4,7 @@
 * myzsh update now updates myzsh and remotes if they are in svn or git
 * Fixed longcmd for OSX Issue #31
 * Added IPADDR_IGNORE_NET global
+* Added git auto fetch to give pull and push suggestions
 
 ### Bug Fixes
 * Found some errors with out `myzsh set` operates
