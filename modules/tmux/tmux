@@ -27,7 +27,8 @@ tmux() {
 					;;
 				esac
 
-				for pane in {1.."$mod"}; do
+				splits=$(($mod-1))
+				for pane in {1..$splits}; do
 					tmux select-pane -t 0
 					tmux split-window -$(echo $layout | cut -c1)
 					tmux select-layout even-$layout
