@@ -2,7 +2,11 @@ getload () {
 	echo "$1 $2 $3"
 }
 load_func () {
-	getload $(< /proc/loadavg)
+	islinux && getload $(< /proc/loadavg)
+	if isosx; then
+		local uptime="$(uptime)"
+		echo ${uptime##*: }
+	fi
 }
 
 OUTPUT=load_func

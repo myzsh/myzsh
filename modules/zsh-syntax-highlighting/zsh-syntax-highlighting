@@ -1,1 +1,2 @@
-upstream/zsh-syntax-highlighting.zsh
+[ -d upstream ] || git clone git://github.com/zsh-users/zsh-syntax-highlighting.git upstream
+source upstream/zsh-syntax-highlighting.zsh
