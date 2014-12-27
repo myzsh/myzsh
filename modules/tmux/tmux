@@ -16,6 +16,24 @@ tmux() {
 	local mod="$2"
 
 	case "$verb" in
+		grid)
+			if [ -n "$mod" ];  then
+				cols=$(($mod/2 + $mod%2 - 1))
+				for i in {1..$cols}; do
+					tmux select-pane -t 0
+					tmux split-window -h
+				done
+
+				tmux select-layout even-horizontal 1>/dev/null
+
+				cols=$(($cols - $mod%2))
+				for i in {0..$cols}; do
+					pane=$(($i * 2))
+					tmux select-pane -t $pane
+					tmux split-window -v
+				done
+			fi
+		;;
 		split)
 			if [ -n "$mod" ]; then
 				case "$3" in
