@@ -1,3 +1,5 @@
+#!/usr/bin/zsh
+
 # Sets the title in tmux for the current running command right before it runs
 if [ -n "$TMUX" ]; then
 	preexec_screen () {
