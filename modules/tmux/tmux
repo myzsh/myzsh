@@ -10,4 +10,33 @@ if [ -n "$TMUX" ]; then
 	length=$(tmux list-windows | sed -E 's/^([^ ]*:) /\1/g;s/ (\([0-9]+ panes\) )?\[[0-9]+x.*$//g;s/^(.{0,26}).*/\1/' | tr -d '\n' | wc -c)
 	tmux set -g -t main status-right-length $[ $COLUMNS - $length ] >/dev/null
 fi
+
+tmux() {
+	local verb="$1"
+	local mod="$2"
+
+	case "$verb" in
+		split)
+			if [ -n "$mod" ]; then
+				case "$3" in
+					v|vert*)
+						layout="vertical"
+					;;
+					*)
+						layout="horizontal"
+					;;
+				esac
+
+				for pane in {1.."$mod"}; do
+					tmux select-pane -t 0
+					tmux split-window -$(echo $layout | cut -c1)
+					tmux select-layout even-$layout
+				done
+			fi
+		;;
+		*)
+			command tmux "$@"
+		;;
+	esac
+}
 # vim: filetype=zsh noexpandtab
