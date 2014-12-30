@@ -49,8 +49,8 @@ tmux() {
 				for pane in {1..$splits}; do
 					tmux select-pane -t 0
 					tmux split-window -$(echo $layout | cut -c1)
-					tmux select-layout even-$layout
 				done
+				tmux select-layout even-$layout
 			fi
 		;;
 		*)

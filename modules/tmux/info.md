@@ -2,7 +2,26 @@
 Functions for use with tmux
 
 ##Requires
-nothing
+tmux
+
+##Installation
+* Place in EXTRA section of .zshrc
 
 ##Usage
-* Place in EXTRA section of .zshrc
+Grid layout
+
+```
+tmux grid 5
+```
+
+Split layout evenly space horizontally
+
+```
+tmux split 5
+```
+
+Split layout evenly spaced vertically
+
+```
+tmux split 5 (v|vert|vertical)
+```
