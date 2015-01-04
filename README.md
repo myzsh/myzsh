@@ -5,12 +5,12 @@ This is the set of scripts I use for my zsh prompt, a configuration framework fo
 I first started of with [phil's prompt](http://aperiodic.net/phil/prompt/). After using and tweaking it for a few years, I found oh-my-zsh. I don't like how they handled themes and plugins, so after a glorious night of hacking, I developed my own framework. I hope you like it. :)
 
 ## Screenshot
-![OS X](http://brimstone.github.io/myzsh/screenshot.1.osx.png)
+![OS X](http://myzsh.github.io/myzsh/screenshot.1.osx.png)
 
 ## Installation
 First, clone git and enter a demo mode.
 ````bash
-git clone https://github.com/brimstone/myzsh $HOME/.myzsh
+git clone https://github.com/myzsh/myzsh $HOME/.myzsh
 ZDOTDIR=$HOME/.myzsh/demo zsh -i
 ````
 If you don't like myzsh, just `rm -rf $HOME/.myzsh`
