@@ -45,7 +45,7 @@ git_func () {
 			&& git fetch 2>/dev/null &
 		fi
 
-		if [ "$(git log 2>/dev/null)" != "" ]; then
+		if [ "$(git log -n 1 2>/dev/null)" != "" ]; then
 			local_repo="$(git rev-parse @)"
 			remote_repo="no_remote" && [[ -n "$(git branch -vv | awk '/^\*.*\[.*\]/' | cut -d \[ -f 2 | cut -d \] -f 1)" ]] && remote_repo="$(git rev-parse '@{u}')"
 			base="no_base" && [[ -n "$(git branch -vv | awk '/^\*.*\[.*\]/' | cut -d \[ -f 2 | cut -d \] -f 1)" ]] && base="$(git merge-base @ '@{u}')"
