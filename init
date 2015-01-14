@@ -385,6 +385,43 @@ $k=\"$global\"
 					ls -1
 					popd &>/dev/null
 			;;
+			create)
+				repo="$1"
+				shift
+				dvcs=""
+				if [ ${repo%%://*} = "ssh" ]; then
+					base="$(basename "$repo" .git)"
+					dvcs="git"
+				elif [ ${repo%%://*} = "git" ]; then
+					base="$(basename "$repo" .git)"
+					dvcs="git"
+				elif [ ${repo%%@*} = "git" ]; then
+					base="$(basename "$repo" .git)"
+					dvcs="git"
+			# TODO svn needs to be addressed
+			#	elif [ ${repo%%://*} = "http" ]; then
+			#		git clone "$repo" || svn co "$repo" || myzsh error "Error accessing $repo via git or svn"
+			#	elif [ ${repo%%://*} = "https" ]; then
+			#		git clone "$repo" || svn co "$repo" || myzsh error "Error accessing $repo via git or svn"
+			#	elif [ ${repo%%://*} = "file" ]; then
+			#		[ -d ${repo#file://*} ] && cp -R ${repo#file://*} . || myzsh error "Error remote must be a directory"
+			#	else
+			#		git clone "$repo" || svn co "$repo" || myzsh error "Adding repo $repo"
+				fi
+				[ -d "$MYZSH/remotes/$base" ] && myzsh error "Remote $base already exits. Maybe you want \`myzsh remote add $repo\` instead?" && return 1
+				mkdir -p "$MYZSH/remotes/$base/"{modules,completions}
+				pushd "$MYZSH/remotes/$base" &>/dev/null
+				case "$dvcs" in
+				git)
+					git init
+					git remote add origin "$repo"
+				;;
+				*)
+					myzsh error "How did you get here?"
+				;;
+				esac
+				popd &>/dev/null
+			;;
 			*)
 				# make sure our user is calling us properly
 				myzsh error "Usage: myzsh remote [list|add [repo]|remove [repo]]"
