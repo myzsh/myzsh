@@ -8,4 +8,9 @@ if [ -n "$TMUX" ]; then
 	length=$(tmux list-windows | sed -E 's/^([^ ]*:) /\1/g;s/ (\([0-9]+ panes\) )?\[[0-9]+x.*$//g;s/^(.{0,26}).*/\1/' | tr -d '\n' | wc -c)
 	tmux set -g -t main status-right-length $[ $COLUMNS - $length ] >/dev/null
 fi
+fix_tmux_ssh() {
+  [ -S "$SSH_AUTH_SOCK" ] || export SSH_AUTH_SOCK="$(tmux show-environment | sed -n 's/^SSH_AUTH_SOCK=//p')"
+}
+precmd_funcs+=(fix_tmux_ssh)
+
 # vim: filetype=zsh noexpandtab
