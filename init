@@ -541,6 +541,13 @@ elif [ $(uname) = "Darwin" ]; then
 	function isosx {
 		return 0
 	}
+elif [ $(uname) = "OpenBSD" ]; then
+	function islinux {
+		return 0
+	}
+	function isosx {
+		return 0
+	}
 else
 	myzsh error "Please report uname=$(uname) to brimstone@the.narro.ws. Thanks!"
 fi
