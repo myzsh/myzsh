@@ -111,7 +111,7 @@ function myzsh {
 					remotes[github]="https://github.com/brimstone/myzsh"
 					remotes[gitorious]="git://gitorious.org/brimstone/myzsh.git"
 					remotes[bitbucket]="https://bitbucket.org/brimston3/myzsh.git"
-					remotes[thenarrows]="https://the.narro.ws/git/myzsh"
+					remotes[thenarrows]="https://the.narro.ws/git/brimstone/myzsh.git"
 					# loop over all of our remotes
 					for r in $(git remote); do
 						# if our remote is already configured
@@ -348,7 +348,7 @@ $k=\"$global\"
 	;;
 	remote)
 		# make sure our user is calling us properly
-		if [ $# -lt 2 ]; then
+		if (( $# < 2 )) && [[ $1 != list ]]; then
 			myzsh error "Usage: myzsh remote [list|add [repo]|remove [repo]]"
 			return 1
 		fi
@@ -365,11 +365,13 @@ $k=\"$global\"
 					elif [ ${repo%%://*} = "git" ]; then
 						git clone "$repo"
 					elif [ ${repo%%://*} = "http" ]; then
-						git clone "$repo" || svn co "$repo" || myzsh error "Error accessing $repo via git and svn"
+						git clone "$repo" || svn co "$repo" || myzsh error "Error accessing $repo via git or svn"
 					elif [ ${repo%%://*} = "https" ]; then
-						git clone "$repo" || svn co "$repo" || myzsh error "Error accessing $repo via git and svn"
+						git clone "$repo" || svn co "$repo" || myzsh error "Error accessing $repo via git or svn"
 					elif [ ${repo%%://*} = "file" ]; then
 						[ -d ${repo#file://*} ] && cp -R ${repo#file://*} . || myzsh error "Error remote must be a directory"
+					else
+						git clone "$repo" || svn co "$repo" || myzsh error "Adding repo $repo"
 					fi
 					popd &>/dev/null
 				done
@@ -382,6 +384,43 @@ $k=\"$global\"
 					pushd "$MYZSH/remotes/" &>/dev/null
 					ls -1
 					popd &>/dev/null
+			;;
+			create)
+				repo="$1"
+				shift
+				dvcs=""
+				if [ ${repo%%://*} = "ssh" ]; then
+					base="$(basename "$repo" .git)"
+					dvcs="git"
+				elif [ ${repo%%://*} = "git" ]; then
+					base="$(basename "$repo" .git)"
+					dvcs="git"
+				elif [ ${repo%%@*} = "git" ]; then
+					base="$(basename "$repo" .git)"
+					dvcs="git"
+			# TODO svn needs to be addressed
+			#	elif [ ${repo%%://*} = "http" ]; then
+			#		git clone "$repo" || svn co "$repo" || myzsh error "Error accessing $repo via git or svn"
+			#	elif [ ${repo%%://*} = "https" ]; then
+			#		git clone "$repo" || svn co "$repo" || myzsh error "Error accessing $repo via git or svn"
+			#	elif [ ${repo%%://*} = "file" ]; then
+			#		[ -d ${repo#file://*} ] && cp -R ${repo#file://*} . || myzsh error "Error remote must be a directory"
+			#	else
+			#		git clone "$repo" || svn co "$repo" || myzsh error "Adding repo $repo"
+				fi
+				[ -d "$MYZSH/remotes/$base" ] && myzsh error "Remote $base already exits. Maybe you want \`myzsh remote add $repo\` instead?" && return 1
+				mkdir -p "$MYZSH/remotes/$base/"{modules,completions}
+				pushd "$MYZSH/remotes/$base" &>/dev/null
+				case "$dvcs" in
+				git)
+					git init
+					git remote add origin "$repo"
+				;;
+				*)
+					myzsh error "How did you get here?"
+				;;
+				esac
+				popd &>/dev/null
 			;;
 			*)
 				# make sure our user is calling us properly
@@ -502,6 +541,13 @@ elif [ $(uname) = "Darwin" ]; then
 	function isosx {
 		return 0
 	}
+elif [ $(uname) = "OpenBSD" ]; then
+	function islinux {
+		return 1
+	}
+	function isosx {
+		return 1
+	}
 else
 	myzsh error "Please report uname=$(uname) to brimstone@the.narro.ws. Thanks!"
 fi
@@ -570,7 +616,7 @@ function init_myzsh {
 ################################################################################
 # Global variables
 
-MYZSH_VERSION="1.4.0"
+MYZSH_VERSION="1.4.2"
 
 [ -z "$MYZSH" ] && myzsh error "\$MYZSH variable is undefined. This needs to be defined probably in $HOME/.zshrc"
 [ ! -d "$MYZSH" ] && myzsh error "Directory refered to by \$MYZSH does not exist. You will probably not like the results."

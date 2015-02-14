@@ -1,4 +1,6 @@
 #tricks I've learned from @climagic on twitter
+islinux && {
+
 sus(){ sort | uniq -c | sort $@; }  # Make a function to shorten this commonly used command line pattern & allow for options for final sort.
 cal(){ [[ -z $2 && $1 -le 12 && $1 -gt 0 ]] &&command cal $1 $(date +%Y)||command cal $@;} # Arg < 13 = month only. b/c who cares about 9AD?
 h(){ nc -lp8080 -c'r=HTTP/1.0;f=`head -n1|cut -d\  -f2`;[ -f .$f ]&&echo "$r 200\nContent-Type: `file -bi .$f`\n"&&cat .$f||echo $r 404';h;}
@@ -20,5 +22,7 @@ inotifyargs() {
 			done | sort | uniq
 		done
 	) | xargs -I{} "$@";
+}
+
 }
 # vim: filetype=zsh noexpandtab
