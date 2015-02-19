@@ -678,6 +678,13 @@ if [ ! -e "$HOME/.zshrc" ]; then
 fi
 
 ################################################################################
+# Error about dev being deprecated
+
+if [ "$(cd "$MYZSH"; git -c color.branch=no branch | awk '/^\*/ {print $2}')" = "dev" ]; then
+	myzsh error "dev branch of myzsh is now deprecated. switch to master"
+fi
+
+################################################################################
 # Finally, setup theme and modules
 init_myzsh
 
