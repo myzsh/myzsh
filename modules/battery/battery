@@ -19,13 +19,7 @@ if isosx; then
 
 	# Generate charging status
 	function battery_charging {
-		if [[ $(ioreg -rc AppleSmartBattery | grep ExternalConnected | sed -e 's/^.*"ExternalConnected"\ =\ //') = "No" ]] ; then
-			integer i=1
-		else
-			integer i=0
-		fi
-
-		echo $i
+		grep -vq 'No' <<< "$(ioreg -rc AppleSmartBattery | grep ExternalConnected 2>/dev/null)"
 	}
 
 fi
