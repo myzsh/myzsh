@@ -10,11 +10,13 @@ if isosx; then
 		integer i=$(((currentcapacity/maxcapacity) * 100))
 		echo $i
 	}
+
 	# Generate the time remaining
 	function battery_time_remaining {
 		timeremaining=$(ioreg -rc "AppleSmartBattery"| grep '^.*"AvgTimeToEmpty"\ =\ ' | sed -e 's/^.*"AvgTimeToEmpty"\ =\ //')
 		echo "$((timeremaining / 60)):$((timeremaining % 60))"
 	}
+
 	# Generate charging status
 	function battery_charging {
 		if [[ $(ioreg -rc AppleSmartBattery | grep ExternalConnected | sed -e 's/^.*"ExternalConnected"\ =\ //') = "No" ]] ; then
@@ -52,7 +54,6 @@ fi
 
 # Setup functions for Linux
 if islinux; then
-
 	# Generate the battery number
 	function battery_pct {
 		local acpi="$(acpi -b 2>/dev/null)"
