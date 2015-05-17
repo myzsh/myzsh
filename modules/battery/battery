@@ -52,17 +52,20 @@ fi
 
 # Setup functions for Linux
 if islinux; then
+
 	# Generate the battery number
 	function battery_pct {
 		local acpi="$(acpi -b 2>/dev/null)"
 		acpi=${acpi%%%*}
 		echo ${acpi##* }
 	}
+
 	# Generate the time remaining
 	function battery_time_remaining {
 		local acpi="$(acpi -b 2>/dev/null)"
 		echo "${${acpi##*, }%% *}"
 	}
+
 	# Generate the battery charing status
 	function battery_charging {
 		grep -vq 'Discharging' <<< "$(acpi -b 2>/dev/null)"
