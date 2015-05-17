@@ -1,6 +1,6 @@
-globalvar BATT_PCT 0
-globalvar BATT_TIME 0
-globalvar BATT_METER 0
+globalvar BATT_PCT 0 "Show battery percentage"
+globalvar BATT_TIME 0 "Show battery time remaining"
+globalvar BATT_METER 0 "Show unicode gauge of battery percentage"
 
 if isosx; then
 	# Generate the battery number
@@ -21,7 +21,6 @@ if isosx; then
 	function battery_charging {
 		grep -vq 'No' <<< "$(ioreg -rc AppleSmartBattery | grep ExternalConnected 2>/dev/null)"
 	}
-
 fi
 
 
