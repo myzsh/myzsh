@@ -1,49 +1,25 @@
-globalvar BATT_PCT 0
-globalvar BATT_TIME 0
-globalvar BATT_METER 0
+globalvar BATT_PCT 0 "Show battery percentage"
+globalvar BATT_TIME 0 "Show battery time remaining"
+globalvar BATT_METER 0 "Show unicode gauge of battery percentage"
 
 if isosx; then
 	# Generate the battery number
 	function battery_pct {
-		if [[ $(ioreg -rc AppleSmartBattery | grep -c '^.*"ExternalConnected"\ =\ No') -eq 1 ]] ; then
-			typeset -F maxcapacity=$(ioreg -rc "AppleSmartBattery"| grep '^.*"MaxCapacity"\ =\ ' | sed -e 's/^.*"MaxCapacity"\ =\ //')
-			typeset -F currentcapacity=$(ioreg -rc "AppleSmartBattery"| grep '^.*"CurrentCapacity"\ =\ ' | sed -e 's/^.*CurrentCapacity"\ =\ //')
-			integer i=$(((currentcapacity/maxcapacity) * 100))
-			echo $i
-		else
-			echo "⚡"
-		fi
+		typeset -F maxcapacity=$(ioreg -rc "AppleSmartBattery"| grep '^.*"MaxCapacity"\ =\ ' | sed -e 's/^.*"MaxCapacity"\ =\ //')
+		typeset -F currentcapacity=$(ioreg -rc "AppleSmartBattery"| grep '^.*"CurrentCapacity"\ =\ ' | sed -e 's/^.*CurrentCapacity"\ =\ //')
+		integer i=$(((currentcapacity/maxcapacity) * 100))
+		echo $i
 	}
+
 	# Generate the time remaining
 	function battery_time_remaining {
-		if [[ $(ioreg -rc AppleSmartBattery | grep -c '^.*"ExternalConnected"\ =\ No') -eq 1 ]] ; then
-			timeremaining=$(ioreg -rc "AppleSmartBattery"| grep '^.*"AvgTimeToEmpty"\ =\ ' | sed -e 's/^.*"AvgTimeToEmpty"\ =\ //')
-			echo "$((timeremaining / 60)):$((timeremaining % 60))"
-		else
-			echo "⚡"
-		fi
+		timeremaining=$(ioreg -rc "AppleSmartBattery"| grep '^.*"AvgTimeToEmpty"\ =\ ' | sed -e 's/^.*"AvgTimeToEmpty"\ =\ //')
+		echo "$((timeremaining / 60)):$((timeremaining % 60))"
 	}
-	# Display the relevant details for the prompt
-	function battery_prompt() {
-			local prompt=""
-			local color='green'
-			local batt_pct=$(battery_pct)
 
-			if [[ $batt_pct != "⚡" ]] ; then
-				if [ $batt_pct -lt 21 ] ; then
-					color='red'
-				elif [ $batt_pct -lt 51 ] ; then
-					color='yellow'
-				fi
-
-				[ $BATT_METER != 0 ] && prompt="$prompt$(battery_meter $batt_pct) "
-				[ $BATT_PCT != 0 ] && prompt="$prompt${batt_pct}%% "
-				[ $BATT_TIME != 0 ] && prompt="$prompt$(battery_time_remaining) "
-			else
-				prompt=$batt_pct
-			fi
-
-			echo "%{$fg[$color]%}${prompt%% }%{$reset_color%}"
+	# Generate charging status
+	function battery_charging {
+		grep -vq 'No' <<< "$(ioreg -rc AppleSmartBattery | grep ExternalConnected 2>/dev/null)"
 	}
 fi
 
@@ -56,38 +32,41 @@ if islinux; then
 		acpi=${acpi%%%*}
 		echo ${acpi##* }
 	}
+
 	# Generate the time remaining
 	function battery_time_remaining {
 		local acpi="$(acpi -b 2>/dev/null)"
 		echo "${${acpi##*, }%% *}"
 	}
+
 	# Generate the battery charing status
 	function battery_charging {
 		grep -vq 'Discharging' <<< "$(acpi -b 2>/dev/null)"
 	}
-	# Display the relevant details for the prompt
-	function battery_prompt() {
-		local prompt=""
-		local color='green'
-		local batt_pct=$(battery_pct)
-
-		if [ battery_charging ] ; then
-			prompt="⚡ "
-		else
-			if [ $batt_pct -lt 21 ] ; then
-				color='red'
-			elif [ $batt_pct -lt 51 ] ; then
-				color='yellow'
-			fi
-		fi
-
-		[ $BATT_METER != 0 ] && prompt="$prompt$(battery_meter $batt_pct) "
-		[ $BATT_PCT != 0 ] && prompt="$prompt${batt_pct}%% "
-		[ $BATT_TIME != 0 ] && prompt="$prompt$(battery_time_remaining) "
-
-		echo "%{$fg[$color]%}${prompt%% }%{$reset_color%}"
-	}
 fi
+
+# Display the relevant details for the prompt
+function battery_prompt() {
+	local prompt=""
+	local color='green'
+	local batt_pct=$(battery_pct)
+
+	if battery_charging; then
+		prompt="⚡ "
+	else
+		if [ $batt_pct -lt 21 ] ; then
+			color='red'
+		elif [ $batt_pct -lt 51 ] ; then
+			color='yellow'
+		fi
+	fi
+
+	[ $BATT_METER != 0 ] && prompt="$prompt$(battery_meter $batt_pct) "
+	[ $BATT_PCT != 0 ] && prompt="$prompt${batt_pct}%% "
+	[ $BATT_TIME != 0 ] && prompt="$prompt$(battery_time_remaining) "
+
+	echo "%{$fg[$color]%}${prompt%% }%{$reset_color%}"
+}
 
 # Determine the meter character to display
 function battery_meter() {
