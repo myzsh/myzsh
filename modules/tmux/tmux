@@ -1,3 +1,5 @@
+#!/usr/bin/zsh
+
 # Sets the title in tmux for the current running command right before it runs
 if [ -n "$TMUX" ]; then
 	preexec_screen () {
@@ -8,4 +10,52 @@ if [ -n "$TMUX" ]; then
 	length=$(tmux list-windows | sed -E 's/^([^ ]*:) /\1/g;s/ (\([0-9]+ panes\) )?\[[0-9]+x.*$//g;s/^(.{0,26}).*/\1/' | tr -d '\n' | wc -c)
 	tmux set -g -t main status-right-length $[ $COLUMNS - $length ] >/dev/null
 fi
+
+tmux() {
+	local verb="$1"
+	local mod="$2"
+
+	case "$verb" in
+		grid)
+			if [ -n "$mod" ];  then
+				cols=$(($mod/2 + $mod%2 - 1))
+				for i in {1..$cols}; do
+					tmux select-pane -t 0
+					tmux split-window -h
+				done
+
+				tmux select-layout even-horizontal 1>/dev/null
+
+				cols=$(($cols - $mod%2))
+				for i in {0..$cols}; do
+					pane=$(($i * 2))
+					tmux select-pane -t $pane
+					tmux split-window -v
+				done
+			fi
+		;;
+		split)
+			if [ -n "$mod" ]; then
+				case "$3" in
+					v|vert*)
+						layout="vertical"
+					;;
+					*)
+						layout="horizontal"
+					;;
+				esac
+
+				splits=$(($mod-1))
+				for pane in {1..$splits}; do
+					tmux select-pane -t 0
+					tmux split-window -$(echo $layout | cut -c1)
+				done
+				tmux select-layout even-$layout
+			fi
+		;;
+		*)
+			command tmux "$@"
+		;;
+	esac
+}
 # vim: filetype=zsh noexpandtab
