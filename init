@@ -209,9 +209,13 @@ function myzsh {
 	;;
 	# get info about a module
 	info)
-		[ -z $MYZSH/**/modules/$mod/$mod(N) ] && myzsh error "Cannot find module $mod" && return 1
-		[ -z $MYZSH/**/modules/$mod/info.md(N) ] && myzsh error "Info missing for module $mod" && return 1
-		less $MYZSH/**/modules/$mod/info.md
+		if [ -n "$mod" ]; then
+			[ -z $MYZSH/**/modules/$mod/$mod(N) ] && myzsh error "Cannot find module $mod" && return 1
+			[ -z $MYZSH/**/modules/$mod/info.md(N) ] && myzsh error "Info missing for module $mod" && return 1
+			less $MYZSH/**/modules/$mod/info.md
+		else
+			myzsh error "No module provided"
+		fi
 	# test a module
 	# TODO needs plenty more work
 	;;
