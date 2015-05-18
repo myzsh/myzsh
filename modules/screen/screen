@@ -1,9 +1,0 @@
-# Sets the title in screen for the current running command right before it runs
-if [ -n "$STY" ]; then
-	preexec_screen () {
-		local CMD=${1[(wr)^(*=*|sudo|-*)]}
-		echo -ne "\ek$CMD\e\\"
-	}
-	preexec_funcs+=(preexec_screen)
-fi
-# vim: filetype=zsh noexpandtab
