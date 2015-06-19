@@ -1,0 +1,2 @@
+alias grep='grep --color=auto'
+# vim: filetype=zsh noexpandtab
