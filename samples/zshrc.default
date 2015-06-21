@@ -24,7 +24,7 @@ TITLE=(pwd)
 
 # This is the list of modules that get processed once at shell start.
 # They shouldn't generate output.
-EXTRA=(ssh-add localbin completions cdtmp lesscolors lscolors ll coloncolon longcmd safe-paste)
+EXTRA=(ssh-add localbin completions cdtmp lesscolors lscolors ll coloncolon longcmd safe-paste grepcolors)
 
 PR_PRIMARY='$PR_GREEN'
 
