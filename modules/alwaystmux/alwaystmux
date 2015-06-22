@@ -3,6 +3,12 @@ globalvar TMUX_REMOTE_PREFIX a "Key to signal when tmux session is remote"
 
 isosx && bindkey "^[[1~" beginning-of-line && bindkey "^[[4~" end-of-line
 
+_deps(){
+	app="tmux"
+
+	$(hash $app 2>/dev/null) || ( myzsh error "Couldn't find application ${app}" && return 1 )
+}
+
 if [ -z "$TMUX" ]; then
 	key=$TMUX_LOCAL_PREFIX
 	[ -n "$SSH_CLIENT" ] && key=$TMUX_REMOTE_PREFIX
