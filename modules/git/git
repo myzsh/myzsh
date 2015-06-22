@@ -1,6 +1,12 @@
 globalvar GIT_USE_ICONS 0 "Enables Icons in prompt"
 globalvar GIT_FETCH_CACHE_TIME 3600 "Frequency in which the git remote cache should be checked"
 
+function _deps(){
+	app="git"
+
+	$(hash $app 2>/dev/null) || ( myzsh error "Couldn't find application ${app}" && return 1 )
+}
+
 function git () {
 	case "$1" in
 	push)
