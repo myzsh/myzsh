@@ -1,3 +1,7 @@
+function _deps(){
+	isosx && myzsh error "This not a linux system" && return 1
+}
+
 changelog () {
 	[ -f /usr/share/doc/$1/changelog.Debian.gz ] && zless /usr/share/doc/$1/changelog.Debian.gz || echo "No changelog for $1?"
 }
