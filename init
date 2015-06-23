@@ -493,6 +493,13 @@ $k=\"$global\"
 		fi
 		echo "${fg[red]}Error:${terminfo[sgr0]} $@" >&2
 	;;
+	notice)
+		if [ $# != 1 ]; then
+			myzsh error "Usage: myzsh notice <MSG>"
+			return
+		fi
+		echo "${fg[cyan]}Notice:${terminfo[sgr0]} $@" >&2
+	;;
 	warning)
 		if [ $# != 1 ]; then
 			myzsh error "Usage: myzsh warning <MSG>"
