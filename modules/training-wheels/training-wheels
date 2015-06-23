@@ -1,0 +1,49 @@
+function training_wheels() {
+	local tw_first
+	vared -p "Is this your first time using myzsh? (y/n):" -c tw_first
+
+	case "$tw_first" in
+		y)
+			tw_first_time
+		;;
+		n)
+			myzsh notice "Thanks for using myzsh"
+			prompt_persistent_tw
+			return
+		;;
+		*)
+			myzsh error "Invalid option"
+			training_wheels
+		;;
+	esac
+}
+
+function tw_first_time() {
+	#TODO: Fill in first time details
+}
+
+function tw_prompt_persistent() {
+	local tw_persistent
+	vared -p "Do you wish to permanently disable this prompt? (y/n):" -c tw_persistent
+
+	case "$tw_persistent" in
+		y)
+			#TODO: Make the save conditional on myzsh being persistent
+			myzsh notice "Saving zshrc"
+			#myzsh save
+		;;
+		n)
+			myzsh warning "This module has not been removed from the configuration"
+			return
+		;;
+		*)
+			myzsh error "Invalid option"
+			tw_prompt_persistent
+		;;
+	esac
+}
+
+training_wheels
+unset training_wheels
+myzsh disable training-wheels
+# vim: filetype=zsh noexpandtab
