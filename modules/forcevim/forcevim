@@ -1,0 +1,6 @@
+# that'll teach me
+alias vi="exit"
+export EDITOR="vim"
+bindkey -e
+
+# vim: filetype=zsh noexpandtab
