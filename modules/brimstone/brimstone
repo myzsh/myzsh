@@ -6,11 +6,6 @@ export HISTSIZE=1000
 # not everything understands screen-256color
 #alias ssh="TERM=screen ssh"
 
-# that'll teach me
-alias vi="exit"
-export EDITOR="vim"
-bindkey -e
-
 param(){ awk ${2:+-F "$2"} "{print \$$1}"; }
 
 local i
