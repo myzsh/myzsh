@@ -1,25 +1,30 @@
-globalvar TMPDIR "/tmp" 'Temporary directory to cycled between with $HOME'
-# if our temp directory doesn't exist, we should try to make it
-[ ! -d "$TMPDIR" ] && ( mkdir "$TMPDIR" || echo "Couldn't create $TMPDIR." >&2 )
+if islinux; then
+	globalvar TMPDIR "/tmp" 'Temporary directory to cycled between with $HOME'
+	# if our temp directory doesn't exist, we should try to make it
+	[ ! -d "$TMPDIR" ] && ( mkdir "$TMPDIR" || echo "Couldn't create $TMPDIR." >&2 )
 
-# if we're inside tmux and this is a new window
-if [ -n "$TMUX" ] && [ "$(tmux list-panes | wc -l)" = 1 ]; then
-	cd "$TMPDIR"
-else
-	# if this is a new window, or not a tmux enabled shell and we started in home, go to /tmp instead
-	[ "$PWD" = "$HOME" ] && cd "$TMPDIR"
-fi
-
-function cd () {
-	# if the user wants to go somewhere special, go there
-	if [ -n "$1" ]; then
-		builtin cd $*
-	# if we're currently in /tmp, go to $HOME
-	elif [ "$PWD" = "$TMPDIR" ]; then
-		builtin cd "$HOME"
-	# else, go to /tmp
+	# if we're inside tmux and this is a new window
+	if [ -n "$TMUX" ] && [ "$(tmux list-panes | wc -l)" = 1 ]; then
+		cd "$TMPDIR"
 	else
-	   builtin cd "$TMPDIR"
+		# if this is a new window, or not a tmux enabled shell and we started in home, go to /tmp instead
+		[ "$PWD" = "$HOME" ] && cd "$TMPDIR"
 	fi
-}
+
+	function cd () {
+		# if the user wants to go somewhere special, go there
+		if [ -n "$1" ]; then
+			builtin cd $*
+		# if we're currently in /tmp, go to $HOME
+		elif [ "$PWD" = "$TMPDIR" ]; then
+			builtin cd "$HOME"
+		# else, go to /tmp
+		else
+			builtin cd "$TMPDIR"
+		fi
+	}
+else
+	myzsh error "The cdtmp module has been disabled for OS X for the time being."
+	myzsh disable cdtmp
+fi
 # vim: filetype=zsh noexpandtab
