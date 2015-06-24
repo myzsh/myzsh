@@ -1,6 +1,7 @@
 # that'll teach me
 alias vi="exit"
+
+# make vim the default editor
 export EDITOR="vim"
-bindkey -e
 
 # vim: filetype=zsh noexpandtab
