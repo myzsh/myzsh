@@ -25,5 +25,6 @@ if islinux; then
 	}
 else
 	myzsh error "The cdtmp module has been disabled for OS X for the time being."
+	myzsh disable cdtmp
 fi
 # vim: filetype=zsh noexpandtab
