@@ -1,3 +1,9 @@
+function _deps(){
+	app="vim"
+
+	$(hash $app 2>/dev/null) || ( myzsh error "Couldn't find application ${app}" && return 1 )
+}
+
 vim_func () {
 	islinux && vim=$(which vim 2>/dev/null) && [ "$(readlink -f $vim)" = "$(readlink -f /proc/$PPID/exe)" ] && echo "vim:$PPID"
 }
