@@ -1,5 +1,5 @@
 function _deps(){
-	islinux && myzsh error "This is not an OS X system" && return 1
+	isosx || ( myzsh error "This is not an OS X system" && return 1 )
 }
 
 nap(){ osascript <<< 'tell application "System Events" to sleep'; }

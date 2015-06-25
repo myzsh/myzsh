@@ -1,5 +1,5 @@
 function _deps(){
-	isosx && myzsh error "This not a linux system" && return 1
+	islinux || ( myzsh error "This not a linux system" && return 1 )
 }
 
 changelog () {
