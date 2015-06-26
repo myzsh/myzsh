@@ -83,7 +83,9 @@ function myzsh {
 			_deps
 			local exitcode=$?
 			unset -f _deps
-			[[ $exitcode -eq 0 ]] || ( myzsh notice "Disabling module $mod" && myzsh disable $mod )
+			if [[ $exitcode -ne 0 ]]; then
+				myzsh notice "Disabling module $mod" && myzsh disable $mod
+			fi
 		fi
 		return 0
 	;;
