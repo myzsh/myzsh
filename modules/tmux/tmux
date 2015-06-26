@@ -1,3 +1,9 @@
+function _deps(){
+	app="tmux"
+
+	$(hash $app 2>/dev/null) || ( myzsh error "Couldn't find application ${app}" && return 1 )
+}
+
 # Sets the title in tmux for the current running command right before it runs
 if [ -n "$TMUX" ]; then
 	preexec_screen () {
