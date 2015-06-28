@@ -667,6 +667,18 @@ compinit
 compdef _myzsh myzsh
 
 ################################################################################
+# Setup zsh options
+
+# Typing a dir name will assume cd $dir
+setopt AUTO_CD
+# Disable beeping
+setopt NO_BEEP
+# Spell correction for commands
+setopt CORRECT
+setopt BRACE_CCL
+setopt extended_glob
+
+################################################################################
 # Colors!
 
 # make sure colors and terminal settings autoload
