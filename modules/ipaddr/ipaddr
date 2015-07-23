@@ -36,5 +36,9 @@ else
 	fi
 fi
 
+wanip () {
+	dig +short myip.opendns.com @resolver1.opendns.com
+}
+
 OUTPUT=ip_func
 # vim: filetype=sh
