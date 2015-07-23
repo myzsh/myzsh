@@ -1,12 +1,18 @@
 globalvar IPADDR_IGNORE_NET "docker0|fw|gif|lo|lxcbr0|p2p|stf|utnn|vmnet" "Network devices to ignore"
 
-if which ip >/dev/null; then
-	ip_func () {
+function _deps(){
+	err=0
+	$(hash awk 2>/dev/null) || $(myzsh error "Couldn't find application: awk" && err=1)
+	$(hash ip 2>/dev/null) || $(hash ifconfig 2>/dev/null) || $(myzsh error "Couldn't find application: ip or ifconfig" && err=1)
+
+	return $err
+}
+
+if $(hash ip 2>/dev/null); then
+	function ip_func () {
           echo "${$(ip -o addr | awk -v ignore="$IPADDR_IGNORE_NET" '/inet /{if ($2 !~ ignore){printf $2 ":" $4 " "}}')%% }"
 	}
 else
-	#modified from ifconfig module
-	# assume just ifconfig
 	IFCONFIG="ifconfig"
 	# if we don't see it in our path, assume also in /sbin, which is typical of linux systems
 	[ -n "$(which ifconfig)" ] && IFCONFIG="/sbin/ifconfig"
