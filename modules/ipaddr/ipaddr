@@ -24,7 +24,8 @@ else
 				binary=$(( [##2] $hex ))
 				echo ${#binary%%0*}
 		}
-		ip_func () {
+
+		function ip_func () {
 			echo "${$($IFCONFIG | awk -v ignore="$IPADDR_IGNORE_NET" 'function hex2cidr(hex) {
       		gsub("8", "1", hex);
 	      	gsub("c", "11", hex);
@@ -36,13 +37,13 @@ else
          /^[a-z]/ {if($1 !~ ignore){inf=$1}} /inet /{if($2!="127.0.0.1"){printf inf $2 "/" hex2cidr($4) " "}}')%% }"
 		}
 	else
-		ip_func () {
+		function ip_func () {
                   echo "${$($IFCONFIG | awk -v ignore="$IPADDR_IGNORE_NET" '/^[a-z]/ {inf=$1} /inet addr/{gsub(/addr:/, "", $2); if(inf !~ ignore){printf inf ":" $2 " "}}')%% }"
 		}
 	fi
 fi
 
-wanip () {
+function wanip () {
 	dig +short myip.opendns.com @resolver1.opendns.com
 }
 
