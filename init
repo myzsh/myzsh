@@ -647,6 +647,7 @@ MYZSH_VERSION="1.4.2"
 [ ! -d "$MYZSH" ] && myzsh error "Directory refered to by \$MYZSH does not exist. You will probably not like the results."
 # set other globals
 [ -z "$EDITOR" ] && export EDITOR=vim
+# bind to standard emacs mappings
 bindkey -e
 
 typeset -A GLOBALS
