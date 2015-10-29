@@ -7,4 +7,8 @@ if [ -n "$SSH_AGENT_PID" ] && [ "$(ssh-add -l 2>/dev/null)" = "The agent has no 
 		fi
 	done
 fi
+
+ssh-rm() {
+	sed -i "$1d" ~/.ssh/known_hosts
+}
 # vim: filetype=zsh noexpandtab
