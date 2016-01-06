@@ -72,9 +72,9 @@ function git_func () {
 		fi
 
 		if [ "$(git log -n 1 2>/dev/null)" != "" ]; then
-			local_repo="$(git rev-parse @)"
+			local_repo="$(git rev-parse HEAD)"
 			remote_repo="no_remote" && [[ -n "$(git branch -vv | awk '/^\*.*\[.*\]/' | cut -d \[ -f 2 | cut -d \] -f 1)" ]] && remote_repo="$(git rev-parse '@{u}')"
-			base="no_base" && [[ -n "$(git branch -vv | awk '/^\*.*\[.*\]/' | cut -d \[ -f 2 | cut -d \] -f 1)" ]] && base="$(git merge-base @ '@{u}')"
+			base="no_base" && [[ -n "$(git branch -vv | awk '/^\*.*\[.*\]/' | cut -d \[ -f 2 | cut -d \] -f 1)" ]] && base="$(git merge-base HEAD '@{u}')"
 			if [ "$local_repo" = "$remote_repo" ]; then
 				printf ""
 			elif [ "$local_repo" = "$base" ]; then
