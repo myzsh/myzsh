@@ -27,13 +27,13 @@ else
 
 		function ip_func () {
 			echo "${$($IFCONFIG | awk -v ignore="$IPADDR_IGNORE_NET" 'function hex2cidr(hex) {
-      		gsub("8", "1", hex);
-	      	gsub("c", "11", hex);
-		      gsub("e", "111", hex);
-   		   gsub("f", "1111", hex);
-   	   	gsub("[0x]", "", hex);
-	   	   return length(hex);
-   	 	}
+				gsub("8", "1", hex);
+				gsub("c", "11", hex);
+				gsub("e", "111", hex);
+				gsub("f", "1111", hex);
+				gsub("[0x]", "", hex);
+				return length(hex);
+			}
          /^[a-z]/ {if($1 !~ ignore){inf=$1}} /inet /{if($2!="127.0.0.1"){printf inf $2 "/" hex2cidr($4) " "}}')%% }"
 		}
 	else
@@ -48,4 +48,4 @@ function wanip () {
 }
 
 OUTPUT=ip_func
-# vim: filetype=sh
+# vim: filetype=zsh noexpandtab
