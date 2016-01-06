@@ -44,6 +44,7 @@ else
 fi
 
 function wanip () {
+	$(hash dig 2>/dev/null) || $(myzsh error "Couldn't find application: dig" && return 1)
 	dig +short myip.opendns.com @resolver1.opendns.com
 }
 
