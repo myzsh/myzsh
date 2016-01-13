@@ -1,12 +1,18 @@
 globalvar IPADDR_IGNORE_NET "docker0|fw|gif|lo|lxcbr0|p2p|stf|utnn|vmnet" "Network devices to ignore"
 
-if which ip >/dev/null; then
-	ip_func () {
+function _deps(){
+	err=0
+	$(hash awk 2>/dev/null) || $(myzsh error "Couldn't find application: awk" && err=1)
+	$(hash ip 2>/dev/null) || $(hash ifconfig 2>/dev/null) || $(myzsh error "Couldn't find application: ip or ifconfig" && err=1)
+
+	return $err
+}
+
+if $(hash ip 2>/dev/null); then
+	function ip_func () {
           echo "${$(ip -o addr | awk -v ignore="$IPADDR_IGNORE_NET" '/inet /{if ($2 !~ ignore){printf $2 ":" $4 " "}}')%% }"
 	}
 else
-	#modified from ifconfig module
-	# assume just ifconfig
 	IFCONFIG="ifconfig"
 	# if we don't see it in our path, assume also in /sbin, which is typical of linux systems
 	[ -n "$(which ifconfig)" ] && IFCONFIG="/sbin/ifconfig"
@@ -18,23 +24,29 @@ else
 				binary=$(( [##2] $hex ))
 				echo ${#binary%%0*}
 		}
-		ip_func () {
+
+		function ip_func () {
 			echo "${$($IFCONFIG | awk -v ignore="$IPADDR_IGNORE_NET" 'function hex2cidr(hex) {
-      		gsub("8", "1", hex);
-	      	gsub("c", "11", hex);
-		      gsub("e", "111", hex);
-   		   gsub("f", "1111", hex);
-   	   	gsub("[0x]", "", hex);
-	   	   return length(hex);
-   	 	}
+				gsub("8", "1", hex);
+				gsub("c", "11", hex);
+				gsub("e", "111", hex);
+				gsub("f", "1111", hex);
+				gsub("[0x]", "", hex);
+				return length(hex);
+			}
          /^[a-z]/ {if($1 !~ ignore){inf=$1}} /inet /{if($2!="127.0.0.1"){printf inf $2 "/" hex2cidr($4) " "}}')%% }"
 		}
 	else
-		ip_func () {
+		function ip_func () {
                   echo "${$($IFCONFIG | awk -v ignore="$IPADDR_IGNORE_NET" '/^[a-z]/ {inf=$1} /inet addr/{gsub(/addr:/, "", $2); if(inf !~ ignore){printf inf ":" $2 " "}}')%% }"
 		}
 	fi
 fi
 
+function wanip () {
+	$(hash dig 2>/dev/null) || $(myzsh error "Couldn't find application: dig" && return 1)
+	dig +short myip.opendns.com @resolver1.opendns.com
+}
+
 OUTPUT=ip_func
-# vim: filetype=sh
+# vim: filetype=zsh noexpandtab
