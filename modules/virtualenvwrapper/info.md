@@ -6,3 +6,4 @@ python virtualenvwrapper
 
 ##Usage
 * Place in LPRIMARY section of .zshrc
+* Set VIRTUALENVWRAPPER_LOCATION in .zshrc if `virtualenvwrapper.sh` is not in $PATH
