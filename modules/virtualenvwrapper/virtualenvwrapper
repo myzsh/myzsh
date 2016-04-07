@@ -1,0 +1,11 @@
+globalvar VIRTUALENVWRAPPER_LOCATION "/usr/bin/virtualenvwrapper.sh" "Location of virtualenvwrapper.sh"
+
+source $VIRTUALENVWRAPPER_LOCATION
+
+virtualenv_func() {
+  [ "$VIRTUAL_ENV" ] && echo "venv:$(basename $VIRTUAL_ENV)"
+}
+
+OUTPUT=virtualenv_func
+
+# vim: filetype=zsh noexpandtab
