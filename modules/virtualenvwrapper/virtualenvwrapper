@@ -1,0 +1,18 @@
+globalvar VIRTUALENVWRAPPER_LOCATION "" "Location of virtualenvwrapper.sh"
+
+function _deps(){
+  app="virtualenvwrapper.sh"
+  if hash $app 2>/dev/null; then
+    source $app
+  else
+    source $VIRTUALENVWRAPPER_LOCATION 2>/dev/null || $(myzsh error "Couldn't find virtualenvwrapper.sh, manually set VIRTUALENVWRAPPER_LOCATION in .zshrc" && return 1)
+  fi
+}
+
+virtualenv_func() {
+  [ "$VIRTUAL_ENV" ] && echo "venv:$(basename $VIRTUAL_ENV)"
+}
+
+OUTPUT=virtualenv_func
+
+# vim: filetype=zsh noexpandtab
