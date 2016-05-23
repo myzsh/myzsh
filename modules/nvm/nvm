@@ -1,0 +1,18 @@
+globalvar NVM_LOCATION "" "Location of nvm.sh"
+
+function _deps(){
+  app="nvm.sh"
+  if hash $app 2>/dev/null; then
+    source $app
+  else
+    source $NVM_LOCATION 2>/dev/null || $(myzsh error "Couldn't find nvm.sh, manually set NVM_LOCATION in .zshrc" && return 1)
+  fi
+}
+
+nvm_func() {
+  [ "$NVM_BIN" ] && echo "nvm:$(nvm current)"
+}
+
+OUTPUT=nvm_func
+
+# vim: filetype=zsh noexpandtab
