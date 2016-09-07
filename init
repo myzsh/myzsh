@@ -313,18 +313,20 @@ $k=\"$global\"
 		# look for our module everywhere
 		# remove it if we find it
 		local f
-		for f in {1..${#LPRIMARY[@]}};
-			[ "$LPRIMARY[$f]" = "$mod" ] && LPRIMARY[$f]=()
-		for f in {1..${#LSECONDARY[@]}};
-			[ "$LSECONDARY[$f]" = "$mod" ] && LSECONDARY[$f]=()
-		for f in {1..${#RPRIMARY[@]}};
-			[ "$RPRIMARY[$f]" = "$mod" ] && RPRIMARY[$f]=()
-		for f in {1..${#RSECONDARY[@]}};
-			[ "$RSECONDARY[$f]" = "$mod" ] && RSECONDARY[$f]=()
-		for f in {1..${#TITLE[@]}};
-			[ "$TITLE[$f]" = "$mod" ] && TITLE[$f]=()
-		for f in {1..${#EXTRA[@]}};
-			[ "$EXTRA[$f]" = "$mod" ] && EXTRA[$f]=()
+		foreach mod in $@; do
+			for f in {1..${#LPRIMARY[@]}};
+				[ "$LPRIMARY[$f]" = "$mod" ] && LPRIMARY[$f]=()
+			for f in {1..${#LSECONDARY[@]}};
+				[ "$LSECONDARY[$f]" = "$mod" ] && LSECONDARY[$f]=()
+			for f in {1..${#RPRIMARY[@]}};
+				[ "$RPRIMARY[$f]" = "$mod" ] && RPRIMARY[$f]=()
+			for f in {1..${#RSECONDARY[@]}};
+				[ "$RSECONDARY[$f]" = "$mod" ] && RSECONDARY[$f]=()
+			for f in {1..${#TITLE[@]}};
+				[ "$TITLE[$f]" = "$mod" ] && TITLE[$f]=()
+			for f in {1..${#EXTRA[@]}};
+				[ "$EXTRA[$f]" = "$mod" ] && EXTRA[$f]=()
+		done
 		# theme needs to be rehashed now
 		init_myzsh
 	;;
