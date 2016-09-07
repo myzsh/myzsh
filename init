@@ -305,6 +305,11 @@ $k=\"$global\"
 		echo "$HOME/.zshrc has been updated"
 	;;
 	disable)
+		# make sure proper calling
+		if [ $# -lt 1 ]; then
+			myzsh error "Usage: myzsh disable [module] ..."
+			return 1
+		fi
 		# look for our module everywhere
 		# remove it if we find it
 		local f
