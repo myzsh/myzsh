@@ -313,7 +313,7 @@ $k=\"$global\"
 		# look for our module everywhere
 		# remove it if we find it
 		local f
-		foreach mod in $@; do
+		foreach mod in "$@"; do
 			for f in {1..${#LPRIMARY[@]}};
 				[ "$LPRIMARY[$f]" = "$mod" ] && LPRIMARY[$f]=()
 			for f in {1..${#LSECONDARY[@]}};
