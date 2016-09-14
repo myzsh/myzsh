@@ -305,21 +305,28 @@ $k=\"$global\"
 		echo "$HOME/.zshrc has been updated"
 	;;
 	disable)
+		# make sure proper calling
+		if [ $# -lt 1 ]; then
+			myzsh error "Usage: myzsh disable [module] ..."
+			return 1
+		fi
 		# look for our module everywhere
 		# remove it if we find it
 		local f
-		for f in {1..${#LPRIMARY[@]}};
-			[ "$LPRIMARY[$f]" = "$mod" ] && LPRIMARY[$f]=()
-		for f in {1..${#LSECONDARY[@]}};
-			[ "$LSECONDARY[$f]" = "$mod" ] && LSECONDARY[$f]=()
-		for f in {1..${#RPRIMARY[@]}};
-			[ "$RPRIMARY[$f]" = "$mod" ] && RPRIMARY[$f]=()
-		for f in {1..${#RSECONDARY[@]}};
-			[ "$RSECONDARY[$f]" = "$mod" ] && RSECONDARY[$f]=()
-		for f in {1..${#TITLE[@]}};
-			[ "$TITLE[$f]" = "$mod" ] && TITLE[$f]=()
-		for f in {1..${#EXTRA[@]}};
-			[ "$EXTRA[$f]" = "$mod" ] && EXTRA[$f]=()
+		foreach mod in "$@"; do
+			for f in {1..${#LPRIMARY[@]}};
+				[ "$LPRIMARY[$f]" = "$mod" ] && LPRIMARY[$f]=()
+			for f in {1..${#LSECONDARY[@]}};
+				[ "$LSECONDARY[$f]" = "$mod" ] && LSECONDARY[$f]=()
+			for f in {1..${#RPRIMARY[@]}};
+				[ "$RPRIMARY[$f]" = "$mod" ] && RPRIMARY[$f]=()
+			for f in {1..${#RSECONDARY[@]}};
+				[ "$RSECONDARY[$f]" = "$mod" ] && RSECONDARY[$f]=()
+			for f in {1..${#TITLE[@]}};
+				[ "$TITLE[$f]" = "$mod" ] && TITLE[$f]=()
+			for f in {1..${#EXTRA[@]}};
+				[ "$EXTRA[$f]" = "$mod" ] && EXTRA[$f]=()
+		done
 		# theme needs to be rehashed now
 		init_myzsh
 	;;
