@@ -38,7 +38,7 @@ else
 		}
 	else
 		function ip_func () {
-                  echo "${$($IFCONFIG | awk -v ignore="$IPADDR_IGNORE_NET" '/^[a-z]/ {inf=$1} /inet addr/{gsub(/addr:/, "", $2); if(inf !~ ignore){printf inf ":" $2 " "}}')%% }"
+		   echo "${$($IFCONFIG | awk -v ignore="$IPADDR_IGNORE_NET" '/^[a-z]/ {inf=$1 gsub(/:/, "", inf)} /(inet |inet addr)/{gsub(/addr:/, "", $2); if(inf !~ ignore){printf inf ":" $2 " "}}')%% }"
 		}
 	fi
 fi
