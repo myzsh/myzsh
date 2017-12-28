@@ -1,5 +1,5 @@
 time_utc_func () {
-	echo "$(date -u +\%T)"
+	echo "$(date -u +\%T+0)"
 }
 
 OUTPUT=time_utc_func
