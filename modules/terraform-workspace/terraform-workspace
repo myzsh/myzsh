@@ -1,5 +1,5 @@
-terraform-workspace_func () {
+terraform_workspace_func () {
         [ -f ".terraform/environment" ] && echo "tf:$(cat ".terraform/environment")"
 }
-OUTPUT=terraform-workspace_func
+OUTPUT=terraform_workspace_func
 # vim: filetype=zsh noexpandtab
