@@ -2,7 +2,7 @@ globalvar VIRTUALENVWRAPPER_LOCATION "" "Location of virtualenvwrapper.sh"
 
 function _deps(){
   app="virtualenvwrapper.sh"
-  if hash $app 2>/dev/null; then
+  if command -v $app >/dev/null 2>&1; then
     source $app
   else
     source $VIRTUALENVWRAPPER_LOCATION 2>/dev/null || $(myzsh error "Couldn't find virtualenvwrapper.sh, manually set VIRTUALENVWRAPPER_LOCATION in .zshrc" && return 1)

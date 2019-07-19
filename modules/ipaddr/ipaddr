@@ -2,13 +2,13 @@ globalvar IPADDR_IGNORE_NET "docker0|fw|gif|lo|lxcbr0|p2p|stf|utnn|vmnet" "Netwo
 
 function _deps(){
 	err=0
-	$(hash awk 2>/dev/null) || $(myzsh error "Couldn't find application: awk" && err=1)
-	$(hash ip 2>/dev/null) || $(hash ifconfig 2>/dev/null) || $(myzsh error "Couldn't find application: ip or ifconfig" && err=1)
+	$(command -v awk >/dev/null 2>&1) || $(myzsh error "Couldn't find application: awk" && err=1)
+	$(command -v ip >/dev/null 2>&1) || $(command -v ifconfig >/dev/null 2>&1) || $(myzsh error "Couldn't find application: ip or ifconfig" && err=1)
 
 	return $err
 }
 
-if $(hash ip 2>/dev/null); then
+if $(command -v ip >/dev/null 2>&1); then
 	function ip_func () {
           echo "${$(ip -o addr | awk -v ignore="$IPADDR_IGNORE_NET" '/inet /{if ($2 !~ ignore){printf $2 ":" $4 " "}}')%% }"
 	}
@@ -44,7 +44,7 @@ else
 fi
 
 function wanip () {
-	$(hash dig 2>/dev/null) || $(myzsh error "Couldn't find application: dig" && return 1)
+	$(command -v dig >/dev/null 2>&1) || $(myzsh error "Couldn't find application: dig" && return 1)
 	dig +short myip.opendns.com @resolver1.opendns.com
 }
 

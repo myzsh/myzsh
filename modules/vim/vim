@@ -1,7 +1,7 @@
 function _deps(){
 	app="vim"
 
-	$(hash $app 2>/dev/null) || ( myzsh error "Couldn't find application ${app}" && return 1 )
+	$(command -v $app >/dev/null 2>&1) || ( myzsh error "Couldn't find application ${app}" && return 1 )
 }
 
 vim_func () {
