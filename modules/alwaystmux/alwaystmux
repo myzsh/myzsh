@@ -6,10 +6,7 @@ isosx && bindkey "^[[1~" beginning-of-line && bindkey "^[[4~" end-of-line
 function _deps(){
 	app="tmux"
 
-	if ! hash $app 2>/dev/null; then
-		myzsh error "Couldn't find application ${app}"
-		return 1
-	fi
+        $(command -v $app >/dev/null 2>&1) || ( myzsh error "Couldn't find application ${app}" && return 1 )
 }
 
 if [ -z "$TMUX" ]; then

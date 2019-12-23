@@ -2,7 +2,7 @@ globalvar NVM_LOCATION "" "Location of nvm.sh"
 
 function _deps(){
   app="nvm.sh"
-  if hash $app 2>/dev/null; then
+  if command -v $app >/dev/null 2>&1; then
     source $app
   else
     source $NVM_LOCATION 2>/dev/null || $(myzsh error "Couldn't find nvm.sh, manually set NVM_LOCATION in .zshrc" && return 1)
